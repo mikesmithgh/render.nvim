@@ -1,30 +1,103 @@
-local render_dir = "render"
-
-
--- TODO: look into getfontname([{name}])		String	name of font being used
 local M = {}
 
-local renderdata = vim.fn.stdpath("data") .. "/" .. render_dir
-local renderstate = vim.fn.stdpath("state") .. "/" .. render_dir
-local renderrun = vim.fn.stdpath("run") .. "/" .. render_dir
-vim.fn.mkdir(renderdata, "p")
+local shortname = "render"
+local longname = "render.nvim"
+
+local function render_notify(msg, level, extra)
+  if M.opts.notify_enabled then
+    vim.notify(
+      vim.inspect(vim.tbl_extend("keep", { msg = string.format("%s: %s", longname, msg), }, extra)),
+      level,
+      {}
+    )
+  end
+end
+
+local standard_opts = {
+  aha_command = function(files, opts)
+    if files.cat == nil or files.cat == "" then
+      return
+    end
+    if opts.resources.font == nil or opts.resources.font == "" then
+      return
+    end
+
+    return {
+      "aha",
+      '--css',
+      opts.resources.font,
+      '-f',
+      files.cat,
+    }
+  end,
+  phantomjs = {
+    cmd = function(script, input, output)
+      return {
+        "phantomjs",
+        script,
+        input,
+        output,
+      }
+    end,
+    opts = function(filein, fileout)
+      return {
+        on_exit = function(_, exit_code)
+          if exit_code == 0 then
+            render_notify("screenshot available", vim.log.levels.INFO, {
+              input = filein,
+              output = fileout,
+            })
+          else
+            render_notify("failed to generate screenshot", vim.log.levels.WARN, {
+              input = filein,
+              output = fileout,
+            })
+          end
+        end
+      }
+    end
+  },
+  dirs = {
+    data = vim.fn.stdpath("data") .. "/" .. shortname,
+    state = vim.fn.stdpath("state") .. "/" .. shortname,
+    run = vim.fn.stdpath("run") .. "/" .. shortname,
+    output = vim.fn.stdpath("data") .. "/" .. shortname .. "/output",
+  },
+  resources = {
+    font = vim.api.nvim_get_runtime_file("resources/render/font.css", false)[1],
+    rasterizejs = vim.api.nvim_get_runtime_file("resources/render/rasterize.js", false)[1],
+  },
+  notify_enabled = true,
+}
+
+local function new_output_files()
+  local temp = vim.fn.tempname()
+  local temp_dir = vim.fn.fnamemodify(temp, ":h:t")
+  local temp_name = vim.fn.fnamemodify(temp, ":t")
+  local out_dir = M.opts.dirs.output .. "/" .. temp_dir
+  local out_file = out_dir .. "/" .. temp_name
+  vim.fn.mkdir(out_dir, "p")
+  return {
+    dir = out_dir,
+    file = out_file,
+    cat = out_file .. ".cat",
+    html = out_file .. ".html",
+    png = out_file .. ".png",
+  }
+end
 
 M.render = function()
-  local outpath = vim.fn.tempname()
-  local catfile = outpath .. ".cat"
-  local htmlfile = outpath .. ".html"
-  local pngfile = outpath .. ".png"
+  local out_files = new_output_files()
 
   -- WARNING undocumented nvim function this may have breaking changes in the future
-  vim.api.nvim__screenshot(catfile)
-
+  vim.api.nvim__screenshot(out_files.cat)
 
   local screenshot
   local retries = 6
   repeat
     vim.cmd.sleep("500ms")
     -- wait until screenshot has succesfully written to file
-    local ok, file_content = pcall(vim.fn.readfile, catfile)
+    local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
     if ok and file_content ~= nil and file_content ~= "" then
       screenshot = file_content
       break
@@ -32,7 +105,9 @@ M.render = function()
   until retries == 0
 
   if screenshot == nil or next(screenshot) == nil then
-    vim.notify("render.nvim error reading cat file", vim.log.levels.ERROR, {})
+    render_notify("error reading file", vim.log.levels.ERROR, {
+      file = out_files.cat,
+    })
     return
   end
 
@@ -43,52 +118,58 @@ M.render = function()
   local width = dimensions[2]
   if height ~= nil and height ~= "" and width ~= nil and width ~= "" then
     table.remove(screenshot, 1)
-    vim.notify("height: " .. height .. " width: " .. width, vim.log.levels.DEBUG, {})
+    render_notify("screenshot dimensions", vim.log.levels.DEBUG, {
+      height = height,
+      width = width,
+    })
   end
-  vim.fn.writefile(screenshot, catfile)
+  vim.fn.writefile(screenshot, out_files.cat)
 
   -- render html
-  local font = vim.api.nvim_get_runtime_file("resources/render/font.css", false)[1] -- TODO: validation
-  vim.fn.jobstart({
-    "aha",
-    '--css',
-    font,
-    '-f',
-    catfile,
-  }, {
-    stdout_buffered = true,
-    on_stdout = function(_, aha_result)
-      vim.fn.writefile(aha_result, htmlfile)
+  vim.fn.jobstart(
+    M.opts.aha_command(out_files, M.opts),
+    {
+      stdout_buffered = true,
+      on_stdout = function(_, aha_result)
+        vim.fn.writefile(aha_result, out_files.html)
 
-      -- render png
-      local rasterize = vim.api.nvim_get_runtime_file("resources/render/rasterize.js", false)[1] -- TODO: validation
-      vim.fn.jobstart({
-        "phantomjs",
-        rasterize,
-        htmlfile,
-        pngfile,
-      }, {
-        on_exit = function(_, exit_code)
-          if exit_code == 0 then
-            -- vim.fn.system("open " .. htmlfile)
-            vim.fn.jobstart("open " .. pngfile)
-          else
-            vim.notify("render.nvim: failed to execute phantomjs", vim.log.levels.WARN, {})
-          end
-        end
-      })
-    end
-  })
+        -- render png
+        vim.fn.jobstart(
+          M.opts.phantomjs.cmd(M.opts.resources.rasterizejs, out_files.html, out_files.png),
+          M.opts.phantomjs.opts(out_files.html, out_files.png)
+        )
+      end
+    })
 end
 
-M.setup = function()
-  local r = require("render")
-  vim.api.nvim_create_user_command("Render", r.render, {})
-  vim.keymap.set({ 'n', 'v', 'o' }, '<leader><leader><leader>', function()
-    r.render()
-  end, {
-    silent = true
-  })
+M.remove_dirs = function()
+  for _, dir in pairs(M.opts.dirs) do
+    vim.fn.delete(dir, "rf")
+  end
+end
+
+M.create_dirs = function()
+  for _, dir in pairs(M.opts.dirs) do
+    vim.fn.mkdir(dir, "p")
+  end
+end
+
+M.opts = standard_opts
+
+M.setup = function(override_opts)
+  if override_opts == nil then
+    override_opts = {}
+  end
+  M.opts = vim.tbl_extend("force", M.opts, override_opts)
+  M.create_dirs()
+
+  vim.api.nvim_create_user_command("Render", M.render, {})
+  vim.api.nvim_create_user_command("RenderClean", function()
+    M.remove_dirs()
+    M.create_dirs()
+  end, {})
+  -- <f13> == print screen
+  vim.keymap.set({ 'n', 'v', 'o' }, '<f13>', M.render, { silent = true })
 end
 
 return M
