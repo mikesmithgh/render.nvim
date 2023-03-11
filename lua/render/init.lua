@@ -173,7 +173,10 @@ M.setup = function(override_opts)
   M.create_dirs()
 
 
-  vim.api.nvim_create_user_command("Render", M.render, {})
+  vim.api.nvim_create_user_command("Render", function()
+    -- small delay to avoid capturing :Render command as its typed
+    vim.defer_fn(M.render, 200)
+  end, {})
   vim.api.nvim_create_user_command("RenderClean", function()
     M.remove_dirs()
     M.create_dirs()
