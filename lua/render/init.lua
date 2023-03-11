@@ -72,7 +72,26 @@ local standard_opts = {
   keymap_setup = function()
     -- <f13> == <shift-f1> == print screen
     vim.keymap.set({ 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' }, '<f13>', M.render, { silent = true, remap = true })
-  end
+  end,
+  flash_enabled = true,
+  flash = function()
+    local render_ns = vim.api.nvim_create_namespace('render')
+    local normal_hl = vim.api.nvim_get_hl_by_name("CursorLine", true)
+    local flash_color = normal_hl.background
+    if flash_color == nil or flash_color == "" then
+      flash_color = "#000000"
+      if vim.opt.bg:get() == "dark" then
+        flash_color = "#ffffff"
+      end
+    end
+    vim.api.nvim_set_hl(render_ns, "Normal", { fg = flash_color, bg = flash_color })
+    vim.api.nvim_set_hl_ns(render_ns)
+    vim.cmd.redraw()
+    vim.defer_fn(function()
+      vim.api.nvim_set_hl_ns(0)
+      vim.cmd.redraw()
+    end, 100)
+  end,
 }
 
 local function new_output_files()
@@ -101,10 +120,14 @@ M.render = function()
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
 
+  if M.opts.flash_enabled then
+    M.opts.flash()
+  end
+
   local screenshot
-  local retries = 6
+  local retries = 10
   repeat
-    vim.cmd.sleep("500ms")
+    vim.cmd.sleep("200ms")
     -- wait until screenshot has succesfully written to file
     local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
     if ok and file_content ~= nil and file_content ~= "" then
@@ -174,7 +197,7 @@ M.setup = function(override_opts)
 
 
   vim.api.nvim_create_user_command("Render", function()
-    -- small delay to avoid capturing :Render command as its typed
+    -- small delay to avoid capturing :Render command and flash
     vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command("RenderClean", function()
