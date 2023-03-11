@@ -68,14 +68,23 @@ local standard_opts = {
     rasterizejs = vim.api.nvim_get_runtime_file("resources/render/rasterize.js", false)[1],
   },
   notify_enabled = true,
+  keymaps_enabled = true,
+  keymap_setup = function()
+    -- <f13> == <shift-f1> == print screen
+    vim.keymap.set({ 'n', 'v', 'o' }, '<f13>', M.render, { silent = true })
+  end
 }
 
 local function new_output_files()
+  local cur_name = vim.fn.expand("%:t")
+  if cur_name == nil or cur_name == "" then
+    cur_name = "noname"
+  end
   local temp = vim.fn.tempname()
   local temp_dir = vim.fn.fnamemodify(temp, ":h:t")
   local temp_name = vim.fn.fnamemodify(temp, ":t")
   local out_dir = M.opts.dirs.output .. "/" .. temp_dir
-  local out_file = out_dir .. "/" .. temp_name
+  local out_file = out_dir .. "/" .. temp_name .. "." .. cur_name
   vim.fn.mkdir(out_dir, "p")
   return {
     dir = out_dir,
@@ -163,13 +172,46 @@ M.setup = function(override_opts)
   M.opts = vim.tbl_extend("force", M.opts, override_opts)
   M.create_dirs()
 
+
   vim.api.nvim_create_user_command("Render", M.render, {})
   vim.api.nvim_create_user_command("RenderClean", function()
     M.remove_dirs()
     M.create_dirs()
   end, {})
-  -- <f13> == print screen
-  vim.keymap.set({ 'n', 'v', 'o' }, '<f13>', M.render, { silent = true })
+  vim.api.nvim_create_user_command("RenderQuickfix", function()
+    vim.cmd.vimgrep(
+      {
+        args = { "/\\%^/j " .. M.opts.dirs.output .. "/*/*" },
+        mods = { emsg_silent = true }
+      }
+    )
+    local render_qflist = vim.tbl_map(function(line)
+      local description = {
+        cat = "ANSI Escape Sequences",
+        html = "HyperText Markup Language",
+        png = "Portable Network Graphics",
+      }
+      local ext = vim.fn.fnamemodify(vim.fn.bufname(line.bufnr), ":e")
+      line.text = description[ext]
+      return line
+    end, vim.fn.getqflist())
+    if next(render_qflist) == nil then
+      render_notify("no output files found", vim.log.levels.INFO, {
+        output = M.opts.dirs.output
+      })
+    else
+      vim.fn.setqflist(render_qflist)
+      vim.cmd.copen()
+    end
+  end, {})
+  vim.api.nvim_create_user_command("RenderOpen", function()
+    vim.cmd.edit(M.opts.dirs.output)
+  end, {})
+
+
+  if M.opts.keymaps_enabled then
+    M.opts.keymap_setup()
+  end
 end
 
 return M
