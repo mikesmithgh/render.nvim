@@ -71,7 +71,7 @@ local standard_opts = {
   keymaps_enabled = true,
   keymap_setup = function()
     -- <f13> == <shift-f1> == print screen
-    vim.keymap.set({ 'n', 'v', 'o' }, '<f13>', M.render, { silent = true })
+    vim.keymap.set({ 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' }, '<f13>', M.render, { silent = true, remap = true })
   end
 }
 
