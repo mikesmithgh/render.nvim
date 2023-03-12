@@ -9,7 +9,7 @@ Screenshot taken with render.nvim
 
 ### Prerequisites
 - Install [aha](https://github.com/theZiz/aha)
-- Install [phantomjs](https://github.com/ariya/phantomjs)
+- Install [playwright](https://playwright.dev/)
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua

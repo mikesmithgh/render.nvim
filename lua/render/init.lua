@@ -14,46 +14,61 @@ local function render_notify(msg, level, extra)
 end
 
 local standard_opts = {
-  aha_command = function(files, opts)
+  aha_command = function(files)
     if files.cat == nil or files.cat == "" then
       return
     end
-    if opts.resources.font == nil or opts.resources.font == "" then
+    if M.opts.resources.render_style == nil or M.opts.resources.render_style == "" then
       return
     end
 
     return {
       "aha",
       '--css',
-      opts.resources.font,
+      M.opts.resources.render_style,
       '-f',
       files.cat,
     }
   end,
-  phantomjs = {
-    cmd = function(script, input, output)
+  playwright = {
+    cmd = function()
       return {
-        "phantomjs",
-        script,
-        input,
-        output,
+        "npx",
+        "playwright",
+        "test",
+        "--browser",
+        "chromium",
+        "--config",
+        vim.fn.fnamemodify(M.opts.resources.render_script, ":h"),
+        M.opts.resources.render_script,
       }
     end,
-    opts = function(filein, fileout)
+    opts = function(playwright_opts)
       return {
+        stdout_buffered = true,
+        stderr_buffered = true,
+        env = {
+          RENDERNVIM_INPUT = playwright_opts.input,
+          RENDERNVIM_OUTPUT = playwright_opts.output,
+          RENDERNVIM_TYPE = playwright_opts.type,
+        },
         on_exit = function(_, exit_code)
+          local details = vim.tbl_extend(
+            "force",
+            playwright_opts,
+            { output = playwright_opts.output .. "." .. playwright_opts.type, }
+          )
           if exit_code == 0 then
-            render_notify("screenshot available", vim.log.levels.INFO, {
-              input = filein,
-              output = fileout,
-            })
+            render_notify("screenshot available", vim.log.levels.INFO, details)
           else
-            render_notify("failed to generate screenshot", vim.log.levels.WARN, {
-              input = filein,
-              output = fileout,
-            })
+            render_notify("failed to generate screenshot", vim.log.levels.WARN, details)
           end
-        end
+        end,
+        on_stderr = function(_, result)
+          if result[1] ~= nil and result[1] ~= "" then
+            render_notify("error generating screenshot", vim.log.levels.ERROR, result)
+          end
+        end,
       }
     end
   },
@@ -64,8 +79,8 @@ local standard_opts = {
     output = vim.fn.stdpath("data") .. "/" .. shortname .. "/output",
   },
   resources = {
-    font = vim.api.nvim_get_runtime_file("resources/render/font.css", false)[1],
-    rasterizejs = vim.api.nvim_get_runtime_file("resources/render/rasterize.js", false)[1],
+    render_style = vim.api.nvim_get_runtime_file("css/render.css", false)[1],
+    render_script = vim.api.nvim_get_runtime_file("scripts/render.spec.ts", false)[1],
   },
   notify_enabled = true,
   keymaps_enabled = true,
@@ -158,20 +173,26 @@ M.render = function()
   vim.fn.writefile(screenshot, out_files.cat)
 
   -- render html
-  vim.fn.jobstart(
-    M.opts.aha_command(out_files, M.opts),
-    {
-      stdout_buffered = true,
-      on_stdout = function(_, aha_result)
-        vim.fn.writefile(aha_result, out_files.html)
+  vim.fn.jobstart(M.opts.aha_command(out_files), {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function(_, aha_result)
+      vim.fn.writefile(aha_result, out_files.html)
 
-        -- render png
-        vim.fn.jobstart(
-          M.opts.phantomjs.cmd(M.opts.resources.rasterizejs, out_files.html, out_files.png),
-          M.opts.phantomjs.opts(out_files.html, out_files.png)
-        )
+      -- render png
+      vim.fn.jobstart(M.opts.playwright.cmd(), M.opts.playwright.opts({
+        input = out_files.html,
+        output = out_files.file,
+        type = 'png',
+      })
+      )
+    end,
+    on_stderr = function(_, result)
+      if result[1] ~= nil and result[1] ~= "" then
+        render_notify("error generating html", vim.log.levels.ERROR, result)
       end
-    })
+    end,
+  })
 end
 
 M.remove_dirs = function()
