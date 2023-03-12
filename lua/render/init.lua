@@ -101,10 +101,10 @@ local standard_opts = {
     end
     vim.api.nvim_set_hl(render_ns, "Normal", { fg = flash_color, bg = flash_color })
     vim.api.nvim_set_hl_ns(render_ns)
-    vim.cmd.redraw()
+    vim.cmd.mode()
     vim.defer_fn(function()
       vim.api.nvim_set_hl_ns(0)
-      vim.cmd.redraw()
+      vim.cmd.mode()
     end, 100)
   end,
 }
