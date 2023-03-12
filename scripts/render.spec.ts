@@ -49,7 +49,7 @@ test('render image', async ({ page }) => {
 
   await page.goto('file://' + process.env.RENDERNVIM_INPUT);
 
-  await page.screenshot(options);
+  await page.locator('pre').screenshot(options);
 
 });
 

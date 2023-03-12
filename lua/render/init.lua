@@ -114,11 +114,12 @@ local function new_output_files()
   if cur_name == nil or cur_name == "" then
     cur_name = "noname"
   end
+  local normalized_name = vim.fn.substitute(cur_name, "\\W", "", "g")
   local temp = vim.fn.tempname()
   local temp_dir = vim.fn.fnamemodify(temp, ":h:t")
   local temp_name = vim.fn.fnamemodify(temp, ":t")
   local out_dir = M.opts.dirs.output .. "/" .. temp_dir
-  local out_file = out_dir .. "/" .. temp_name .. "." .. cur_name
+  local out_file = out_dir .. "/" .. temp_name .. "." .. normalized_name
   vim.fn.mkdir(out_dir, "p")
   return {
     dir = out_dir,
