@@ -1,5 +1,12 @@
 local M = {}
 
+-- thank you nvimtree.nvim for os logic
+M.is_unix = vim.fn.has "unix" == 1
+M.is_macos = vim.fn.has "mac" == 1 or vim.fn.has "macunix" == 1
+M.is_wsl = vim.fn.has "wsl" == 1
+-- false for WSL
+M.is_windows = vim.fn.has "win32" == 1 or vim.fn.has "win32unix" == 1
+
 local shortname = "render"
 local longname = "render.nvim"
 
@@ -60,6 +67,11 @@ local standard_opts = {
           )
           if exit_code == 0 then
             render_notify("screenshot available", vim.log.levels.INFO, details)
+            if M.opts.auto_open_enabled then
+              local open_cmd = M.opts.open_cmd()
+              table.insert(open_cmd, details.output)
+              vim.fn.jobstart(open_cmd)
+            end
           else
             render_notify("failed to generate screenshot", vim.log.levels.WARN, details)
           end
@@ -106,6 +118,21 @@ local standard_opts = {
       vim.api.nvim_set_hl_ns(0)
       vim.cmd.mode()
     end, 100)
+  end,
+  auto_open_enabled = true,
+  open_cmd = function()
+    -- thank you nvimtree.nvim for open logic
+    if M.is_windows then
+      return {
+        cmd = "cmd",
+        args = { "/c", "start", '""' },
+      }
+    elseif M.is_macos then
+      return { "open" }
+    elseif M.is_unix then
+      return { "xdg-open" }
+    end
+    return {}
   end,
 }
 
