@@ -5,9 +5,8 @@ Neovim plugin to take screenshots of your Neovim session.
 This plugin in under early development. If you have any ideas, feedback, or bugs please open an issue! 
 
 ## Demo
-[![render.nvim demo](https://user-images.githubusercontent.com/10135646/224584522-de16094e-a211-4e70-b88b-1d6ce5147d1a.mov)
+https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
 
-  </video>
 ## Installation
 
 ### Prerequisites
