@@ -1,3 +1,5 @@
+this is a test
+
 # :camera: render.nvim
 Neovim plugin to take screenshots of your Neovim session.
 > :camera::warning::camera: This project is still a work in progress and may have breaking changes :camera::warning::camera:
