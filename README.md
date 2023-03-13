@@ -1,8 +1,12 @@
 # :camera: render.nvim
 Neovim plugin to take screenshots of your Neovim session.
+
+[![neovim: nightly](https://img.shields.io/badge/neovim-nightly-a9d5c4?logo=neovim)](https://neovim.io/)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
 > :camera::warning::camera: This project is still a work in progress and may have breaking changes :camera::warning::camera:
 
-This plugin is under early development. If you have any ideas, feedback, or bugs please open an issue! 
+This plugin is under early development. If you have any ideas, feedback, or bugs please open an issue!
 
 ## Demo
 https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
