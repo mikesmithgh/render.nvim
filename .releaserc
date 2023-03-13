@@ -1,7 +1,5 @@
 {
   "branches": "main",
-  "repositoryUrl": "https://github.com/mikesmithgh/render.nvim",
-  "debug": "false",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -21,14 +19,7 @@
       }
     ],
     [
-      "@semantic-release/github",
-      {
-        "assets": [
-          {
-            "path": "release/**"
-          }
-        ]
-      }
+      "@semantic-release/github"
     ]
   ]
 }
