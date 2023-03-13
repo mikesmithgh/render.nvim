@@ -11,7 +11,7 @@ local shortname = "render"
 local longname = "render.nvim"
 
 local function render_notify(msg, level, extra)
-  if M.opts.notify_enabled then
+  if M.opts.features.notify then
     vim.notify(
       vim.inspect(vim.tbl_extend("keep", { msg = string.format("%s: %s", longname, msg), }, extra)),
       level,
@@ -21,68 +21,136 @@ local function render_notify(msg, level, extra)
 end
 
 local standard_opts = {
-  aha_command = function(files)
-    if files.cat == nil or files.cat == "" then
-      return
-    end
-    if M.opts.resources.render_style == nil or M.opts.resources.render_style == "" then
-      return
-    end
+  features = {
+    notify = true,
+    keymaps = true,
+    flash = true,
+    auto_open = true,
+  },
+  fn = {
+    aha = {
+      cmd = function(files)
+        if files.cat == nil or files.cat == "" then
+          return
+        end
+        if M.opts.files.render_style == nil or M.opts.files.render_style == "" then
+          return
+        end
 
-    return {
-      "aha",
-      '--css',
-      M.opts.resources.render_style,
-      '-f',
-      files.cat,
-    }
-  end,
-  playwright = {
-    cmd = function()
-      return {
-        "npx",
-        "playwright",
-        "test",
-        "--browser",
-        "chromium",
-        "--config",
-        vim.fn.fnamemodify(M.opts.resources.render_script, ":h"),
-        M.opts.resources.render_script,
-      }
-    end,
-    opts = function(playwright_opts)
-      return {
-        stdout_buffered = true,
-        stderr_buffered = true,
-        env = {
-          RENDERNVIM_INPUT = playwright_opts.input,
-          RENDERNVIM_OUTPUT = playwright_opts.output,
-          RENDERNVIM_TYPE = playwright_opts.type,
-        },
-        on_exit = function(_, exit_code)
-          local details = vim.tbl_extend(
-            "force",
-            playwright_opts,
-            { output = playwright_opts.output .. "." .. playwright_opts.type, }
-          )
-          if exit_code == 0 then
-            render_notify("screenshot available", vim.log.levels.INFO, details)
-            if M.opts.auto_open_enabled then
-              local open_cmd = M.opts.open_cmd()
-              table.insert(open_cmd, details.output)
-              vim.fn.jobstart(open_cmd)
+        return {
+          "aha",
+          '--css',
+          M.opts.files.render_style,
+          '-f',
+          files.cat,
+        }
+      end,
+      opts = function(files)
+        return {
+          stdout_buffered = true,
+          stderr_buffered = true,
+          on_stdout = function(_, aha_result)
+            vim.fn.writefile(aha_result, files.html)
+
+            -- render png
+            vim.fn.jobstart(M.opts.fn.playwright.cmd(), M.opts.fn.playwright.opts({
+              input = files.html,
+              output = files.file,
+              type = 'png',
+            })
+            )
+          end,
+          on_stderr = function(_, result)
+            if result[1] ~= nil and result[1] ~= "" then
+              render_notify("error generating html", vim.log.levels.ERROR, result)
             end
-          else
-            render_notify("failed to generate screenshot", vim.log.levels.WARN, details)
-          end
-        end,
-        on_stderr = function(_, result)
-          if result[1] ~= nil and result[1] ~= "" then
-            render_notify("error generating screenshot", vim.log.levels.ERROR, result)
-          end
-        end,
-      }
-    end
+          end,
+        }
+      end
+    },
+    playwright = {
+      cmd = function()
+        return {
+          "npx",
+          "playwright",
+          "test",
+          "--browser",
+          "chromium",
+          "--config",
+          vim.fn.fnamemodify(M.opts.files.render_script, ":h"),
+          M.opts.files.render_script,
+        }
+      end,
+      opts = function(playwright_opts)
+        return {
+          stdout_buffered = true,
+          stderr_buffered = true,
+          env = {
+            RENDERNVIM_INPUT = playwright_opts.input,
+            RENDERNVIM_OUTPUT = playwright_opts.output,
+            RENDERNVIM_TYPE = playwright_opts.type,
+          },
+          on_exit = function(_, exit_code)
+            local details = vim.tbl_extend(
+              "force",
+              playwright_opts,
+              { output = playwright_opts.output .. "." .. playwright_opts.type, }
+            )
+            if exit_code == 0 then
+              render_notify("screenshot available", vim.log.levels.INFO, details)
+              if M.opts.features.auto_open then
+                local open_cmd = M.opts.fn.open_cmd()
+                table.insert(open_cmd, details.output)
+                vim.fn.jobstart(open_cmd)
+              end
+            else
+              render_notify("failed to generate screenshot", vim.log.levels.WARN, details)
+            end
+          end,
+          on_stderr = function(_, result)
+            if result[1] ~= nil and result[1] ~= "" then
+              render_notify("error generating screenshot", vim.log.levels.ERROR, result)
+            end
+          end,
+        }
+      end
+    },
+    keymap_setup = function()
+      -- <f13> == <shift-f1> == print screen
+      vim.keymap.set({ 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' }, '<f13>', M.render, { silent = true, remap = true })
+    end,
+    flash = function()
+      local render_ns = vim.api.nvim_create_namespace('render')
+      local normal_hl = vim.api.nvim_get_hl_by_name("CursorLine", true)
+      local flash_color = normal_hl.background
+      if flash_color == nil or flash_color == "" then
+        flash_color = "#000000"
+        if vim.opt.bg:get() == "dark" then
+          flash_color = "#ffffff"
+        end
+      end
+      vim.api.nvim_set_hl(render_ns, "Normal", { fg = flash_color, bg = flash_color })
+      vim.api.nvim_set_hl_ns(render_ns)
+      vim.cmd.mode()
+      vim.defer_fn(function()
+        vim.api.nvim_set_hl_ns(0)
+        vim.cmd.mode()
+      end, 100)
+    end,
+    open_cmd = function()
+      -- thank you nvimtree.nvim for open logic
+      if M.is_windows then
+        return {
+          cmd = "cmd",
+          args = { "/c", "start", '""' },
+        }
+      elseif M.is_macos then
+        return { "open" }
+      elseif M.is_unix then
+        return { "xdg-open" }
+      end
+      return {}
+    end,
   },
   dirs = {
     data = vim.fn.stdpath("data") .. "/" .. shortname,
@@ -90,50 +158,10 @@ local standard_opts = {
     run = vim.fn.stdpath("run") .. "/" .. shortname,
     output = vim.fn.stdpath("data") .. "/" .. shortname .. "/output",
   },
-  resources = {
+  files = {
     render_style = vim.api.nvim_get_runtime_file("css/render.css", false)[1],
     render_script = vim.api.nvim_get_runtime_file("scripts/render.spec.ts", false)[1],
   },
-  notify_enabled = true,
-  keymaps_enabled = true,
-  keymap_setup = function()
-    -- <f13> == <shift-f1> == print screen
-    vim.keymap.set({ 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' }, '<f13>', M.render, { silent = true, remap = true })
-  end,
-  flash_enabled = true,
-  flash = function()
-    local render_ns = vim.api.nvim_create_namespace('render')
-    local normal_hl = vim.api.nvim_get_hl_by_name("CursorLine", true)
-    local flash_color = normal_hl.background
-    if flash_color == nil or flash_color == "" then
-      flash_color = "#000000"
-      if vim.opt.bg:get() == "dark" then
-        flash_color = "#ffffff"
-      end
-    end
-    vim.api.nvim_set_hl(render_ns, "Normal", { fg = flash_color, bg = flash_color })
-    vim.api.nvim_set_hl_ns(render_ns)
-    vim.cmd.mode()
-    vim.defer_fn(function()
-      vim.api.nvim_set_hl_ns(0)
-      vim.cmd.mode()
-    end, 100)
-  end,
-  auto_open_enabled = true,
-  open_cmd = function()
-    -- thank you nvimtree.nvim for open logic
-    if M.is_windows then
-      return {
-        cmd = "cmd",
-        args = { "/c", "start", '""' },
-      }
-    elseif M.is_macos then
-      return { "open" }
-    elseif M.is_unix then
-      return { "xdg-open" }
-    end
-    return {}
-  end,
 }
 
 local function new_output_files()
@@ -163,8 +191,8 @@ M.render = function()
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
 
-  if M.opts.flash_enabled then
-    M.opts.flash()
+  if M.opts.features.flash then
+    M.opts.fn.flash()
   end
 
   local screenshot
@@ -201,26 +229,7 @@ M.render = function()
   vim.fn.writefile(screenshot, out_files.cat)
 
   -- render html
-  vim.fn.jobstart(M.opts.aha_command(out_files), {
-    stdout_buffered = true,
-    stderr_buffered = true,
-    on_stdout = function(_, aha_result)
-      vim.fn.writefile(aha_result, out_files.html)
-
-      -- render png
-      vim.fn.jobstart(M.opts.playwright.cmd(), M.opts.playwright.opts({
-        input = out_files.html,
-        output = out_files.file,
-        type = 'png',
-      })
-      )
-    end,
-    on_stderr = function(_, result)
-      if result[1] ~= nil and result[1] ~= "" then
-        render_notify("error generating html", vim.log.levels.ERROR, result)
-      end
-    end,
-  })
+  vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
 end
 
 M.remove_dirs = function()
@@ -283,9 +292,8 @@ M.setup = function(override_opts)
     vim.cmd.edit(M.opts.dirs.output)
   end, {})
 
-
-  if M.opts.keymaps_enabled then
-    M.opts.keymap_setup()
+  if M.opts.features.keymaps then
+    M.opts.fn.keymap_setup()
   end
 end
 
