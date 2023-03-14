@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mikesmithgh/render.nvim/compare/v1.0.0...v1.1.0) (2023-03-14)
+
+
+### Features
+
+* font customization and default to MonaLisa ([#6](https://github.com/mikesmithgh/render.nvim/issues/6)) ([bfc68aa](https://github.com/mikesmithgh/render.nvim/commit/bfc68aa27f78659ee9d1c71341ed2e4e69e5c93c))
+
 # 1.0.0 (2023-03-13)
 
 
