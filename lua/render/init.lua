@@ -1,3 +1,6 @@
+local css = require("render.css")
+local file = require("render.file")
+
 local M = {}
 
 -- thank you nvimtree.nvim for os logic
@@ -33,14 +36,10 @@ local standard_opts = {
         if files.cat == nil or files.cat == "" then
           return
         end
-        if M.opts.files.render_style == nil or M.opts.files.render_style == "" then
-          return
-        end
-
         return {
           "aha",
           '--css',
-          M.opts.files.render_style,
+          M.opts.files.render_css,
           '-f',
           files.cat,
         }
@@ -157,12 +156,34 @@ local standard_opts = {
     state = vim.fn.stdpath("state") .. "/" .. shortname,
     run = vim.fn.stdpath("run") .. "/" .. shortname,
     output = vim.fn.stdpath("data") .. "/" .. shortname .. "/output",
+    css = vim.fn.stdpath("data") .. "/" .. shortname .. "/css",
+    font = vim.fn.stdpath("data") .. "/" .. shortname .. "/font",
+    scripts = vim.fn.stdpath("data") .. "/" .. shortname .. "/scripts",
   },
   files = {
-    render_style = vim.api.nvim_get_runtime_file("css/render.css", false)[1],
-    render_script = vim.api.nvim_get_runtime_file("scripts/render.spec.ts", false)[1],
+    runtime_scripts = vim.api.nvim_get_runtime_file("scripts/*", true),
+    runtime_fonts = vim.api.nvim_get_runtime_file("font/*", true),
   },
 }
+standard_opts.font = {
+  faces = {
+    {
+      name = "MonoLisa Trial Regular Nerd Font Complete Windows Compatible",
+      src = [[url(']] ..
+          standard_opts.dirs.font ..
+          [[/MonoLisa Trial Regular Nerd Font Complete Windows Compatible.ttf') format("truetype")]]
+    },
+    {
+      name = "MonoLisa Trial Regular Italic Nerd Font Complete Windows Compatible",
+      src = [[url(']] ..
+          standard_opts.dirs.font ..
+          [[/MonoLisa Trial Regular Italic Nerd Font Complete Windows Compatible.ttf') format("truetype")]]
+    },
+  },
+  size = 11,
+}
+standard_opts.files.render_script = standard_opts.dirs.scripts .. "/" .. shortname .. ".spec.ts"
+standard_opts.files.render_css = standard_opts.dirs.css .. "/" .. shortname .. ".css"
 
 local function new_output_files()
   local cur_name = vim.fn.expand("%:t")
@@ -294,6 +315,26 @@ M.setup = function(override_opts)
 
   if M.opts.features.keymaps then
     M.opts.fn.keymap_setup()
+  end
+
+
+  local font_table = css.generateCSSTable(M.opts.font)
+  local ok, err = pcall(file.writeTable, font_table, M.opts.files.render_css)
+  if not ok then
+    render_notify(err, vim.log.levels.ERROR, {
+      font = M.opts.font,
+      render_style = M.opts.files.render_css,
+    })
+  end
+
+  for _, font in pairs(M.opts.files.runtime_fonts) do
+    local dest = M.opts.dirs.font .. "/" .. vim.fn.fnamemodify(font, ":t")
+    file.copy(font, dest)
+  end
+
+  for _, script in pairs(M.opts.files.runtime_scripts) do
+    local dest = M.opts.dirs.scripts .. "/" .. vim.fn.fnamemodify(script, ":t")
+    file.copy(script, dest)
   end
 end
 
