@@ -33,3 +33,9 @@ return {
 1. render.nvim calls the `vim.api.nvim__screenshot` API to create a `.cat` file containing ANSI escape sequences representing the current Neovim session. This is an undocumented API and may be at risk of breaking changes.
 2. Converts the `.cat` file to `.html` via [aha](https://github.com/theZiz/aha).
 3. Converts the `.html` file to `.png` via [playwright](https://playwright.dev/). Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
+
+# Ackowledgements
+- [MonaLisa](https://www.monolisa.dev/) 
+    > MonoLisa is a font that was designed by professionals to improve developers’ productivity and reduce fatigue.
+- [monalisa-nerdfont-patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch) 
+    > Most Batteries included repo to patch MonoLisa with Nerd Fonts glyphs
