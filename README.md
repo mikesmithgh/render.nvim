@@ -1,15 +1,13 @@
 <!-- panvimdoc-ignore-start -->
-<img src="https://user-images.githubusercontent.com/10135646/225309637-0c194a45-2e37-44fc-9045-610044cdbd90.png" alt="rendersquirrel" style="width: 25%; float:right;" />
-<h1 style="float:left; width: 75%;">render.nvim</h1>
+<img src="https://user-images.githubusercontent.com/10135646/225309637-0c194a45-2e37-44fc-9045-610044cdbd90.png" alt="rendersquirrel" style="width: 25%" align="right" />
 <!-- panvimdoc-ignore-end -->
 
+# render.nvim
 Neovim plugin to take screenshots of your Neovim session.
 
 <!-- panvimdoc-ignore-start -->
 [![neovim: nightly](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=nightly&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
 [![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
-
-<br />
 <!-- panvimdoc-ignore-end -->
 
 >:camera::warning::camera: This project is still a work in progress and may have breaking changes :camera::warning::camera:
