@@ -3,17 +3,10 @@
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
 
-1. render.nvim                                       |render.nvim-render.nvim|
-  - Installation                        |render.nvim-render.nvim-installation|
-2. Ackowledgements                               |render.nvim-ackowledgements|
+  - Installation                                    |render.nvim-installation|
+1. Ackowledgements                               |render.nvim-ackowledgements|
 
-==============================================================================
-1. render.nvim                                       *render.nvim-render.nvim*
-
-Neovim plugin to take screenshots of your Neovim session.
-
-
-INSTALLATION                            *render.nvim-render.nvim-installation*
+INSTALLATION                                        *render.nvim-installation*
 
 
 PREREQUISITES ~
@@ -44,7 +37,7 @@ HOW DOES IT WORK? ~
 
 
 ==============================================================================
-2. Ackowledgements                               *render.nvim-ackowledgements*
+1. Ackowledgements                               *render.nvim-ackowledgements*
 
 
 - MonaLisa <https://www.monolisa.dev/>
