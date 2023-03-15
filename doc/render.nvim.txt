@@ -5,8 +5,6 @@ Table of Contents                              *render.nvim-table-of-contents*
 
   - Installation                                    |render.nvim-installation|
 1. Ackowledgements                               |render.nvim-ackowledgements|
-Neovim plugin to take screenshots of your Neovim session.
-
 
 INSTALLATION                                        *render.nvim-installation*
 
