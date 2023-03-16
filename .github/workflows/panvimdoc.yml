@@ -17,6 +17,7 @@ jobs:
         with:
           vimdoc: render.nvim
           pandoc: "README.md"
+          version: "NVIM nightly"
           demojify: true
           treesitter: true
       - uses: stefanzweifel/git-auto-commit-action@v4
