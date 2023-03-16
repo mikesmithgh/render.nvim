@@ -1,4 +1,4 @@
-*render.nvim.txt*          For NVIM v0.8.0          Last change: 2023 March 16
+*render.nvim.txt*          For NVIM nightly         Last change: 2023 March 16
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
