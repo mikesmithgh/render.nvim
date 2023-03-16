@@ -12,13 +12,16 @@ Neovim plugin to take screenshots of your Neovim session.
 
 This plugin is under early development. If you have any ideas, feedback, or bugs please open an issue!
 
+<!-- panvimdoc-ignore-start -->
 ## Demo
 https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
+<!-- panvimdoc-ignore-end -->
 
 
 ## Installation
 
 ### Prerequisites
+- Neovim [nightly](https://github.com/neovim/neovim/tree/nightly) build
 - Install [aha](https://github.com/theZiz/aha)
 - Install [playwright](https://playwright.dev/)
 
