@@ -1,5 +1,4 @@
-local css = require("render.css")
-local file = require("render.file")
+local renderfs = require("render.fs")
 
 local M = {}
 
@@ -253,35 +252,40 @@ M.render = function()
   vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
 end
 
-M.remove_dirs = function()
-  for _, dir in pairs(M.opts.dirs) do
-    vim.fn.delete(dir, "rf")
-  end
-end
-
-M.create_dirs = function()
-  for _, dir in pairs(M.opts.dirs) do
-    vim.fn.mkdir(dir, "p")
-  end
-end
-
 M.opts = standard_opts
 
-M.setup = function(override_opts)
-  if override_opts == nil then
-    override_opts = {}
+local function setup_files_and_dirs()
+  renderfs.create_dirs(M.opts.dirs)
+
+  local ok, err = pcall(renderfs.generateCSSFile, M.opts.font, M.opts.files.render_css)
+  if not ok then
+    render_notify(err, vim.log.levels.ERROR, {
+      font = M.opts.font,
+      render_style = M.opts.files.render_css,
+    })
   end
-  M.opts = vim.tbl_extend("force", M.opts, override_opts)
-  M.create_dirs()
 
 
+  local init_files = {}
+  init_files[M.opts.files.runtime_fonts] = M.opts.dirs.font
+  init_files[M.opts.files.runtime_scripts] = M.opts.dirs.scripts
+  ok, err = pcall(renderfs.createInitFiles, init_files)
+  if not ok then
+    render_notify(err, vim.log.levels.ERROR, {
+      font = M.opts.font,
+      render_style = M.opts.files.render_css,
+    })
+  end
+end
+
+local function setup_user_commands()
   vim.api.nvim_create_user_command("Render", function()
     -- small delay to avoid capturing :Render command and flash
     vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command("RenderClean", function()
-    M.remove_dirs()
-    M.create_dirs()
+    renderfs.remove_dirs(M.opts.dirs)
+    renderfs.create_dirs(M.opts.dirs)
   end, {})
   vim.api.nvim_create_user_command("RenderQuickfix", function()
     vim.cmd.vimgrep(
@@ -312,29 +316,19 @@ M.setup = function(override_opts)
   vim.api.nvim_create_user_command("RenderOpen", function()
     vim.cmd.edit(M.opts.dirs.output)
   end, {})
+end
+
+M.setup = function(override_opts)
+  if override_opts == nil then
+    override_opts = {}
+  end
+  M.opts = vim.tbl_extend("force", M.opts, override_opts)
+
+  setup_files_and_dirs()
+  setup_user_commands()
 
   if M.opts.features.keymaps then
     M.opts.fn.keymap_setup()
-  end
-
-
-  local font_table = css.generateCSSTable(M.opts.font)
-  local ok, err = pcall(file.writeTable, font_table, M.opts.files.render_css)
-  if not ok then
-    render_notify(err, vim.log.levels.ERROR, {
-      font = M.opts.font,
-      render_style = M.opts.files.render_css,
-    })
-  end
-
-  for _, font in pairs(M.opts.files.runtime_fonts) do
-    local dest = M.opts.dirs.font .. "/" .. vim.fn.fnamemodify(font, ":t")
-    file.copy(font, dest)
-  end
-
-  for _, script in pairs(M.opts.files.runtime_scripts) do
-    local dest = M.opts.dirs.scripts .. "/" .. vim.fn.fnamemodify(script, ":t")
-    file.copy(script, dest)
   end
 end
 
