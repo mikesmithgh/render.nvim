@@ -191,13 +191,10 @@ local function new_output_files()
   end
   local normalized_name = vim.fn.substitute(cur_name, "\\W", "", "g")
   local temp = vim.fn.tempname()
-  local temp_dir = vim.fn.fnamemodify(temp, ":h:t")
+  local temp_prefix = vim.fn.fnamemodify(temp, ":h:t")
   local temp_name = vim.fn.fnamemodify(temp, ":t")
-  local out_dir = M.opts.dirs.output .. "/" .. temp_dir
-  local out_file = out_dir .. "/" .. temp_name .. "." .. normalized_name
-  vim.fn.mkdir(out_dir, "p")
+  local out_file = M.opts.dirs.output .. "/" .. temp_prefix .. "-" .. temp_name .. "-" .. normalized_name
   return {
-    dir = out_dir,
     file = out_file,
     cat = out_file .. ".cat",
     html = out_file .. ".html",
@@ -285,12 +282,12 @@ local function setup_user_commands()
   end, {})
   vim.api.nvim_create_user_command("RenderClean", function()
     renderfs.remove_dirs(M.opts.dirs)
-    renderfs.create_dirs(M.opts.dirs)
+    setup_files_and_dirs()
   end, {})
   vim.api.nvim_create_user_command("RenderQuickfix", function()
     vim.cmd.vimgrep(
       {
-        args = { "/\\%^/j " .. M.opts.dirs.output .. "/*/*" },
+        args = { "/\\%^/j " .. M.opts.dirs.output .. "/*" },
         mods = { emsg_silent = true }
       }
     )
@@ -322,7 +319,7 @@ M.setup = function(override_opts)
   if override_opts == nil then
     override_opts = {}
   end
-  M.opts = vim.tbl_extend("force", M.opts, override_opts)
+  M.opts = vim.tbl_deep_extend("force", M.opts, override_opts)
 
   setup_files_and_dirs()
   setup_user_commands()
