@@ -1,6 +1,21 @@
 local uv = vim.loop
 local M = {}
 
+local function error_ignore(err, ignore_errnos)
+  if err ~= nil then
+    local err_name = err:gmatch("([^:]+)")() -- split on :
+
+    for _, ignore_errno in pairs(ignore_errnos) do
+      local errno = uv.errno[err_name]
+      if errno == ignore_errno then
+        return true, nil
+      end
+    end
+    return false, error(err)
+  end
+end
+
+
 M.generateCSSFile = function(font, destination)
   uv.fs_open(destination, "ax", tonumber('644', 8), function(err, fd)
     local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
@@ -65,20 +80,6 @@ end
 M.create_dirs = function(dirs)
   for _, dir in pairs(dirs) do
     vim.fn.mkdir(dir, "p")
-  end
-end
-
-function error_ignore(err, ignore_errnos)
-  if err ~= nil then
-    local err_name = err:gmatch("([^:]+)")() -- split on :
-
-    for _, ignore_errno in pairs(ignore_errnos) do
-      local errno = uv.errno[err_name]
-      if errno == ignore_errno then
-        return true, nil
-      end
-    end
-    return false, error(err)
   end
 end
 
