@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/mikesmithgh/render.nvim/compare/v1.1.0...v1.1.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* Add neovim nightly requirement ([#12](https://github.com/mikesmithgh/render.nvim/issues/12)) ([3cd4e68](https://github.com/mikesmithgh/render.nvim/commit/3cd4e68bfeaa2d61a301b0c7464f7f553f3c1b98))
+
 # [1.1.0](https://github.com/mikesmithgh/render.nvim/compare/v1.0.0...v1.1.0) (2023-03-14)
 
 
