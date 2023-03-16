@@ -1,7 +1,10 @@
 name: panvimdoc
 
 on: 
-  pull_request:
+  push:
+    paths:
+      README.md
+
 
 jobs:
   docs:
@@ -13,6 +16,7 @@ jobs:
         uses: kdheepak/panvimdoc@main
         with:
           vimdoc: render.nvim
+          pandoc: "README.md"
           demojify: true
           treesitter: true
       - uses: stefanzweifel/git-auto-commit-action@v4
