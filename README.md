@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/10135646/225309637-0c194a45-2e37-44fc-9045-610044cdbd90.png" alt="rendersquirrel" style="width: 25%" align="right" />
 
-# render.nvim
+# 📸 render.nvim
 Neovim plugin to take screenshots of your Neovim session.
 
 <!-- panvimdoc-ignore-start -->
@@ -16,13 +16,12 @@ This plugin is under early development. If you have any ideas, feedback, or bugs
 
 <!-- panvimdoc-ignore-start -->
 
-## Demo
 https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
 
 <!-- panvimdoc-ignore-end -->
 
 
-## Installation
+## 📦 Installation
 
 ### Prerequisites
 - Neovim [nightly](https://github.com/neovim/neovim/tree/nightly) build
@@ -46,7 +45,7 @@ return {
 2. Converts the `.cat` file to `.html` via [aha](https://github.com/theZiz/aha).
 3. Converts the `.html` file to `.png` via [playwright](https://playwright.dev/). Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
 
-# Ackowledgements
+## 🤝 Ackowledgements
 - [MonaLisa](https://www.monolisa.dev/) 
     > MonoLisa is a font that was designed by professionals to improve developers’ productivity and reduce fatigue.
 - [monalisa-nerdfont-patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch) 

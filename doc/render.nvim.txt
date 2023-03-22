@@ -1,11 +1,11 @@
-*render.nvim.txt*          For NVIM nightly         Last change: 2023 March 16
+*render.nvim.txt*          For NVIM nightly         Last change: 2023 March 22
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
   - Installation                        |render.nvim-render.nvim-installation|
-2. Ackowledgements                               |render.nvim-ackowledgements|
+  - Ackowledgements                  |render.nvim-render.nvim-ackowledgements|
 
 
 
@@ -51,8 +51,7 @@ HOW DOES IT WORK? ~
 1. render.nvim calls the `vim.api.nvim__screenshot` API to create a `.cat` file containing ANSI escape sequences representing the current Neovim session. This is an undocumented API and may be at risk of breaking changes.2. Converts the `.cat` file to `.html` via aha <https://github.com/theZiz/aha>.3. Converts the `.html` file to `.png` via playwright <https://playwright.dev/>. Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
 
 
-==============================================================================
-2. Ackowledgements                               *render.nvim-ackowledgements*
+ACKOWLEDGEMENTS                      *render.nvim-render.nvim-ackowledgements*
 
 
 - MonaLisa <https://www.monolisa.dev/>
