@@ -1,11 +1,8 @@
 name: panvimdoc
-
-on: 
+on:
   push:
-    paths:
-      README.md
-
-
+    paths: README.md
+  workflow_dispatch:
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -27,4 +24,3 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-
