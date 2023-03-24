@@ -316,7 +316,10 @@ local function setup_user_commands()
     vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command("RenderClean", function()
-    renderfs.remove_dirs(M.opts.dirs)
+    renderfs.remove_dirs({
+      M.opts.dirs.data,
+      M.opts.dirs.state,
+    })
     setup_files_and_dirs()
   end, {})
   vim.api.nvim_create_user_command("RenderQuickfix", function()
