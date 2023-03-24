@@ -1,3 +1,7 @@
+# TODO:
+# - add args for env vars
+# - create script to build
+# - add CI/CD and publish to github container registry
 FROM ubuntu:focal AS builder
 RUN apt update && apt install curl build-essential -y
 WORKDIR /aha
