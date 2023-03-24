@@ -63,12 +63,13 @@ local standard_opts = {
           on_stdout = function(_, aha_result)
             vim.fn.writefile(aha_result, files.html)
 
-            -- render png
-            vim.fn.jobstart(M.opts.fn.playwright.cmd(), M.opts.fn.playwright.opts({
+            local playwright_opts = {
               input = files.html,
               output = files.file,
               type = 'png',
-            })
+            }
+            -- render png
+            vim.fn.jobstart(M.opts.fn.playwright.cmd(playwright_opts), M.opts.fn.playwright.opts(playwright_opts)
             )
           end,
           on_stderr = function(_, result)
@@ -80,7 +81,7 @@ local standard_opts = {
       end
     },
     playwright = {
-      cmd = function()
+      cmd = function(playwright_opts)
         return {
           "docker",
           "run",
@@ -94,6 +95,12 @@ local standard_opts = {
           M.opts.dirs.data .. ":" .. M.opts.dirs.data,
           "-v",
           M.opts.dirs.state .. ":" .. M.opts.dirs.state,
+          "-e",
+          "RENDERNVIM_INPUT=" .. playwright_opts.input,
+          "-e",
+          "RENDERNVIM_OUTPUT=" .. playwright_opts.output,
+          "-e",
+          "RENDERNVIM_TYPE=" .. playwright_opts.type,
           "mikesmithgh/render.nvim",
           "npx",
           "playwright",
@@ -186,6 +193,10 @@ local standard_opts = {
     css = vim.fn.stdpath("data") .. "/" .. shortname .. "/css",
     font = vim.fn.stdpath("data") .. "/" .. shortname .. "/font",
     scripts = vim.fn.stdpath("data") .. "/" .. shortname .. "/scripts",
+    runtime_render_plugin_dir = vim.tbl_filter(
+      function(p) return p:match('^(.*)' .. longname .. '$') end,
+      vim.api.nvim_list_runtime_paths()
+    )[1],
   },
   files = {
     runtime_scripts = vim.api.nvim_get_runtime_file("scripts/*", true),
