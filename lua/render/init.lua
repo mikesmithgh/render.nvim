@@ -35,24 +35,30 @@ local standard_opts = {
         if files.cat == nil or files.cat == "" then
           return
         end
-        return {
-          "docker",
-          "run",
-          "--ipc=host",
-          "--user=pwuser",
-          "-v",
-          M.opts.dirs.runtime_render_plugin_dir .. ":" .. M.opts.dirs.runtime_render_plugin_dir,
-          "-v",
-          M.opts.dirs.data .. ":" .. M.opts.dirs.data,
-          "-v",
-          M.opts.dirs.state .. ":" .. M.opts.dirs.state,
-          "mikesmithgh/render.nvim",
-          "aha",
-          '--css',
-          M.opts.files.render_css,
-          '-f',
-          files.cat,
-        }
+        return vim.list_extend(
+          vim.list_extend({
+              "docker",
+              "run",
+              "--ipc=host",
+              "--user=pwuser",
+              "-v",
+              M.opts.dirs.runtime_render_plugin_dir .. ":" .. M.opts.dirs.runtime_render_plugin_dir,
+              "-v",
+              M.opts.dirs.data .. ":" .. M.opts.dirs.data,
+              "-v",
+              M.opts.dirs.state .. ":" .. M.opts.dirs.state,
+            },
+            M.opts.docker_args
+          ),
+          {
+            "mikesmithgh/render.nvim",
+            "aha",
+            '--css',
+            M.opts.files.render_css,
+            '-f',
+            files.cat,
+          }
+        )
       end,
       opts = function(files)
         return {
@@ -80,35 +86,42 @@ local standard_opts = {
     },
     playwright = {
       cmd = function(playwright_opts)
-        return {
-          "docker",
-          "run",
-          "--ipc=host",
-          "--user=pwuser",
-          "-v",
-          M.opts.dirs.runtime_render_plugin_dir .. ":" .. M.opts.dirs.runtime_render_plugin_dir,
-          "-v",
-          M.opts.dirs.data .. ":" .. M.opts.dirs.data,
-          "-v",
-          M.opts.dirs.state .. ":" .. M.opts.dirs.state,
-          "-e",
-          "RENDERNVIM_INPUT=" .. playwright_opts.input,
-          "-e",
-          "RENDERNVIM_OUTPUT=" .. playwright_opts.output,
-          "-e",
-          "RENDERNVIM_TYPE=" .. playwright_opts.type,
-          "mikesmithgh/render.nvim",
-          "npx",
-          "playwright",
-          "test",
-          "--output",
-          "/tmp/playwright/test-results",
-          "--browser",
-          "chromium",
-          "--config",
-          vim.fn.fnamemodify(M.opts.files.render_script, ":h"),
-          M.opts.files.render_script,
-        }
+        return vim.list_extend(
+          vim.list_extend(
+            {
+              "docker",
+              "run",
+              "--ipc=host",
+              "--user=pwuser",
+              "-v",
+              M.opts.dirs.runtime_render_plugin_dir .. ":" .. M.opts.dirs.runtime_render_plugin_dir,
+              "-v",
+              M.opts.dirs.data .. ":" .. M.opts.dirs.data,
+              "-v",
+              M.opts.dirs.state .. ":" .. M.opts.dirs.state,
+              "-e",
+              "RENDERNVIM_INPUT=" .. playwright_opts.input,
+              "-e",
+              "RENDERNVIM_OUTPUT=" .. playwright_opts.output,
+              "-e",
+              "RENDERNVIM_TYPE=" .. playwright_opts.type,
+            },
+            M.opts.docker_args
+          ),
+          {
+            "mikesmithgh/render.nvim",
+            "npx",
+            "playwright",
+            "test",
+            "--output",
+            "/tmp/playwright/test-results",
+            "--browser",
+            "chromium",
+            "--config",
+            vim.fn.fnamemodify(M.opts.files.render_script, ":h"),
+            M.opts.files.render_script,
+          }
+        )
       end,
       opts = function(playwright_opts)
         return {
@@ -198,6 +211,7 @@ local standard_opts = {
     runtime_scripts = vim.api.nvim_get_runtime_file("scripts/*", true),
     runtime_fonts = vim.api.nvim_get_runtime_file("font/*", true),
   },
+  docker_args = {},
 }
 standard_opts.font = {
   faces = {
