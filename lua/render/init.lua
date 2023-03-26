@@ -3,11 +3,11 @@ local renderfs = require('render.fs')
 local M = {}
 
 -- thank you nvimtree.nvim for os logic
-M.is_unix = vim.fn.has'unix' == 1
-M.is_macos = vim.fn.has'mac' == 1 or vim.fn.has'macunix' == 1
-M.is_wsl = vim.fn.has'wsl' == 1
+M.is_unix = vim.fn.has('unix') == 1
+M.is_macos = vim.fn.has('mac') == 1 or vim.fn.has('macunix') == 1
+M.is_wsl = vim.fn.has('wsl') == 1
 -- false for WSL
-M.is_windows = vim.fn.has'win32' == 1 or vim.fn.has'win32unix' == 1
+M.is_windows = vim.fn.has('win32') == 1 or vim.fn.has('win32unix') == 1
 
 local shortname = 'render'
 local longname = 'render.nvim'
@@ -15,7 +15,7 @@ local longname = 'render.nvim'
 local function render_notify(msg, level, extra)
   if M.opts.features.notify then
     vim.notify(
-      vim.inspect(vim.tbl_extend('keep', { msg = string.format('%s: %s', longname, msg), }, extra)),
+      vim.inspect(vim.tbl_extend('keep', { msg = string.format('%s: %s', longname, msg) }, extra)),
       level,
       {}
     )
@@ -37,19 +37,17 @@ local standard_opts = {
         end
         return vim.list_extend(
           vim.list_extend({
-              'docker',
-              'run',
-              '--ipc=host',
-              '--user=pwuser',
-              '-v',
-              M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
-              '-v',
-              M.opts.dirs.data .. ':' .. M.opts.dirs.data,
-              '-v',
-              M.opts.dirs.state .. ':' .. M.opts.dirs.state,
-            },
-            M.opts.docker_args
-          ),
+            'docker',
+            'run',
+            '--ipc=host',
+            '--user=pwuser',
+            '-v',
+            M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
+            '-v',
+            M.opts.dirs.data .. ':' .. M.opts.dirs.data,
+            '-v',
+            M.opts.dirs.state .. ':' .. M.opts.dirs.state,
+          }, M.opts.docker_args),
           {
             'mikesmithgh/render.nvim',
             'aha',
@@ -73,7 +71,9 @@ local standard_opts = {
               type = 'png',
             }
             -- render png
-            vim.fn.jobstart(M.opts.fn.playwright.cmd(playwright_opts), M.opts.fn.playwright.opts(playwright_opts)
+            vim.fn.jobstart(
+              M.opts.fn.playwright.cmd(playwright_opts),
+              M.opts.fn.playwright.opts(playwright_opts)
             )
           end,
           on_stderr = function(_, result)
@@ -82,32 +82,29 @@ local standard_opts = {
             end
           end,
         }
-      end
+      end,
     },
     playwright = {
       cmd = function(playwright_opts)
         return vim.list_extend(
-          vim.list_extend(
-            {
-              'docker',
-              'run',
-              '--ipc=host',
-              '--user=pwuser',
-              '-v',
-              M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
-              '-v',
-              M.opts.dirs.data .. ':' .. M.opts.dirs.data,
-              '-v',
-              M.opts.dirs.state .. ':' .. M.opts.dirs.state,
-              '-e',
-              'RENDERNVIM_INPUT=' .. playwright_opts.input,
-              '-e',
-              'RENDERNVIM_OUTPUT=' .. playwright_opts.output,
-              '-e',
-              'RENDERNVIM_TYPE=' .. playwright_opts.type,
-            },
-            M.opts.docker_args
-          ),
+          vim.list_extend({
+            'docker',
+            'run',
+            '--ipc=host',
+            '--user=pwuser',
+            '-v',
+            M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
+            '-v',
+            M.opts.dirs.data .. ':' .. M.opts.dirs.data,
+            '-v',
+            M.opts.dirs.state .. ':' .. M.opts.dirs.state,
+            '-e',
+            'RENDERNVIM_INPUT=' .. playwright_opts.input,
+            '-e',
+            'RENDERNVIM_OUTPUT=' .. playwright_opts.output,
+            '-e',
+            'RENDERNVIM_TYPE=' .. playwright_opts.type,
+          }, M.opts.docker_args),
           {
             'mikesmithgh/render.nvim',
             'npx',
@@ -136,7 +133,7 @@ local standard_opts = {
             local details = vim.tbl_extend(
               'force',
               playwright_opts,
-              { output = playwright_opts.output .. '.' .. playwright_opts.type, }
+              { output = playwright_opts.output .. '.' .. playwright_opts.type }
             )
             if exit_code == 0 then
               render_notify('screenshot available', vim.log.levels.INFO, details)
@@ -155,11 +152,16 @@ local standard_opts = {
             end
           end,
         }
-      end
+      end,
     },
     keymap_setup = function()
       -- <f13> == <shift-f1> == print screen
-      vim.keymap.set({ 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' }, '<f13>', M.render, { silent = true, remap = true })
+      vim.keymap.set(
+        { 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' },
+        '<f13>',
+        M.render,
+        { silent = true, remap = true }
+      )
     end,
     flash = function()
       local render_ns = vim.api.nvim_create_namespace('render')
@@ -202,10 +204,9 @@ local standard_opts = {
     css = vim.fn.stdpath('data') .. '/' .. shortname .. '/css',
     font = vim.fn.stdpath('data') .. '/' .. shortname .. '/font',
     scripts = vim.fn.stdpath('data') .. '/' .. shortname .. '/scripts',
-    runtime_render_plugin_dir = vim.tbl_filter(
-      function(p) return p:match('^(.*)' .. longname .. '$') end,
-      vim.api.nvim_list_runtime_paths()
-    )[1],
+    runtime_render_plugin_dir = vim.tbl_filter(function(p)
+      return p:match('^(.*)' .. longname .. '$')
+    end, vim.api.nvim_list_runtime_paths())[1],
   },
   files = {
     runtime_scripts = vim.api.nvim_get_runtime_file('scripts/*', true),
@@ -217,15 +218,15 @@ standard_opts.font = {
   faces = {
     {
       name = 'MonoLisa Trial Regular Nerd Font Complete Windows Compatible',
-      src = [[url(']] ..
-        standard_opts.dirs.font ..
-        [[/MonoLisa Trial Regular Nerd Font Complete Windows Compatible.ttf') format("truetype")]]
+      src = [[url(']]
+        .. standard_opts.dirs.font
+        .. [[/MonoLisa Trial Regular Nerd Font Complete Windows Compatible.ttf') format("truetype")]],
     },
     {
       name = 'MonoLisa Trial Regular Italic Nerd Font Complete Windows Compatible',
-      src = [[url(']] ..
-        standard_opts.dirs.font ..
-        [[/MonoLisa Trial Regular Italic Nerd Font Complete Windows Compatible.ttf') format("truetype")]]
+      src = [[url(']]
+        .. standard_opts.dirs.font
+        .. [[/MonoLisa Trial Regular Italic Nerd Font Complete Windows Compatible.ttf') format("truetype")]],
     },
   },
   size = 11,
@@ -242,7 +243,13 @@ local function new_output_files()
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
-  local out_file = M.opts.dirs.output .. '/' .. temp_prefix .. '-' .. temp_name .. '-' .. normalized_name
+  local out_file = M.opts.dirs.output
+    .. '/'
+    .. temp_prefix
+    .. '-'
+    .. temp_name
+    .. '-'
+    .. normalized_name
   return {
     file = out_file,
     cat = out_file .. '.cat',
@@ -311,7 +318,6 @@ local function setup_files_and_dirs()
     })
   end
 
-
   local init_files = {}
   init_files[M.opts.files.runtime_fonts] = M.opts.dirs.font
   init_files[M.opts.files.runtime_scripts] = M.opts.dirs.scripts
@@ -337,12 +343,10 @@ local function setup_user_commands()
     setup_files_and_dirs()
   end, {})
   vim.api.nvim_create_user_command('RenderQuickfix', function()
-    vim.cmd.vimgrep(
-      {
-        args = { '/\\%^/j ' .. M.opts.dirs.output .. '/*' },
-        mods = { emsg_silent = true }
-      }
-    )
+    vim.cmd.vimgrep({
+      args = { '/\\%^/j ' .. M.opts.dirs.output .. '/*' },
+      mods = { emsg_silent = true },
+    })
     local render_qflist = vim.tbl_map(function(line)
       local description = {
         cat = 'ANSI Escape Sequences',
@@ -355,7 +359,7 @@ local function setup_user_commands()
     end, vim.fn.getqflist())
     if next(render_qflist) == nil then
       render_notify('no output files found', vim.log.levels.INFO, {
-        output = M.opts.dirs.output
+        output = M.opts.dirs.output,
       })
     else
       vim.fn.setqflist(render_qflist)
