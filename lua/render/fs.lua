@@ -3,7 +3,7 @@ local M = {}
 
 local function error_ignore(err, ignore_errnos)
   if err ~= nil then
-    local err_name = err:gmatch("([^:]+)")() -- split on :
+    local err_name = err:gmatch('([^:]+)')() -- split on :
 
     for _, ignore_errno in pairs(ignore_errnos) do
       local errno = uv.errno[err_name]
@@ -15,9 +15,8 @@ local function error_ignore(err, ignore_errnos)
   end
 end
 
-
 M.generateCSSFile = function(font, destination)
-  uv.fs_open(destination, "ax", tonumber('644', 8), function(err, fd)
+  uv.fs_open(destination, 'ax', tonumber('644', 8), function(err, fd)
     local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
     if ignore then
       return
@@ -38,7 +37,7 @@ M.generateCSSFile = function(font, destination)
     end
 
     uv.fs_write(fd, '* {\n')
-    uv.fs_write(fd, '    font-family: ' .. table.concat(font_family, ", ") .. ';\n')
+    uv.fs_write(fd, '    font-family: ' .. table.concat(font_family, ', ') .. ';\n')
     uv.fs_write(fd, '    font-size: ' .. font.size .. 'px;\n')
     uv.fs_write(fd, '}\n\n\n')
     uv.fs_write(fd, 'pre {\n')
@@ -55,7 +54,7 @@ end
 M.createInitFiles = function(init_files)
   for sources, destination_dir in pairs(init_files) do
     for _, source in pairs(sources) do
-      local dest = destination_dir .. "/" .. vim.fn.fnamemodify(source, ":t")
+      local dest = destination_dir .. '/' .. vim.fn.fnamemodify(source, ':t')
       uv.fs_copyfile(source, dest, { excl = true }, function(err, success)
         if success == nil then
           local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
@@ -73,13 +72,13 @@ end
 
 M.remove_dirs = function(dirs)
   for _, dir in pairs(dirs) do
-    vim.fn.delete(dir, "rf")
+    vim.fn.delete(dir, 'rf')
   end
 end
 
 M.create_dirs = function(dirs)
   for _, dir in pairs(dirs) do
-    vim.fn.mkdir(dir, "p")
+    vim.fn.mkdir(dir, 'p')
   end
 end
 
