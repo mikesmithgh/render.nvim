@@ -49,7 +49,7 @@ local standard_opts = {
             M.opts.dirs.state .. ':' .. M.opts.dirs.state,
           }, M.opts.docker_args),
           {
-            'mikesmithgh/render.nvim',
+            M.opts.docker_image,
             'aha',
             '--css',
             M.opts.files.render_css,
@@ -106,7 +106,7 @@ local standard_opts = {
             'RENDERNVIM_TYPE=' .. playwright_opts.type,
           }, M.opts.docker_args),
           {
-            'mikesmithgh/render.nvim',
+            M.opts.docker_image,
             'npx',
             'playwright',
             'test',
@@ -213,6 +213,7 @@ local standard_opts = {
     runtime_fonts = vim.api.nvim_get_runtime_file('font/*', true),
   },
   docker_args = {},
+  docker_image = 'ghcr.io/mikesmithgh/render.nvim:latest',
 }
 standard_opts.font = {
   faces = {
