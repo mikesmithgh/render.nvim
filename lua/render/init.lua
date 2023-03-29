@@ -310,6 +310,7 @@ M.render = function()
       screenshot = file_content
       break
     end
+    retries = retries - 1
   until retries == 0
   print('debug: tick 2')
 
