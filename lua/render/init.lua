@@ -296,6 +296,7 @@ M.render = function()
     M.opts.fn.flash()
   end
 
+  print('debug: tick 1')
   local screenshot
   local retries = 10
   repeat
@@ -307,27 +308,34 @@ M.render = function()
       break
     end
   until retries == 0
+  print('debug: tick 2')
 
   if screenshot == nil or next(screenshot) == nil then
+    print('debug: tick 3')
     render_notify('error reading file', vim.log.levels.ERROR, {
       file = out_files.cat,
     })
     return
   end
 
+  print('debug: tick 4')
   -- parse and remove dimensions of the screenshot
   local first_line = screenshot[1]
   local dimensions = vim.fn.split(first_line, ',')
   local height = dimensions[1]
   local width = dimensions[2]
+  print('debug: tick 5')
   if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
+    print('debug: tick 6')
     table.remove(screenshot, 1)
     render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
       height = height,
       width = width,
     })
   end
+  print('debug: tick 7')
   vim.fn.writefile(screenshot, out_files.cat)
+  print('debug: tick 8')
 
   -- render html
   print('debug: render.call aha')
