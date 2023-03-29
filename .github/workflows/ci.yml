@@ -85,7 +85,8 @@ jobs:
           cp -r . ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
           ls -la ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
           ls -la ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/*
-          timeout 30 nvim +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua 
+          timeout 30 nvim -V9vim.log +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua 
+          cat vim.log
           set +x
 
       - name: Archive render output
