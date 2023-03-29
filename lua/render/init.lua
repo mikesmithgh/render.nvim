@@ -32,9 +32,11 @@ local standard_opts = {
   fn = {
     aha = {
       cmd = function(files)
+        print('aha cmd start')
         if files.cat == nil or files.cat == '' then
           return {}
         end
+        print('aha cmd return it')
         return {
           'aha',
           '--css',
@@ -78,6 +80,7 @@ local standard_opts = {
               type = 'png',
             }
             -- render png
+            print('debug: aha jobstart')
             vim.fn.jobstart(
               M.opts.fn.playwright.cmd(playwright_opts),
               M.opts.fn.playwright.opts(playwright_opts)
@@ -149,6 +152,7 @@ local standard_opts = {
             RENDERNVIM_TYPE = playwright_opts.type,
           },
           on_exit = function(_, exit_code)
+            print('debug: aha on exit ' .. exit_code)
             local details = vim.tbl_extend(
               'force',
               playwright_opts,
@@ -159,7 +163,8 @@ local standard_opts = {
               if M.opts.features.auto_open then
                 local open_cmd = M.opts.fn.open_cmd()
                 table.insert(open_cmd, details.output)
-                vim.fn.jobstart(open_cmd)
+                print('debug: play job start --disabled open')
+                -- vim.fn.jobstart(open_cmd)
               end
             else
               render_notify('failed to generate screenshot', vim.log.levels.WARN, details)
@@ -279,10 +284,13 @@ local function new_output_files()
 end
 
 M.render = function()
+  print('debug: render() start')
   local out_files = new_output_files()
 
+  print('debug: render.cat() start')
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
+  print('debug: render.cat() done')
 
   if M.opts.features.flash then
     M.opts.fn.flash()
@@ -322,6 +330,7 @@ M.render = function()
   vim.fn.writefile(screenshot, out_files.cat)
 
   -- render html
+  print('debug: render.call aha')
   vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
 end
 
@@ -352,9 +361,9 @@ end
 
 local function setup_user_commands()
   vim.api.nvim_create_user_command('Render', function()
-    print('test render')
+    print('debug: create_user_command render')
     -- small delay to avoid capturing :Render command and flash
-    -- vim.defer_fn(M.render, 200)
+    vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command('RenderClean', function()
     renderfs.remove_dirs({
