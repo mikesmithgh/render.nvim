@@ -298,20 +298,20 @@ M.render = function()
 
   print('debug: tick 1')
   local screenshot
-  local retries = 10
-  repeat
-    print('repeat: tick ' .. retries)
-    vim.cmd.sleep('200ms')
-    -- wait until screenshot has succesfully written to file
-    print('outfile: ' .. out_files.cat)
-    local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
-    if ok and file_content ~= nil and file_content ~= '' then
-      print('file_content')
-      screenshot = file_content
-      break
-    end
-    retries = retries - 1
-  until retries == 0
+  -- local retries = 10
+  -- repeat
+  --   print('repeat: tick ' .. retries)
+  --   vim.cmd.sleep('200ms')
+  --   -- wait until screenshot has succesfully written to file
+  --   print('outfile: ' .. out_files.cat)
+  --   local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
+  --   if ok and file_content ~= nil and file_content ~= '' then
+  --     print('file_content')
+  --     screenshot = file_content
+  --     break
+  --   end
+  --   retries = retries - 1
+  -- until retries == 0
   print('debug: tick 2')
 
   if screenshot == nil or next(screenshot) == nil then
