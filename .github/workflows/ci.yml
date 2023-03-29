@@ -81,7 +81,7 @@ jobs:
           cp -r . ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
           echo "cat"
           cat lua/render/init.lua
-          nvim +'mode' +'sleep 5' +quit lua/render/init.lua 
+          nvim +'lua require("render").setup()' +'mode' +'sleep 5' +quit lua/render/init.lua 
 
       - name: Archive render output
         uses: actions/upload-artifact@v3
@@ -100,5 +100,5 @@ jobs:
           user-email: 'github-actions[bot]@users.noreply.github.com'
           user-name: 'github-actions[bot]'
           commit-message: 'chore(build): auto-generate wiki'
-          target-branch: ${{ env.GITHUB_REF_NAME }}
+          target-branch: temp
 
