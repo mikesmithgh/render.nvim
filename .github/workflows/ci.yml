@@ -1,8 +1,12 @@
 name: Neovim
 
 on:
+  workflow_dispatch:
   workflow_run:
-    workflows: ["Create and publish a Docker image"]
+    workflows: 
+      - 'Create and publish a Docker image'
+    branches:
+      - '*'
     types:
       - completed
 
@@ -27,7 +31,7 @@ jobs:
           ls -la
           mkdir -p ~/.local/share/nvim/site/pack/render.nvim/start/
           cp -r . ~/.local/share/nvim/site/pack/render.nvim/start/
-          nvim +Render +quit
+          nvim +'mode' +Render +'sleep 5' +quit lua/render/init.lua 
 
       - name: Archive render output
         uses: actions/upload-artifact@v3
