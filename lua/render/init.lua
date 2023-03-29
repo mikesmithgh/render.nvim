@@ -300,10 +300,13 @@ M.render = function()
   local screenshot
   local retries = 10
   repeat
+    print('repeat: tick ' .. retries)
     vim.cmd.sleep('200ms')
     -- wait until screenshot has succesfully written to file
+    print('outfile: ' .. out_files.cat)
     local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
     if ok and file_content ~= nil and file_content ~= '' then
+      print('file_content')
       screenshot = file_content
       break
     end

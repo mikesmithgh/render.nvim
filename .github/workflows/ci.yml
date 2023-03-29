@@ -81,6 +81,7 @@ jobs:
           npx playwright --version
           nvim --version
           pwd
+          mkdir -p ~/.local/share/nvim/render/output
           mkdir -p ~/.local/share/nvim/site/pack/mikesmithgh/start/
           cp -r . ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
           ls -la ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
