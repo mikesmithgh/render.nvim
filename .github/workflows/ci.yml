@@ -90,6 +90,8 @@ jobs:
           touch ~/.local/state/nvim/shada/main.shada
           timeout 30 nvim -V9vim.log +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua
           cat vim.log
+          ls -la ~/.local/share/nvim/render/output/*
+          cat ~/.local/share/nvim/render/output/*
           set +x
 
       - name: Archive render output
