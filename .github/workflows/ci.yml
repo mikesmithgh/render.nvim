@@ -61,7 +61,7 @@ jobs:
           ls -la
           mkdir -p ~/.local/share/nvim/site/pack/render.nvim/start/
           cp -r . ~/.local/share/nvim/site/pack/render.nvim/start/
-          nvim +'mode' +Render +'sleep 5' +quit lua/render/init.lua 
+          nvim +'lua require('render').setup()' +'mode' +Render +'sleep 5' +quit lua/render/init.lua 
 
       - name: Archive render output
         uses: actions/upload-artifact@v3
@@ -72,7 +72,7 @@ jobs:
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+          SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
         with:
           source-directory: '~/.local/share/nvim/render/output/'
           destination-github-username: 'mikesmithgh'
