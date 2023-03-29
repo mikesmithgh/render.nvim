@@ -60,7 +60,7 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
 
       - run: |
-          apt install sudo -y
+          apt install sudo make -y
 
       - name: Setup Neovim nightly
         uses: rhysd/action-setup-vim@v1
