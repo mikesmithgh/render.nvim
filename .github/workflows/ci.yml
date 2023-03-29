@@ -71,6 +71,7 @@ jobs:
           version: nightly
 
       - run: |
+          # add comment to trigger CI
           set -x
           # apt install software-properties-common
           # add-apt-repository ppa:neovim-ppa/unstable
