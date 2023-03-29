@@ -352,8 +352,9 @@ end
 
 local function setup_user_commands()
   vim.api.nvim_create_user_command('Render', function()
+    print('test render')
     -- small delay to avoid capturing :Render command and flash
-    vim.defer_fn(M.render, 200)
+    -- vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command('RenderClean', function()
     renderfs.remove_dirs({
