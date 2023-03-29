@@ -33,15 +33,15 @@ local standard_opts = {
     aha = {
       cmd = function(files)
         if files.cat == nil or files.cat == '' then
-          return
-          {
-            'aha',
-            '--css',
-            M.opts.files.render_css,
-            '-f',
-            files.cat,
-          }
+          return {}
         end
+        return {
+          'aha',
+          '--css',
+          M.opts.files.render_css,
+          '-f',
+          files.cat,
+        }
         -- return vim.list_extend(
         --   vim.list_extend({
         --     'docker',
