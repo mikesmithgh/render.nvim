@@ -10,7 +10,7 @@ RUN tar --strip-components=1 -xvf aha.tar.gz
 RUN make
 
 FROM mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-focal
-ENV NODE_PATH=/opt/lib/node_modules
+ENV NODE_PATH=/usr/lib/node_modules
 RUN npm install -g @playwright/test && \
     npx --yes playwright install --with-deps
 COPY --from=builder /aha/aha /usr/local/bin/
