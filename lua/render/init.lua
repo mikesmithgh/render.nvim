@@ -288,13 +288,14 @@ M.render = function()
   local out_files = new_output_files()
 
   print('debug: render.cat() start')
+  print(vim.inspect(out_files))
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
   print('debug: render.cat() done')
 
-  if M.opts.features.flash then
-    M.opts.fn.flash()
-  end
+  -- if M.opts.features.flash then
+  --   M.opts.fn.flash()
+  -- end
 
   print('debug: tick 1')
   local screenshot
@@ -314,36 +315,36 @@ M.render = function()
   -- until retries == 0
   print('debug: tick 2')
 
-  if screenshot == nil or next(screenshot) == nil then
-    print('debug: tick 3')
-    render_notify('error reading file', vim.log.levels.INFO, {
-      file = out_files.cat,
-    })
-    return
-  end
+  -- if screenshot == nil or next(screenshot) == nil then
+  --   print('debug: tick 3')
+  --   render_notify('error reading file', vim.log.levels.INFO, {
+  --     file = out_files.cat,
+  --   })
+  --   return
+  -- end
 
-  print('debug: tick 4')
-  -- parse and remove dimensions of the screenshot
-  local first_line = screenshot[1]
-  local dimensions = vim.fn.split(first_line, ',')
-  local height = dimensions[1]
-  local width = dimensions[2]
-  print('debug: tick 5')
-  if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
-    print('debug: tick 6')
-    table.remove(screenshot, 1)
-    render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
-      height = height,
-      width = width,
-    })
-  end
-  print('debug: tick 7')
-  vim.fn.writefile(screenshot, out_files.cat)
-  print('debug: tick 8')
-
-  -- render html
-  print('debug: render.call aha')
-  vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
+  -- print('debug: tick 4')
+  -- -- parse and remove dimensions of the screenshot
+  -- local first_line = screenshot[1]
+  -- local dimensions = vim.fn.split(first_line, ',')
+  -- local height = dimensions[1]
+  -- local width = dimensions[2]
+  -- print('debug: tick 5')
+  -- if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
+  --   print('debug: tick 6')
+  --   table.remove(screenshot, 1)
+  --   render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
+  --     height = height,
+  --     width = width,
+  --   })
+  -- end
+  -- print('debug: tick 7')
+  -- vim.fn.writefile(screenshot, out_files.cat)
+  -- print('debug: tick 8')
+  --
+  -- -- render html
+  -- print('debug: render.call aha')
+  -- vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
 end
 
 M.opts = standard_opts
