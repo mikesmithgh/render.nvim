@@ -41,9 +41,7 @@ jobs:
           flavor: |
             latest=auto
           tags: |
-            # branch event
             type=ref,event=branch
-            # pull request event
             type=ref,event=pr
 
       - name: Build and push Docker image
