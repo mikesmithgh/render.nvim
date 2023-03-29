@@ -64,6 +64,8 @@ jobs:
 
       - name: Setup Neovim nightly
         uses: rhysd/action-setup-vim@v1
+        env:
+          TMPDIR: /github/home/tmp
         with:
           neovim: true
           version: nightly
