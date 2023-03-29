@@ -69,16 +69,16 @@ jobs:
           name: render-output
           path: ~/.local/share/nvim/render/output/
 
-      # - name: Pushes to another repository
-      #   uses: cpina/github-action-push-to-another-repository@main
-      #   env:
-      #     SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-      #     API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      #   with:
-      #     source-directory: '~/.local/share/nvim/render/output/'
-      #     destination-github-username: 'mikesmithgh'
-      #     destination-repository-name: 'render.nvim.wiki'
-      #     user-email: 'github-actions[bot]@users.noreply.github.com'
-      #     user-name: 'github-actions[bot]'
-      #     commit-message: 'chore(build): auto-generate wiki'
-      #     target-branch: "$env:GITHUB_REF"
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source-directory: '~/.local/share/nvim/render/output/'
+          destination-github-username: 'mikesmithgh'
+          destination-repository-name: 'render.nvim.wiki'
+          user-email: 'github-actions[bot]@users.noreply.github.com'
+          user-name: 'github-actions[bot]'
+          commit-message: 'chore(build): auto-generate wiki'
+          target-branch: "$env:GITHUB_REF"
+
