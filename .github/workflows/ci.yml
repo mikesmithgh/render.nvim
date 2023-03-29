@@ -82,5 +82,5 @@ jobs:
           user-email: 'github-actions[bot]@users.noreply.github.com'
           user-name: 'github-actions[bot]'
           commit-message: 'chore(build): auto-generate wiki'
-          target-branch: ${{ env:GITHUB_REF_NAME }}
+          target-branch: ${{ env.GITHUB_REF_NAME }}
 
