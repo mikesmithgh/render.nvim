@@ -74,7 +74,7 @@ jobs:
           # add comment to trigger CI
           set -x
           mkdir -p ~/.local/share/nvim/render/output/
-          touch ~/.local/share/nvim/render/output/fake
+          echo "stuff" > ~/.local/share/nvim/render/output/fake
           ls -la ~/.local/share/nvim/render/output/
           # apt install software-properties-common
           # add-apt-repository ppa:neovim-ppa/unstable
@@ -93,7 +93,8 @@ jobs:
           mkdir -p ~/.local/state/nvim/shada/
           touch ~/.local/state/nvim/shada/main.shada
           timeout 30 nvim -V9vim.log +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua || true
-          cat vim.log
+          # cat vim.log
+          ls -la ~/.local/share/nvim/render/output/
           cat ~/.local/share/nvim/render/output/*
           set +x
 
