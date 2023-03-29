@@ -316,7 +316,7 @@ M.render = function()
 
   if screenshot == nil or next(screenshot) == nil then
     print('debug: tick 3')
-    render_notify('error reading file', vim.log.levels.ERROR, {
+    render_notify('error reading file', vim.log.levels.INFO, {
       file = out_files.cat,
     })
     return
