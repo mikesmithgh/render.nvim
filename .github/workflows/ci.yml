@@ -32,8 +32,8 @@ jobs:
       - name: testing it out
         run: |
           set -x
-          apt update
-          apt install curl -y
+          sudo apt update
+          sudo apt install curl -y
           curl -s -L -o /tmp/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
           tar -xvf /tmp/nvim-linux64.tar.gz --directory /opt
           export PATH=$PATH:/opt/nvim-linux64/bin
