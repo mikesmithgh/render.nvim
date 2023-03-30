@@ -35,7 +35,7 @@ jobs:
           echo $abs_path
           screen -dm nvim --listen ~/nvim.pipe 
           ls -la $abs_path
-          nvim --server ~/nvim.pipe --remote-send ":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")" || true
+          nvim --server ~/nvim.pipe --remote-send ":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")<CR>" || true
           cat "${abs_path}/stuff.cat" || true
 
       - name: Setup upterm session
