@@ -20,13 +20,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run a multi-line script
       run: |
+        mkdir ~/.ssh
         cat > ~/.ssh/config <<EOF
           Host host.example
            User $USER
            HostName 127.0.0.1
         EOF
-        mkdir ~/.ssh
-        touch ~/.ssh/authorized_keys
         cat > ~/.ssh/authorized_keys <<EOF
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICWVgiqN8ETMGcrOxfrQDnEYjOTEfsm66++p+8DL0asD mike
         EOF
