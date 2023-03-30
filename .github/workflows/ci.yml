@@ -73,9 +73,10 @@ jobs:
       - run: |
           # add comment to trigger CI
           set -x
-          mkdir -p ~/.local/share/nvim/render/output/
-          echo "stuff" > ~/.local/share/nvim/render/output/fake
-          ls -la ~/.local/share/nvim/render/output/
+          mkdir -p /github/home/.local/share/nvim/render/output/
+          chmod -R 777 /github/home/.local/share/nvim/
+          echo "stuff" > /github/home/.local/share/nvim/render/output/fake
+          ls -la /github/home/.local/share/nvim/render/output/
           # apt install software-properties-common
           # add-apt-repository ppa:neovim-ppa/unstable
           # apt-get update
@@ -84,18 +85,18 @@ jobs:
           npx playwright --version
           nvim --version
           pwd
-          mkdir -p ~/tmp
-          mkdir -p ~/.local/share/nvim/render/output/
-          mkdir -p ~/.local/share/nvim/site/pack/mikesmithgh/start/
-          cp -r . ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
-          ls -la ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
-          ls -la ~/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/*
-          mkdir -p ~/.local/state/nvim/shada/
-          touch ~/.local/state/nvim/shada/main.shada
+          mkdir -p /github/home/.tmp
+          mkdir -p /github/home/.local/share/nvim/render/output/
+          mkdir -p /github/home/.local/share/nvim/site/pack/mikesmithgh/start/
+          cp -r . /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
+          ls -la /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
+          ls -la /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/*
+          mkdir -p /github/home/.local/state/nvim/shada/
+          touch /github/home/.local/state/nvim/shada/main.shada
           # timeout 30 nvim -V9vim.log +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua || true
           # cat vim.log
-          # ls -la ~/.local/share/nvim/render/output/
-          # cat ~/.local/share/nvim/render/output/*
+          # ls -la /github/home/.local/share/nvim/render/output/
+          # cat /github/home/.local/share/nvim/render/output/*
           nvim +'lua vim.api.nvim__screenshot("something.cat")' +'sleep 5' +'quit'
           ls -lart
           nvim +'lua vim.api.nvim__screenshot("/github/home/.local/nvim/render/output/something.cat")' +'sleep 5' +'quit'
@@ -106,14 +107,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: render-output
-          path: ~/.local/share/nvim/render/output/
+          path: /github/home/.local/share/nvim/render/output/
 
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
         with:
-          source-directory: '~/.local/share/nvim/render/output/'
+          source-directory: /github/home/.local/share/nvim/render/output/'
           destination-github-username: 'mikesmithgh'
           destination-repository-name: 'render.nvim.wiki'
           user-email: 'github-actions[bot]@users.noreply.github.com'
