@@ -265,6 +265,7 @@ local function new_output_files()
     cur_name = 'noname'
   end
   local normalized_name = vim.fn.substitute(cur_name, '\\W', '', 'g')
+  -- TODO: do not use tempname, create it myself
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
