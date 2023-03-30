@@ -15,8 +15,6 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/mikesmithgh/render.nvim:latest
     permissions:
       contents: read
       packages: write
@@ -25,63 +23,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
-      #
-      # - name: Log in to the Container registry
-      #   uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      #   with:
-      #     registry: ${{ env.REGISTRY }}
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.PACKAGE_TOKEN }}
-
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     flavor: |
-      #       latest=true
-      #     tags: |
-      #        type=sha,format=long
-      #        type=ref,event=branch
-      #        type=ref,event=pr
-      #        type=semver,pattern={{version}}
-      #        type=semver,pattern={{major}}.{{minor}}
-      #        type=semver,pattern={{major}}
-      #
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      #   with:
-      #     context: .
-      #     # platforms: linux/amd64,linux/arm64
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-
-      - run: |
-          apt install sudo make tree -y
-
       - name: Setup Neovim nightly
         uses: rhysd/action-setup-vim@v1
-        env:
-          TMPDIR: /github/home/tmp
         with:
           neovim: true
           version: nightly
 
-      - name: testint it out
-        env:
-          TMPDIR: /github/home/tmp
+      - name: testing it out
         run: |
           set -x
-          mkdir -p /github/home/.local/share/nvim/render/output
-          pwd
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 5 | :qall!'
           ls | grep something
           cat something.cat
           cd /github/home/.local/share/nvim/render/output
-          chmod 777 /github/home/.local/share/nvim/render/output
           nvim +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot(vim.fn.expand("something.cat")) | :sleep 1 | :mode | sleep 5 | :qall!'
           ls | grep something
           cat something.cat
@@ -89,22 +43,4 @@ jobs:
           tree -a 
           set +x 
 
-      - name: Archive render output
-        uses: actions/upload-artifact@v3
-        with:
-          name: render-output
-          path: /github/home/.local/share/nvim/render/output/
-
-      - name: Pushes to another repository
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
-        with:
-          source-directory: /github/home/.local/share/nvim/render/output/'
-          destination-github-username: 'mikesmithgh'
-          destination-repository-name: 'render.nvim.wiki'
-          user-email: 'github-actions[bot]@users.noreply.github.com'
-          user-name: 'github-actions[bot]'
-          commit-message: 'chore(build): auto-generate wiki'
-          target-branch: temp
 
