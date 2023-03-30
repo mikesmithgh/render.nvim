@@ -31,8 +31,10 @@ jobs:
           mkdir -p ~/.local/share/nvim/render/output
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
           echo $abs_path
-          # nvim +mode +":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")" +"sleep 5" +"quit"
-          # ls -la $abs_path
+          sleep 2
+          nvim +mode +":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")" +"sleep 60" +"quit"
+          sleep 2
+          ls -la $abs_path
           # cat "${abs_path}/stuff.cat" || true
 
       - name: Setup upterm session
