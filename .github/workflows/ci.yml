@@ -29,12 +29,8 @@ jobs:
         cat > ~/.ssh/authorized_keys <<EOF
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICWVgiqN8ETMGcrOxfrQDnEYjOTEfsm66++p+8DL0asD mike
         EOF
-        echo "Before fixing permissions on authorized_keys, notice home directory is world read/write"
+        sudo chmod og-rw ~
         ls -la ~/.ssh
-        ssh -o 'StrictHostKeyChecking no' host.example id || echo "ssh failed as expected... trying to fix permissions"
-        chmod og-rw ~
-        echo "After fixing permissions on home folder ~ ..."
-        ls -la ~/.ssh
-        ssh -o 'StrictHostKeyChecking no' host.example id
+        sudo ssh -o 'StrictHostKeyChecking no' host.example id
         sleep infinity
 
