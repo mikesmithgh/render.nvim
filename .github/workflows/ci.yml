@@ -34,8 +34,16 @@ jobs:
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
           echo $abs_path
           screen -dm nvim --listen ~/nvim.pipe 
-          ls -la $abs_path
+          echo "going to sleep 60..."
+          sleep 60  
+          echo "wake up!"
+          sleep 2
           nvim --server ~/nvim.pipe --remote-send ":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")<CR>" || true
+          echo "going to sleep 60..."
+          sleep 60  
+          echo "wake up!"
+          sleep 2
+          ls -la $abs_path
           cat "${abs_path}/stuff.cat" || true
 
       - name: Setup upterm session
