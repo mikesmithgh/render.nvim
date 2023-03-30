@@ -113,7 +113,13 @@ jobs:
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
           ls -lart /github/home/.local/share/nvim/render/output/
           tree -a /github/home/.local
-          set +x
+
+          whoami
+          ls -larth /github/home 
+          echo "huh" > /Users/mike/.local/share/nvim/render/output/something.cat
+          ls -lart /github/home/.local/share/nvim/render/output/
+
+          set +x 
 
       - name: Archive render output
         uses: actions/upload-artifact@v3
