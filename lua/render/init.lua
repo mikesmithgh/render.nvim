@@ -32,9 +32,11 @@ local standard_opts = {
   fn = {
     aha = {
       cmd = function(files)
+        print('aha cmd start')
         if files.cat == nil or files.cat == '' then
-          return
+          return {}
         end
+        print('aha cmd return it')
         return {
           'aha',
           '--css',
@@ -42,6 +44,28 @@ local standard_opts = {
           '-f',
           files.cat,
         }
+        -- return vim.list_extend(
+        --   vim.list_extend({
+        --     'docker',
+        --     'run',
+        --     '--ipc=host',
+        --     '--user=pwuser',
+        --     '-v',
+        --     M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
+        --     '-v',
+        --     M.opts.dirs.data .. ':' .. M.opts.dirs.data,
+        --     '-v',
+        --     M.opts.dirs.state .. ':' .. M.opts.dirs.state,
+        --   }, M.opts.docker_args),
+        --   {
+        --     M.opts.docker_image,
+        --     'aha',
+        --     '--css',
+        --     M.opts.files.render_css,
+        --     '-f',
+        --     files.cat,
+        --   }
+        -- )
       end,
       opts = function(files)
         return {
@@ -50,14 +74,16 @@ local standard_opts = {
           on_stdout = function(_, aha_result)
             vim.fn.writefile(aha_result, files.html)
 
+            local playwright_opts = {
+              input = files.html,
+              output = files.file,
+              type = 'png',
+            }
             -- render png
+            print('debug: aha jobstart')
             vim.fn.jobstart(
-              M.opts.fn.playwright.cmd(),
-              M.opts.fn.playwright.opts({
-                input = files.html,
-                output = files.file,
-                type = 'png',
-              })
+              M.opts.fn.playwright.cmd(playwright_opts),
+              M.opts.fn.playwright.opts(playwright_opts)
             )
           end,
           on_stderr = function(_, result)
@@ -69,17 +95,52 @@ local standard_opts = {
       end,
     },
     playwright = {
-      cmd = function()
+      cmd = function(playwright_opts)
         return {
           'npx',
           'playwright',
           'test',
+          '--output',
+          '/tmp/playwright/test-results',
           '--browser',
           'chromium',
           '--config',
           vim.fn.fnamemodify(M.opts.files.render_script, ':h'),
           M.opts.files.render_script,
         }
+        -- vim.list_extend(
+        --   vim.list_extend({
+        --     'docker',
+        --     'run',
+        --     '--ipc=host',
+        --     '--user=pwuser',
+        --     '-v',
+        --     M.opts.dirs.runtime_render_plugin_dir .. ':' .. M.opts.dirs.runtime_render_plugin_dir,
+        --     '-v',
+        --     M.opts.dirs.data .. ':' .. M.opts.dirs.data,
+        --     '-v',
+        --     M.opts.dirs.state .. ':' .. M.opts.dirs.state,
+        --     '-e',
+        --     'RENDERNVIM_INPUT=' .. playwright_opts.input,
+        --     '-e',
+        --     'RENDERNVIM_OUTPUT=' .. playwright_opts.output,
+        --     '-e',
+        --     'RENDERNVIM_TYPE=' .. playwright_opts.type,
+        --   }, M.opts.docker_args),
+        --   {
+        --     M.opts.docker_image,
+        --     'npx',
+        --     'playwright',
+        --     'test',
+        --     '--output',
+        --     '/tmp/playwright/test-results',
+        --     '--browser',
+        --     'chromium',
+        --     '--config',
+        --     vim.fn.fnamemodify(M.opts.files.render_script, ':h'),
+        --     M.opts.files.render_script,
+        --   }
+        -- )
       end,
       opts = function(playwright_opts)
         return {
@@ -91,6 +152,7 @@ local standard_opts = {
             RENDERNVIM_TYPE = playwright_opts.type,
           },
           on_exit = function(_, exit_code)
+            print('debug: aha on exit ' .. exit_code)
             local details = vim.tbl_extend(
               'force',
               playwright_opts,
@@ -101,7 +163,8 @@ local standard_opts = {
               if M.opts.features.auto_open then
                 local open_cmd = M.opts.fn.open_cmd()
                 table.insert(open_cmd, details.output)
-                vim.fn.jobstart(open_cmd)
+                print('debug: play job start --disabled open')
+                -- vim.fn.jobstart(open_cmd)
               end
             else
               render_notify('failed to generate screenshot', vim.log.levels.WARN, details)
@@ -165,11 +228,16 @@ local standard_opts = {
     css = vim.fn.stdpath('data') .. '/' .. shortname .. '/css',
     font = vim.fn.stdpath('data') .. '/' .. shortname .. '/font',
     scripts = vim.fn.stdpath('data') .. '/' .. shortname .. '/scripts',
+    runtime_render_plugin_dir = vim.tbl_filter(function(p)
+      return p:match('^(.*)' .. longname .. '$')
+    end, vim.api.nvim_list_runtime_paths())[1],
   },
   files = {
     runtime_scripts = vim.api.nvim_get_runtime_file('scripts/*', true),
     runtime_fonts = vim.api.nvim_get_runtime_file('font/*', true),
   },
+  docker_args = {},
+  docker_image = 'ghcr.io/mikesmithgh/render.nvim:latest',
 }
 standard_opts.font = {
   faces = {
@@ -197,6 +265,7 @@ local function new_output_files()
     cur_name = 'noname'
   end
   local normalized_name = vim.fn.substitute(cur_name, '\\W', '', 'g')
+  -- TODO: do not use tempname, create it myself
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
@@ -216,50 +285,67 @@ local function new_output_files()
 end
 
 M.render = function()
+  print('debug: render() start')
   local out_files = new_output_files()
 
+  print('debug: render.cat() start')
+  print(vim.inspect(out_files))
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
+  print('debug: render.cat() done')
 
-  if M.opts.features.flash then
-    M.opts.fn.flash()
-  end
+  -- if M.opts.features.flash then
+  --   M.opts.fn.flash()
+  -- end
 
+  print('debug: tick 1')
   local screenshot
-  local retries = 10
-  repeat
-    vim.cmd.sleep('200ms')
-    -- wait until screenshot has succesfully written to file
-    local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
-    if ok and file_content ~= nil and file_content ~= '' then
-      screenshot = file_content
-      break
-    end
-  until retries == 0
+  -- local retries = 10
+  -- repeat
+  --   print('repeat: tick ' .. retries)
+  --   vim.cmd.sleep('200ms')
+  --   -- wait until screenshot has succesfully written to file
+  --   print('outfile: ' .. out_files.cat)
+  --   local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
+  --   if ok and file_content ~= nil and file_content ~= '' then
+  --     print('file_content')
+  --     screenshot = file_content
+  --     break
+  --   end
+  --   retries = retries - 1
+  -- until retries == 0
+  print('debug: tick 2')
 
-  if screenshot == nil or next(screenshot) == nil then
-    render_notify('error reading file', vim.log.levels.ERROR, {
-      file = out_files.cat,
-    })
-    return
-  end
+  -- if screenshot == nil or next(screenshot) == nil then
+  --   print('debug: tick 3')
+  --   render_notify('error reading file', vim.log.levels.INFO, {
+  --     file = out_files.cat,
+  --   })
+  --   return
+  -- end
 
-  -- parse and remove dimensions of the screenshot
-  local first_line = screenshot[1]
-  local dimensions = vim.fn.split(first_line, ',')
-  local height = dimensions[1]
-  local width = dimensions[2]
-  if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
-    table.remove(screenshot, 1)
-    render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
-      height = height,
-      width = width,
-    })
-  end
-  vim.fn.writefile(screenshot, out_files.cat)
-
-  -- render html
-  vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
+  -- print('debug: tick 4')
+  -- -- parse and remove dimensions of the screenshot
+  -- local first_line = screenshot[1]
+  -- local dimensions = vim.fn.split(first_line, ',')
+  -- local height = dimensions[1]
+  -- local width = dimensions[2]
+  -- print('debug: tick 5')
+  -- if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
+  --   print('debug: tick 6')
+  --   table.remove(screenshot, 1)
+  --   render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
+  --     height = height,
+  --     width = width,
+  --   })
+  -- end
+  -- print('debug: tick 7')
+  -- vim.fn.writefile(screenshot, out_files.cat)
+  -- print('debug: tick 8')
+  --
+  -- -- render html
+  -- print('debug: render.call aha')
+  -- vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
 end
 
 M.opts = standard_opts
@@ -289,11 +375,15 @@ end
 
 local function setup_user_commands()
   vim.api.nvim_create_user_command('Render', function()
+    print('debug: create_user_command render')
     -- small delay to avoid capturing :Render command and flash
     vim.defer_fn(M.render, 200)
   end, {})
   vim.api.nvim_create_user_command('RenderClean', function()
-    renderfs.remove_dirs(M.opts.dirs)
+    renderfs.remove_dirs({
+      M.opts.dirs.data,
+      M.opts.dirs.state,
+    })
     setup_files_and_dirs()
   end, {})
   vim.api.nvim_create_user_command('RenderQuickfix', function()

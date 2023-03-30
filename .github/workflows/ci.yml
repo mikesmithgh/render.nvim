@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request: 
+    branches:
+      - 'main'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Neovim nightly
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: nightly
+
+      - run: |
+          sudo apt install screen -y
+          export XDG_DATA_HOME=~/.local/share
+          export XDG_CONFIG_HOME=~/.config
+          export XDG_STATE_HOME=~/.local/state
+          mkdir -p ~/.local/share/nvim/render/output
+          abs_path="$(realpath ~/.local/share/nvim/render/output)"
+          echo $abs_path
+          screen -dm nvim --listen ~/nvim.pipe 
+          echo "going to sleep 60..."
+          sleep 60  
+          echo "wake up!"
+          sleep 2
+          nvim --server ~/nvim.pipe --remote-send ":lua vim.api.nvim__screenshot(\"${abs_path}/stuff.cat\")<CR>" || true
+          echo "going to sleep 60..."
+          sleep 60  
+          echo "wake up!"
+          sleep 2
+          ls -la $abs_path
+          cat "${abs_path}/stuff.cat" || true
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
