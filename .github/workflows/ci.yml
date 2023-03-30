@@ -80,8 +80,8 @@ jobs:
           pwd
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 5 | :qall!'
           ls | grep something
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
           cd /github/home/.local/share/nvim/render/output
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 5 | :qall!'
           ls | grep something
           cd ../../..
           tree -a 
