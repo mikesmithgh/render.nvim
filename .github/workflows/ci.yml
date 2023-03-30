@@ -37,7 +37,7 @@ jobs:
 
           mkdir -p ~/.local/share/nvim/render/output
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
-          nvim -V9vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/nvim/render/output/something.cat") | sleep 5 | :qall!'
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/nvim/render/output/something.cat") | sleep 5 | :qall!'
           cat vlog.log
           cd ~/.local/share/nvim/render/output
           ls -la
