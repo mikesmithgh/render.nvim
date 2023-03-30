@@ -81,7 +81,8 @@ jobs:
           ls | grep something
           cat something.cat
           cd /github/home/.local/share/nvim/render/output
-          nvim +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 1 | :mode | sleep 5 | :qall!'
+          chmod 777 /github/home/.local/share/nvim/render/output
+          nvim +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot(vim.fn.expand("something.cat")) | :sleep 1 | :mode | sleep 5 | :qall!'
           ls | grep something
           cat something.cat
           cd ../../..
