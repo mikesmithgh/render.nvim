@@ -12,7 +12,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-
+defaults:
+  run:
+    shell: bash -l {0}
 
 jobs:
   build:
