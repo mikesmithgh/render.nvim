@@ -103,12 +103,16 @@ jobs:
           # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/something.cat") | :sleep 5 | :qall!'
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/something.cat") | :sleep 5 | :qall!'
+          tree -a /github/home/.local
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/something.cat") | :sleep 5 | :qall!'
+          tree -a /github/home/.local
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/something.cat") | :sleep 5 | :qall!'
+          tree -a /github/home/.local
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/something.cat") | :sleep 5 | :qall!'
+          tree -a /github/home/.local
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
           ls -lart /github/home/.local/share/nvim/render/output/
-          tree /github/home
+          tree -a /github/home/.local
           set +x
 
       - name: Archive render output
