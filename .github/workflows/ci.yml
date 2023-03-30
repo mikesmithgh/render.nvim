@@ -76,6 +76,7 @@ jobs:
         run: |
           set -x
           mkdir -p /github/home/.local/share/nvim/render/output
+          touch /github/home/.local/share/nvim/render/output/something.cat
           pwd
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 5 | :qall!'
           ls | grep something
