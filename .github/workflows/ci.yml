@@ -99,7 +99,9 @@ jobs:
           # cat /github/home/.local/share/nvim/render/output/*
           nvim +'lua vim.api.nvim__screenshot("something.cat")' +'sleep 5' +'quit'
           ls -lart
-          nvim +'lua vim.api.nvim__screenshot("/github/home/.local/nvim/render/output/something.cat")' +'sleep 5' +'quit'
+          # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
+          # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/Users/mike/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
           ls -lart /github/home/.local/share/nvim/render/output/
           set +x
 
