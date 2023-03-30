@@ -30,7 +30,7 @@ jobs:
           version: nightly
 
       - run: |
-          source ~/.bashrc
+          bash --login -i
           mkdir -p ~/.local/share/nvim/render/output
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
           echo $abs_path
