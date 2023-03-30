@@ -68,6 +68,9 @@ jobs:
           cd ~
           ls -la
           cat something.cat || true
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | sleep 5 | :qall!'
+          ls -la
+          cat something.cat || true
           set +x 
 
 
