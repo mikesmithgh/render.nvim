@@ -98,8 +98,8 @@ jobs:
           # cat ~/.local/share/nvim/render/output/*
           nvim +'lua vim.api.nvim__screenshot("something.cat")' +'sleep 5' +'quit'
           ls -lart
-          nvim +'lua vim.api.nvim__screenshot("~/.local/nvim/render/output/something.cat")' +'sleep 5' +'quit'
-          ls -lart ~/.local/share/nvim/render/output/
+          nvim +'lua vim.api.nvim__screenshot("/github/home/.local/nvim/render/output/something.cat")' +'sleep 5' +'quit'
+          ls -lart /github/home/.local/share/nvim/render/output/
           set +x
 
       - name: Archive render output
