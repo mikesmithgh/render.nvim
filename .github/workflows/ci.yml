@@ -12,10 +12,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-defaults:
-  run:
-    shell: bash -l {0}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,7 +26,9 @@ jobs:
           version: nightly
 
       - run: |
-          bash --login -i
+          export XDG_DATA_HOME=~/.local/share
+          export XDG_CONFIG_HOME=~/.config
+          export XDG_STATE_HOME=~/.local/state
           mkdir -p ~/.local/share/nvim/render/output
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
           echo $abs_path
