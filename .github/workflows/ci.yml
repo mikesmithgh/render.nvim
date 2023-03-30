@@ -32,15 +32,18 @@ jobs:
       - name: testing it out
         run: |
           set -x
+          apt update
+          apt install curl -y
+          curl -s -L -o /tmp/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+          tar -xvf /tmp/nvim-linux64.tar.gz --directory /opt
+          export PATH=$PATH:/opt/nvim-linux64/bin
+
           mkdir -p ~/.local/share/nvim/render/output
           abs_path="$(realpath ~/.local/share/nvim/render/output)"
-
           nvim +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot('\""$abs_path/something.cat"\"') | sleep 5 | :qall!'
-          cd $abs_path
-          ls | grep something
+          cd ~/.local/share/nvim/render/output
+          ls -la
           cat something.cat
-          cd ../../..
-          tree -a 
           set +x 
 
 
