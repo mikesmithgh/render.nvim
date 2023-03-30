@@ -70,55 +70,19 @@ jobs:
           neovim: true
           version: nightly
 
-      - run: |
-          # add comment to trigger CI
+      - name: testint it out
+        env:
+          TMPDIR: /github/home/tmp
+        run: |
           set -x
-          mkdir -p /github/home/.local/share/nvim/render/output/
-          chmod -R 777 /github/home/.local/share/nvim/
-          echo "stuff" > /github/home/.local/share/nvim/render/output/fake
-          ls -la /github/home/.local/share/nvim/render/output/
-          # apt install software-properties-common
-          # add-apt-repository ppa:neovim-ppa/unstable
-          # apt-get update
-          # apt-get install neovim
-          aha --version 
-          npx playwright --version
-          nvim --version
           pwd
-          mkdir -p /github/home/.tmp
-          mkdir -p /github/home/.local/share/nvim/render/output/
-          mkdir -p /github/home/.local/share/nvim/site/pack/mikesmithgh/start/
-          cp -r . /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
-          ls -la /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/
-          ls -la /github/home/.local/share/nvim/site/pack/mikesmithgh/start/render.nvim/*
-          mkdir -p /github/home/.local/state/nvim/shada/
-          touch /github/home/.local/state/nvim/shada/main.shada
-          # timeout 30 nvim -V9vim.log +'lua require("render").setup()' +'mode' +"lua if vim.fn.exists(':Render') > 0 then vim.cmd('Render') else vim.cmd('ls') end" +'sleep 5' +quit lua/render/init.lua || true
-          # cat vim.log
-          # ls -la /github/home/.local/share/nvim/render/output/
-          # cat /github/home/.local/share/nvim/render/output/*
-          nvim +'lua vim.api.nvim__screenshot("something.cat")' +'sleep 5' +'quit'
-          ls -lart
-          # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
-          # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/something.cat") | :sleep 5 | :qall!'
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/something.cat") | :sleep 5 | :qall!'
-          tree -a /github/home/.local
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/something.cat") | :sleep 5 | :qall!'
-          tree -a /github/home/.local
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/something.cat") | :sleep 5 | :qall!'
-          tree -a /github/home/.local
-          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/something.cat") | :sleep 5 | :qall!'
-          tree -a /github/home/.local
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | :sleep 5 | :qall!'
+          ls | grep something
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
-          ls -lart /github/home/.local/share/nvim/render/output/
-          tree -a /github/home/.local
-
-          whoami
-          ls -larth /github/home 
-          echo "huh" > /Users/mike/.local/share/nvim/render/output/something.cat
-          ls -lart /github/home/.local/share/nvim/render/output/
-
+          cd /github/home/.local/share/nvim/render/output
+          ls | grep something
+          cd ../../..
+          tree -a 
           set +x 
 
       - name: Archive render output
