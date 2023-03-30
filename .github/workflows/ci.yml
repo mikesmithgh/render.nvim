@@ -35,32 +35,32 @@ jobs:
           tar -xvf /tmp/nvim-linux64.tar.gz --directory /opt
           export PATH=$PATH:/opt/nvim-linux64/bin
 
-          mkdir -p ~/.local/share/nvim/render/output
-          sudo chmod 777 ~/.local/share/nvim/render/output
-          abs_path="$(realpath ~/.local/share/nvim/render/output)"
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/nvim/render/output/something.cat") | sleep 5 | :qall!'
+          mkdir -p ~/work/.local/share/nvim/render/output
+          sudo chmod 777 ~/work/.local/share/nvim/render/output
+          abs_path="$(realpath ~/work/.local/share/nvim/render/output)"
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/render/output/something.cat") | sleep 5 | :qall!'
           cat vlog.log
-          cd ~/.local/share/nvim/render/output
+          cd ~/work/.local/share/nvim/render/output
           ls -la
           cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/nvim/render/something.cat") | sleep 5 | :qall!'
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/render/something.cat") | sleep 5 | :qall!'
           cat vlog.log
-          cd ~/.local/share/nvim/render
+          cd ~/work/.local/share/nvim/render
           ls -la
           cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/nvim/something.cat") | sleep 5 | :qall!'
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/something.cat") | sleep 5 | :qall!'
           cat vlog.log
-          cd ~/.local/share/nvim/
+          cd ~/work/.local/share/nvim/
           ls -la
           cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/share/something.cat") | sleep 5 | :qall!'
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/something.cat") | sleep 5 | :qall!'
           cat vlog.log
-          cd ~/.local/share/
+          cd ~/work/.local/share/
           ls -la
           cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/.local/something.cat") | sleep 5 | :qall!'
+          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/something.cat") | sleep 5 | :qall!'
           cat vlog.log
-          cd ~/.local/
+          cd ~/work/.local/
           ls -la
           cat something.cat || true
           nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/something.cat") | sleep 5 | :qall!'
