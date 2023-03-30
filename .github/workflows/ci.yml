@@ -18,19 +18,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Run a multi-line script
-      run: |
-        mkdir ~/.ssh
-        cat > ~/.ssh/config <<EOF
-          Host host.example
-           User $USER
-           HostName 127.0.0.1
-        EOF
-        cat > ~/.ssh/authorized_keys <<EOF
-          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICWVgiqN8ETMGcrOxfrQDnEYjOTEfsm66++p+8DL0asD mike
-        EOF
-        sudo chmod og-rw ~
-        ls -la ~/.ssh
-        sudo ssh -o 'StrictHostKeyChecking no' host.example id
-        sleep infinity
-
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
