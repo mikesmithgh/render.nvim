@@ -60,7 +60,7 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
 
       - run: |
-          apt install sudo make -y
+          apt install sudo make tree -y
 
       - name: Setup Neovim nightly
         uses: rhysd/action-setup-vim@v1
@@ -101,8 +101,14 @@ jobs:
           ls -lart
           # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
           # nvim +'lua vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat")' +'sleep 5' +'quit'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/something.cat") | :sleep 5 | :qall!'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/something.cat") | :sleep 5 | :qall!'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/something.cat") | :sleep 5 | :qall!'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/something.cat") | :sleep 5 | :qall!'
+          nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/something.cat") | :sleep 5 | :qall!'
           nvim +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/github/home/.local/share/nvim/render/output/something.cat") | :sleep 5 | :qall!'
           ls -lart /github/home/.local/share/nvim/render/output/
+          tree /github/home
           set +x
 
       - name: Archive render output
