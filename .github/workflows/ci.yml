@@ -12,65 +12,31 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+
+# jobs:
+#   build-and-push-image:
+#     runs-on: ubuntu-latest
+
 jobs:
-  build-and-push-image:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Neovim nightly
-        uses: rhysd/action-setup-vim@v1
-        with:
-          neovim: true
-          version: nightly
-
-      - name: testing it out
-        run: |
-          set -x
-          sudo apt update
-          sudo apt install curl -y
-          curl -s -L -o /tmp/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
-          tar -xvf /tmp/nvim-linux64.tar.gz --directory /opt
-          export PATH=$PATH:/opt/nvim-linux64/bin
-
-          mkdir -p ~/work/.local/share/nvim/render/output
-          sudo chmod 777 ~/work/.local/share/nvim/render/output
-          abs_path="$(realpath ~/work/.local/share/nvim/render/output)"
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/render/output/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~/work/.local/share/nvim/render/output
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/render/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~/work/.local/share/nvim/render
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/nvim/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~/work/.local/share/nvim/
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/share/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~/work/.local/share/
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/work/.local/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~/work/.local/
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("/home/runner/something.cat") | sleep 5 | :qall!'
-          cat vlog.log
-          cd ~
-          ls -la
-          cat something.cat || true
-          nvim -V15vlog.log +mode +'autocmd! CursorHold * :call v:lua.vim.api.nvim__screenshot("something.cat") | sleep 5 | :qall!'
-          ls -la
-          cat something.cat || true
-          set +x 
-
+    - uses: actions/checkout@v2
+    - name: Run a multi-line script
+      run: |
+        ssh-keygen -t ed25519 -f ~/.ssh/whatever -N ''
+        cat > ~/.ssh/config <<EOF
+          Host host.example
+           User $USER
+           HostName 127.0.0.1
+           IdentityFile ~/.ssh/whatever
+        EOF
+        echo -n 'from="127.0.0.1" ' | cat - ~/.ssh/whatever.pub > ~/.ssh/authorized_keys
+        echo "Before fixing permissions on authorized_keys, notice home directory is world read/write"
+        ls -la ~/.ssh
+        ssh -o 'StrictHostKeyChecking no' host.example id || echo "ssh failed as expected... trying to fix permissions"
+        chmod og-rw ~
+        echo "After fixing permissions on home folder ~ ..."
+        ls -la ~/.ssh
+        ssh -o 'StrictHostKeyChecking no' host.example id
 
