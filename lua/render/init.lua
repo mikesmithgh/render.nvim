@@ -250,13 +250,15 @@ local function wait_for_cat_file(out_files, callback)
     )
   )
   vim.defer_fn(function()
-    timer:stop()
-    timer:close()
-    render_notify('error reading file; timeout', vim.log.levels.ERROR, {
-      err = {
-        file = out_files.cat,
-      },
-    })
+    if timer:is_active() then
+      timer:stop()
+      timer:close()
+      render_notify('error reading file; timeout', vim.log.levels.ERROR, {
+        err = {
+          file = out_files.cat,
+        },
+      })
+    end
   end, timeout_ms)
 end
 
