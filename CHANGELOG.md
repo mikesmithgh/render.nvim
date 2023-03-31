@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/mikesmithgh/render.nvim/compare/v1.1.1...v1.1.2) (2023-03-31)
+
+
+### Bug Fixes
+
+* add timeout for cat file read ([#17](https://github.com/mikesmithgh/render.nvim/issues/17)) ([acbe8ce](https://github.com/mikesmithgh/render.nvim/commit/acbe8ce95e3682b353284ea1fe490b0a044329f1))
+
 ## [1.1.1](https://github.com/mikesmithgh/render.nvim/compare/v1.1.0...v1.1.1) (2023-03-16)
 
 
