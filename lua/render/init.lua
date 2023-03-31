@@ -215,6 +215,51 @@ local function new_output_files()
   }
 end
 
+local function read_cat_file(timer, out_files, callback)
+  local screenshot
+  -- wait until screenshot has succesfully written to file
+  local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
+  if ok and file_content ~= nil and file_content ~= '' then
+    screenshot = file_content
+    timer:stop()
+    timer:close()
+    callback(screenshot)
+  end
+end
+
+local function wait_for_cat_file(out_files, callback)
+  local initial_delay_ms = 200
+  local repeat_interval_delay_ms = 500
+  local timeout_ms = 2000
+
+  local timer = vim.loop.new_timer()
+  if timer == nil then
+    render_notify('error reading file; failed to create timer', vim.log.levels.ERROR, {
+      err = {
+        file = out_files.cat,
+      },
+    })
+    return
+  end
+
+  timer:start(initial_delay_ms, repeat_interval_delay_ms,
+    vim.schedule_wrap(
+      function()
+        read_cat_file(timer, out_files, callback)
+      end
+    )
+  )
+  vim.defer_fn(function()
+    timer:stop()
+    timer:close()
+    render_notify('error reading file; timeout', vim.log.levels.ERROR, {
+      err = {
+        file = out_files.cat,
+      },
+    })
+  end, timeout_ms)
+end
+
 M.render = function()
   local out_files = new_output_files()
 
@@ -225,41 +270,31 @@ M.render = function()
     M.opts.fn.flash()
   end
 
-  local screenshot
-  local retries = 10
-  repeat
-    vim.cmd.sleep('200ms')
-    -- wait until screenshot has succesfully written to file
-    local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
-    if ok and file_content ~= nil and file_content ~= '' then
-      screenshot = file_content
-      break
+  wait_for_cat_file(out_files, function(screenshot)
+    if screenshot == nil or next(screenshot) == nil then
+      render_notify('error reading file; screenshot is nil', vim.log.levels.ERROR, {
+        file = out_files.cat,
+      })
+      return
     end
-  until retries == 0
 
-  if screenshot == nil or next(screenshot) == nil then
-    render_notify('error reading file', vim.log.levels.ERROR, {
-      file = out_files.cat,
-    })
-    return
-  end
+    -- parse and remove dimensions of the screenshot
+    local first_line = screenshot[1]
+    local dimensions = vim.fn.split(first_line, ',')
+    local height = dimensions[1]
+    local width = dimensions[2]
+    if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
+      table.remove(screenshot, 1)
+      render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
+        height = height,
+        width = width,
+      })
+    end
+    vim.fn.writefile(screenshot, out_files.cat)
 
-  -- parse and remove dimensions of the screenshot
-  local first_line = screenshot[1]
-  local dimensions = vim.fn.split(first_line, ',')
-  local height = dimensions[1]
-  local width = dimensions[2]
-  if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
-    table.remove(screenshot, 1)
-    render_notify('screenshot dimensions', vim.log.levels.DEBUG, {
-      height = height,
-      width = width,
-    })
-  end
-  vim.fn.writefile(screenshot, out_files.cat)
-
-  -- render html
-  vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
+    -- render html
+    vim.fn.jobstart(M.opts.fn.aha.cmd(out_files), M.opts.fn.aha.opts(out_files))
+  end)
 end
 
 M.opts = standard_opts
