@@ -242,12 +242,12 @@ local function wait_for_cat_file(out_files, callback)
     return
   end
 
-  timer:start(initial_delay_ms, repeat_interval_delay_ms,
-    vim.schedule_wrap(
-      function()
-        read_cat_file(timer, out_files, callback)
-      end
-    )
+  timer:start(
+    initial_delay_ms,
+    repeat_interval_delay_ms,
+    vim.schedule_wrap(function()
+      read_cat_file(timer, out_files, callback)
+    end)
   )
   vim.defer_fn(function()
     if timer:is_active() then
