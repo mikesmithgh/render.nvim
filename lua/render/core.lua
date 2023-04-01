@@ -17,7 +17,13 @@ local function new_output_files()
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
-  local out_file = opts.dirs.output .. '/' .. temp_prefix .. '-' .. temp_name .. '-' .. normalized_name
+  local out_file = opts.dirs.output
+    .. '/'
+    .. temp_prefix
+    .. '-'
+    .. temp_name
+    .. '-'
+    .. normalized_name
   return {
     file = out_file,
     cat = out_file .. '.cat',

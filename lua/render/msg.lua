@@ -13,10 +13,17 @@ M.notify = function(msg, level, extra, hi)
     vim.schedule(
       render_fn.partial(
         vim.notify,
-        vim.inspect(vim.tbl_extend('keep', { msg = string.format('%s: %s', render_constants.longname, msg) }, extra)),
+        vim.inspect(
+          vim.tbl_extend(
+            'keep',
+            { msg = string.format('%s: %s', render_constants.longname, msg) },
+            extra
+          )
+        ),
         level,
         {}
-      ))
+      )
+    )
   end
 end
 

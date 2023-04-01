@@ -43,17 +43,35 @@ standard_opts.font = {
   faces = {
     {
       name = render_constants.normal_font,
-      src = [[url(']] .. standard_opts.dirs.font .. '/' .. render_constants.normal_font .. '.' .. render_constants.ttf .. [[') format("truetype")]],
+      src = [[url(']]
+        .. standard_opts.dirs.font
+        .. '/'
+        .. render_constants.normal_font
+        .. '.'
+        .. render_constants.ttf
+        .. [[') format("truetype")]],
     },
     {
       name = render_constants.italic_font,
-      src = [[url(']] .. standard_opts.dirs.font .. '/' .. render_constants.italic_font .. '.' .. render_constants.ttf .. [[') format("truetype")]],
+      src = [[url(']]
+        .. standard_opts.dirs.font
+        .. '/'
+        .. render_constants.italic_font
+        .. '.'
+        .. render_constants.ttf
+        .. [[') format("truetype")]],
     },
   },
   size = 11,
 }
-standard_opts.files.render_script = standard_opts.dirs.scripts .. '/' .. render_constants.shortname .. '.spec.ts'
-standard_opts.files.render_css = standard_opts.dirs.css .. '/' .. render_constants.shortname .. '.css'
+standard_opts.files.render_script = standard_opts.dirs.scripts
+  .. '/'
+  .. render_constants.shortname
+  .. '.spec.ts'
+standard_opts.files.render_css = standard_opts.dirs.css
+  .. '/'
+  .. render_constants.shortname
+  .. '.css'
 
 M.default_opts = standard_opts
 M.opts = {}

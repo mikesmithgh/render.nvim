@@ -44,7 +44,7 @@ M.open_cmd = function()
   local cmd = {
     unix = { 'xdg-open' },
     mac = { 'open' },
-    windows = { cmd = 'cmd', args = { '/c', 'start', '""' }, },
+    windows = { cmd = 'cmd', args = { '/c', 'start', '""' } },
   }
   return cmd[M.os()]
 end
