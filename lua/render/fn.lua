@@ -64,7 +64,9 @@ M.new_output_files = function()
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
-  local out_file = string.lower(opts.dirs.output .. '/' .. normalized_name .. '-' .. temp_prefix .. '-' .. temp_name)
+  local out_file = string.lower(
+    opts.dirs.output .. '/' .. normalized_name .. '-' .. temp_prefix .. '-' .. temp_name
+  )
   return {
     file = out_file,
     cat = out_file .. '.' .. render_constants.cat,
