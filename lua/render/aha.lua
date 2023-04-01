@@ -1,12 +1,12 @@
 local M = {}
 local render_msg = require('render.msg')
+local render_constants = require('render.constants')
 
 local opts = {}
 
 M.setup = function(render_opts)
   opts = render_opts
 end
-
 
 M.cmd = function(files)
   if files.cat == nil or files.cat == '' then
@@ -34,7 +34,7 @@ M.cmd_opts = function(files)
         opts.fn.playwright.opts({
           input = files.html,
           output = files.file,
-          type = 'png',
+          type = render_constants.png,
         })
       )
     end,

@@ -7,7 +7,6 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
-
 M.cmd = function()
   return {
     'npx',

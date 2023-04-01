@@ -5,6 +5,7 @@ local opts = {}
 
 M.setup = function(render_opts)
   opts = render_opts
+  M.setup_files_and_dirs()
 end
 
 local function error_ignore(err, ignore_errnos)
@@ -135,7 +136,6 @@ M.wait_for_cat_file = function(out_files, callback)
   end, timeout_ms)
 end
 
-
 M.setup_files_and_dirs = function()
   M.create_dirs(opts.dirs)
 
@@ -159,6 +159,5 @@ M.setup_files_and_dirs = function()
     })
   end
 end
-
 
 return M

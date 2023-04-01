@@ -2,16 +2,14 @@ local render_constants = require('render.constants')
 local render_fn = require('render.fn')
 local M = {}
 
-M.notify_enabled = true
+local opts = {}
 
-M.setup = function(opts)
-  if not opts.features.notify then
-    M.notify_enabled = false
-  end
+M.setup = function(render_opts)
+  opts = render_opts
 end
 
 M.notify = function(msg, level, extra, hi)
-  if M.notify_enabled then
+  if opts.notify_enabled then
     vim.schedule(
       render_fn.partial(
         vim.notify,
