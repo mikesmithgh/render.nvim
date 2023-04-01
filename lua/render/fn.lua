@@ -1,6 +1,12 @@
 local render_constants = require('render.constants')
 local M = {}
 
+local opts = {}
+
+M.setup = function(render_opts)
+  opts = render_opts
+end
+
 M.partial = function(fn, ...)
   local n, args = select('#', ...), { ... }
   return function()
@@ -47,6 +53,26 @@ M.open_cmd = function()
     windows = { cmd = 'cmd', args = { '/c', 'start', '""' } },
   }
   return cmd[M.os()]
+end
+
+M.new_output_files = function()
+  local cur_name = vim.fn.expand('%:t')
+  if cur_name == nil or cur_name == '' then
+    cur_name = 'noname'
+  end
+  local normalized_name = vim.fn.substitute(cur_name, '\\W', '', 'g')
+  local temp = vim.fn.tempname()
+  local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
+  local temp_name = vim.fn.fnamemodify(temp, ':t')
+  local out_file = string.lower(
+    opts.dirs.output .. '/' .. normalized_name .. '-' .. temp_prefix .. '-' .. temp_name
+  )
+  return {
+    file = out_file,
+    cat = out_file .. '.' .. render_constants.cat,
+    html = out_file .. '.' .. render_constants.html,
+    png = out_file .. '.' .. render_constants.png,
+  }
 end
 
 return M

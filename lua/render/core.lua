@@ -1,6 +1,7 @@
 local M = {}
 local render_msg = require('render.msg')
 local render_fs = require('render.fs')
+local render_fn = require('render.fn')
 
 local opts = {}
 
@@ -8,32 +9,8 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
-local function new_output_files()
-  local cur_name = vim.fn.expand('%:t')
-  if cur_name == nil or cur_name == '' then
-    cur_name = 'noname'
-  end
-  local normalized_name = vim.fn.substitute(cur_name, '\\W', '', 'g')
-  local temp = vim.fn.tempname()
-  local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
-  local temp_name = vim.fn.fnamemodify(temp, ':t')
-  local out_file = opts.dirs.output
-    .. '/'
-    .. temp_prefix
-    .. '-'
-    .. temp_name
-    .. '-'
-    .. normalized_name
-  return {
-    file = out_file,
-    cat = out_file .. '.cat',
-    html = out_file .. '.html',
-    png = out_file .. '.png',
-  }
-end
-
 M.render = function()
-  local out_files = new_output_files()
+  local out_files = render_fn.new_output_files()
 
   -- WARNING undocumented nvim function this may have breaking changes in the future
   vim.api.nvim__screenshot(out_files.cat)
