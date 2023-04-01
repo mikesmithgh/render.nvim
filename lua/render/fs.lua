@@ -1,5 +1,11 @@
+local render_msg = require('render.msg')
 local uv = vim.loop
 local M = {}
+local opts = {}
+
+M.setup = function(render_opts)
+  opts = render_opts
+end
 
 local function error_ignore(err, ignore_errnos)
   if err ~= nil then
@@ -81,5 +87,78 @@ M.create_dirs = function(dirs)
     vim.fn.mkdir(dir, 'p')
   end
 end
+
+M.read_cat_file = function(timer, out_files, callback)
+  local screenshot
+  -- wait until screenshot has succesfully written to file
+  local ok, file_content = pcall(vim.fn.readfile, out_files.cat)
+  if ok and file_content ~= nil and file_content ~= '' then
+    screenshot = file_content
+    timer:stop()
+    timer:close()
+    callback(screenshot)
+  end
+end
+
+M.wait_for_cat_file = function(out_files, callback)
+  local initial_delay_ms = 200
+  local repeat_interval_delay_ms = 500
+  local timeout_ms = 2000
+
+  local timer = uv.new_timer()
+  if timer == nil then
+    render_msg.notify('error reading file; failed to create timer', vim.log.levels.ERROR, {
+      err = {
+        file = out_files.cat,
+      },
+    })
+    return
+  end
+
+  timer:start(
+    initial_delay_ms,
+    repeat_interval_delay_ms,
+    vim.schedule_wrap(function()
+      M.read_cat_file(timer, out_files, callback)
+    end)
+  )
+  vim.defer_fn(function()
+    if timer:is_active() then
+      timer:stop()
+      timer:close()
+      render_msg.notify('error reading file; timeout', vim.log.levels.ERROR, {
+        err = {
+          file = out_files.cat,
+        },
+      })
+    end
+  end, timeout_ms)
+end
+
+
+M.setup_files_and_dirs = function()
+  M.create_dirs(opts.dirs)
+
+  local ok, err = pcall(M.generateCSSFile, opts.font, opts.files.render_css)
+  if not ok then
+    -- TODO: move to notify module to avoid loop
+    render_msg.notify(err, vim.log.levels.ERROR, {
+      font = opts.font,
+      render_style = opts.files.render_css,
+    })
+  end
+
+  local init_files = {}
+  init_files[opts.files.runtime_fonts] = opts.dirs.font
+  init_files[opts.files.runtime_scripts] = opts.dirs.scripts
+  ok, err = pcall(M.createInitFiles, init_files)
+  if not ok then
+    render_msg.notify(err, vim.log.levels.ERROR, {
+      font = opts.font,
+      render_style = opts.files.render_css,
+    })
+  end
+end
+
 
 return M
