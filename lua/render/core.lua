@@ -27,6 +27,7 @@ M.render = function()
       return
     end
 
+    -- TODO move logic into a sanitize function
     -- parse and remove dimensions of the screenshot
     local first_line = screenshot[1]
     local dimensions = vim.fn.split(first_line, ',')
@@ -39,6 +40,11 @@ M.render = function()
         width = width,
       })
     end
+    for i, line in pairs(screenshot) do
+      -- tmux and screen print hex 15 shift out character (https://en.wikipedia.org/wiki/Shift_Out_and_Shift_In_characters)
+      screenshot[i] = line:gsub('\15', '')
+    end
+
     vim.fn.writefile(screenshot, out_files.cat)
 
     -- render html
