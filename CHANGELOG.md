@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/mikesmithgh/render.nvim/compare/v1.1.2...v1.2.0) (2023-04-03)
+
+
+### Features
+
+* add notify.level option ([#25](https://github.com/mikesmithgh/render.nvim/issues/25)) ([db3d460](https://github.com/mikesmithgh/render.nvim/commit/db3d460c58b6837c124ac5368c0db160ee839277))
+
 ## [1.1.2](https://github.com/mikesmithgh/render.nvim/compare/v1.1.1...v1.1.2) (2023-03-31)
 
 
