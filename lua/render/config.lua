@@ -12,6 +12,9 @@ local standard_opts = {
     flash = true,
     auto_open = true,
   },
+  notify = {
+    level = vim.log.levels.INFO,
+  },
   fn = {
     aha = {
       cmd = render_aha.cmd,
