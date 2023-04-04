@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/mikesmithgh/render.nvim/compare/v1.2.1...v1.3.0) (2023-04-04)
+
+
+### Features
+
+* add scale option to render size closes [#23](https://github.com/mikesmithgh/render.nvim/issues/23) ([#27](https://github.com/mikesmithgh/render.nvim/issues/27)) ([ac84519](https://github.com/mikesmithgh/render.nvim/commit/ac845190bcc6375b6a5c07c89244aa405c8c38ca))
+
 ## [1.2.1](https://github.com/mikesmithgh/render.nvim/compare/v1.2.0...v1.2.1) (2023-04-03)
 
 
