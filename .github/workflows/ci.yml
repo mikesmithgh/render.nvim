@@ -87,6 +87,7 @@ jobs:
           if [ $wait -gt 60 ]; then exit 1; fi
           cd ~/.local/share/nvim/render/output
           ls -1 | grep 'cat$' | xargs cat
+          cp ~/.local/share/nvim/render/output "${{ env.GITHUB_WORKSPACE }}/tmp/output"
 
       # # for debugging
       # - name: Setup upterm session
@@ -103,7 +104,7 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
         with:
-          source-directory: '~/.local/share/nvim/render/output/'
+          source-directory: "${{ env.GITHUB_WORKSPACE }}/tmp/output"
           destination-github-username: 'mikesmithgh'
           destination-repository-name: 'render.nvim.wiki'
           user-email: 'github-actions[bot]@users.noreply.github.com'
