@@ -87,7 +87,7 @@ jobs:
           if [ $wait -gt 60 ]; then exit 1; fi
           cd ~/.local/share/nvim/render/output
           ls -1 | grep 'cat$' | xargs cat
-          cp -r ~/.local/share/nvim/render/output "${{ env.GITHUB_WORKSPACE }}/tmp/output"
+          cp -r ~/.local/share/nvim/render/output "${{ github.workspace }}/tmp/output"
 
       # # for debugging
       # - name: Setup upterm session
@@ -97,14 +97,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output
-          path: ~/.local/share/nvim/render/output
+          path: ${{ github.workspace }}
 
       - name: Push output to wiki repo
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
         with:
-          source-directory: "${{ env.GITHUB_WORKSPACE }}/tmp/output"
+          source-directory: "${{ github.workspace }}/tmp/output"
           destination-github-username: 'mikesmithgh'
           destination-repository-name: 'render.nvim.wiki'
           user-email: 'github-actions[bot]@users.noreply.github.com'
