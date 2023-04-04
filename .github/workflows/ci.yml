@@ -37,6 +37,7 @@ jobs:
           cat <<'EOF' >> ~/.config/nvim/init.lua
 
           require('render').setup({
+            scale = '200%',
             notify = {
               level = vim.log.levels.OFF,
             },
