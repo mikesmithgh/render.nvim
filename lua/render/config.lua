@@ -15,6 +15,7 @@ local standard_opts = {
   notify = {
     level = vim.log.levels.INFO,
   },
+  scale = '100%',
   fn = {
     aha = {
       cmd = render_aha.cmd,

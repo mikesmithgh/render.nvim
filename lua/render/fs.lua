@@ -48,7 +48,7 @@ M.generateCSSFile = function(font, destination)
     uv.fs_write(fd, '    font-size: ' .. font.size .. 'px;\n')
     uv.fs_write(fd, '}\n\n\n')
     uv.fs_write(fd, 'pre {\n')
-    uv.fs_write(fd, '    zoom: 200%;\n')
+    uv.fs_write(fd, '    zoom: ' .. opts.scale .. ';\n')
     uv.fs_write(fd, '    position: absolute;\n')
     uv.fs_write(fd, '    /* avoid pre first line spacing */\n')
     uv.fs_write(fd, '    top: -1em;\n')
@@ -142,7 +142,6 @@ M.setup_files_and_dirs = function()
 
   local ok, err = pcall(M.generateCSSFile, opts.font, opts.files.render_css)
   if not ok then
-    -- TODO: move to notify module to avoid loop
     render_msg.notify(err, vim.log.levels.ERROR, {
       font = opts.font,
       render_style = opts.files.render_css,
