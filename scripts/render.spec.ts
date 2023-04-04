@@ -1,3 +1,4 @@
+// https://playwright.dev/docs/api/class-page#page-screenshot
 import { test, expect } from '@playwright/test';
 
 test('render image', async ({ page }) => {
@@ -49,7 +50,7 @@ test('render image', async ({ page }) => {
 
   await page.goto('file://' + process.env.RENDERNVIM_INPUT);
 
-  await page.locator('pre').screenshot(options);
+  await page.screenshot(options);
 
 });
 
