@@ -87,6 +87,8 @@ jobs:
           if [ $wait -gt 60 ]; then exit 1; fi
           cd ~/.local/share/nvim/render/output
           ls -1 | grep 'cat$' | xargs cat
+
+          mkdir -p "${{ github.workspace }}/tmp/output"
           cp -r ~/.local/share/nvim/render/output "${{ github.workspace }}/tmp/output"
 
       # # for debugging
