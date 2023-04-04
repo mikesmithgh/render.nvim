@@ -97,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/tmp/output
 
       - name: Push output to wiki repo
         uses: cpina/github-action-push-to-another-repository@main
