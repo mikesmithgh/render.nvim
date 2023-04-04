@@ -87,7 +87,7 @@ jobs:
           if [ $wait -gt 60 ]; then exit 1; fi
           cd ~/.local/share/nvim/render/output
           ls -1 | grep 'cat$' | xargs cat
-          cp ~/.local/share/nvim/render/output "${{ env.GITHUB_WORKSPACE }}/tmp/output"
+          cp -r ~/.local/share/nvim/render/output "${{ env.GITHUB_WORKSPACE }}/tmp/output"
 
       # # for debugging
       # - name: Setup upterm session
