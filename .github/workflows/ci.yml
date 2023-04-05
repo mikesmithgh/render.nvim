@@ -116,6 +116,7 @@ jobs:
       #
       - name: Push output to wiki repo
         run: | 
-          cd "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE/${GITHUB_REPOSITORY##*/}"
+          set -x
           ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_REF_NAME" --source-dir "$GITHUB_WORKSPACE/tmp/output" --target-dir 'output'
 
