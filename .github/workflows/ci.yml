@@ -88,19 +88,17 @@ jobs:
           cd ~/.local/share/nvim/render/output
           ls -1 | grep 'cat$' | xargs cat
 
-          mkdir -p "${{ github.workspace }}/tmp/output"
-          cp -r ~/.local/share/nvim/render/output "${{ github.workspace }}/tmp/output"
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: output
-          path: ${{ github.workspace }}/tmp/output
+          path: ~/.local/share/nvim/render/output
+
 
       - name: Push output to wiki repo
         run: | 
           cd "$GITHUB_WORKSPACE/.github/scripts"
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_HEAD_REF" --source-dir "$GITHUB_WORKSPACE/tmp/output/" --target-dir 'output'
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_HEAD_REF" --source-dir "~/.local/share/nvim/render/output" --target-dir 'output'
 
       # # for debugging
       # - name: Setup upterm session

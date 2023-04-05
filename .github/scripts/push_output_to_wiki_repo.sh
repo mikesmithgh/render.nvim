@@ -120,7 +120,7 @@ if [ ! -d "$source_dir" ]; then
 fi
 
 printf "[+] Copying contents of source repository folder %s to folder %s in git repo %s\n" "$source_dir" "$target_dir" "$repo"
-cp -a "$source_dir"/ "$clone_dir/$target_dir"
+cp -a "$source_dir" "$clone_dir/$target_dir"
 cd "$clone_dir"
 
 printf "[+] Files that will be pushed\n"
