@@ -101,16 +101,21 @@ jobs:
           name: output
           path: ${{ github.workspace }}/tmp/output
 
+      # - name: Push output to wiki repo
+      #   uses: cpina/github-action-push-to-another-repository@main
+      #   env:
+      #     SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
+      #   with:
+      #     source-directory: "${{ github.workspace }}/tmp/output"
+      #     destination-github-username: 'mikesmithgh'
+      #     destination-repository-name: 'render.nvim.wiki'
+      #     user-email: 'github-actions[bot]@users.noreply.github.com'
+      #     user-name: 'github-actions[bot]'
+      #     commit-message: 'chore(build): auto-generate wiki'
+      #     target-branch: temp
+      #
       - name: Push output to wiki repo
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.RENDER_WIKI_DEPLOY_KEY }}
-        with:
-          source-directory: "${{ github.workspace }}/tmp/output"
-          destination-github-username: 'mikesmithgh'
-          destination-repository-name: 'render.nvim.wiki'
-          user-email: 'github-actions[bot]@users.noreply.github.com'
-          user-name: 'github-actions[bot]'
-          commit-message: 'chore(build): auto-generate wiki'
-          target-branch: temp
+        run: | 
+          cd "$GITHUB_WORKSPACE"
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_REF_NAME" --source-dir "$GITHUB_WORKSPACE/tmp/output" --target-dir 'output'
 
