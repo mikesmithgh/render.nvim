@@ -99,8 +99,9 @@ jobs:
 
       - name: Push output to wiki repo
         run: | 
+          env
           cd "$GITHUB_WORKSPACE/.github/scripts"
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "${GITHUB_REF#refs/heads/}" --source-dir "$GITHUB_WORKSPACE/tmp/output/" --target-dir 'output'
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_REF_NAME" --source-dir "$GITHUB_WORKSPACE/tmp/output/" --target-dir 'output'
 
       # # for debugging
       # - name: Setup upterm session
