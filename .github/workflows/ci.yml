@@ -114,9 +114,13 @@ jobs:
       #     commit-message: 'chore(build): auto-generate wiki'
       #     target-branch: temp
       #
-      - name: Push output to wiki repo
-        run: | 
-          cd "$GITHUB_WORKSPACE/${GITHUB_REPOSITORY##*/}"
-          set -x
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_REF_NAME" --source-dir "$GITHUB_WORKSPACE/tmp/output" --target-dir 'output'
 
+      # for debugging
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
+      # - name: Push output to wiki repo
+      #   run: | 
+      #     cd "$GITHUB_WORKSPACE"
+      #     ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_REF_NAME" --source-dir "$GITHUB_WORKSPACE/tmp/output" --target-dir 'output'
+      #
