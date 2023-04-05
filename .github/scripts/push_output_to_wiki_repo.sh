@@ -62,7 +62,7 @@ if [ -n "${ssh_deploy_key:=}" ]; then
 	chmod 600 "$deploy_key_file"
 
 	ssh_known_hosts_file="$HOME/.ssh/known_hosts"
-	ssh-keyscan -H "git@github.com" > "$ssh_known_hosts_file"
+	ssh-keyscan -H "github.com" > "$ssh_known_hosts_file"
 
 	export GIT_SSH_COMMAND="ssh -i $deploy_key_file -o userknownhostsfile=$ssh_known_hosts_file"
 
