@@ -1,4 +1,4 @@
-*render.nvim.txt*          For NVIM nightly         Last change: 2023 March 22
+*render.nvim.txt*           For NVIM v0.9+          Last change: 2023 April 07
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
@@ -26,7 +26,7 @@ INSTALLATION                            *render.nvim-render.nvim-installation*
 PREREQUISITES ~
 
 
-- Neovim nightly <https://github.com/neovim/neovim/tree/nightly> build
+- Neovim v0.9+ <https://github.com/neovim/neovim/releases>
 - Install aha <https://github.com/theZiz/aha>
 - Install playwright <https://playwright.dev/>
 
