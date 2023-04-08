@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eux
+set -eu
 
 print_usage() {
   printf "%s\n" "$0"
@@ -133,4 +133,4 @@ printf "[+] Pushing git commit\n"
 # --set-upstream: sets the branch when pushing to a branch that does not exist
 git push "$repo" --set-upstream "master"
 
-set +eux
+set +eu
