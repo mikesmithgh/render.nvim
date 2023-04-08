@@ -3,7 +3,6 @@ set -eux
 
 print_usage() {
   printf "%s\n" "$0"
-  printf "  -b, --branch the destination branch in the target repository\n"
   printf "  -r, --repo \n"
   printf "  -h, --help display this help text and exit\n"
 }
@@ -14,7 +13,6 @@ for arg in "$@"; do
   shift
   case "$arg" in
     '--help')   set -- "$@" '-h'   ;;
-    '--branch') set -- "$@" '-b'   ;;
     '--repo')   set -- "$@" '-r'   ;;
     '--ssh-deploy-key')   set -- "$@" '-k'   ;;
     '--target-dir')   set -- "$@" '-t'   ;;
@@ -31,11 +29,10 @@ commit_msg='chore(build): auto-generate wiki'
 
 # Parse short options
 OPTIND=1
-while getopts "hb:r:k:t:s:" opt
+while getopts "hr:k:t:s:" opt
 do
   case "$opt" in
     'h') print_usage; exit 0 ;;
-    'b') branch=$OPTARG ;;
     'r') repo=$OPTARG ;;
     'k') ssh_deploy_key=$OPTARG ;;
     't') target_dir="ci/$OPTARG" ;;
@@ -134,6 +131,6 @@ git diff-index --quiet HEAD || git commit --message "$commit_msg"
 
 printf "[+] Pushing git commit\n"
 # --set-upstream: sets the branch when pushing to a branch that does not exist
-git push "$repo" --set-upstream "$branch"
+git push "$repo" --set-upstream "master"
 
 set +eux

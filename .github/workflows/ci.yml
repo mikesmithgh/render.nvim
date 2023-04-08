@@ -98,7 +98,7 @@ jobs:
       - name: Push output to wiki repo
         run: | 
           cd "$GITHUB_WORKSPACE/.github/scripts"
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --branch "$GITHUB_HEAD_REF" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir 'output'
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir "$GITHUB_HEAD_REF" 
 
       # # for debugging
       # - name: Setup upterm session
