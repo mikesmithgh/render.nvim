@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - '**'
-    paths: README.md
+    paths: 
+      - README.md
+      - .github/workflows/panvimdoc.yml
   workflow_dispatch:
 jobs:
   docs:
@@ -16,7 +18,7 @@ jobs:
         with:
           vimdoc: render.nvim
           pandoc: "README.md"
-          version: "NVIM nightly"
+          version: "NVIM v0.9+"
           demojify: true
           treesitter: true
       - uses: stefanzweifel/git-auto-commit-action@v4
