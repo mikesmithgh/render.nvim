@@ -3,7 +3,7 @@ set -eux
 
 print_usage() {
   printf "%s\n" "$0"
-  printf "  -b, --branch the destination branch in the target repository; main is disallowed \n"
+  printf "  -b, --branch the destination branch in the target repository\n"
   printf "  -r, --repo \n"
   printf "  -h, --help display this help text and exit\n"
 }
@@ -38,17 +38,12 @@ do
     'b') branch=$OPTARG ;;
     'r') repo=$OPTARG ;;
     'k') ssh_deploy_key=$OPTARG ;;
-    't') target_dir=$OPTARG ;;
+    't') target_dir="ci/$OPTARG" ;;
     's') source_dir=$(realpath "$OPTARG") ;;
     '?') print_usage >&2; exit 1 ;;
   esac
 done
 shift $(("$OPTIND" - 1)) # remove options from positional parameters
-
-if [[ -z "$branch" ]] || [[ "$branch" == "main" ]]; then
-  print_usage >&2
-  exit 1
-fi
 
 if [ -n "${ssh_deploy_key:=}" ]; then
 
@@ -86,9 +81,6 @@ clone_dir=$(mktemp -d)
 rm -rf "$clone_dir"
 git clone "$repo" "$clone_dir"
 cd "$clone_dir"
-
-printf "[+] Switching to branch %s\n" "$branch"
-git switch -c "$branch"
 
 ls -la "$clone_dir"
 
@@ -142,6 +134,6 @@ git diff-index --quiet HEAD || git commit --message "$commit_msg"
 
 printf "[+] Pushing git commit\n"
 # --set-upstream: sets the branch when pushing to a branch that does not exist
-git push -f "$repo" --set-upstream "$branch"
+git push "$repo" --set-upstream "$branch"
 
 set +eux
