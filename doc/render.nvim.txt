@@ -1,4 +1,4 @@
-*render.nvim.txt*           For NVIM v0.9+          Last change: 2023 April 08
+*render.nvim.txt*           For NVIM v0.9+          Last change: 2023 April 09
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
@@ -54,6 +54,10 @@ HOW DOES IT WORK? ~
 ACKOWLEDGEMENTS                      *render.nvim-render.nvim-ackowledgements*
 
 
+- aha - Ansi HTML Adapter <https://github.com/theZiz/aha>
+    > Converts ANSI escape sequences of a unix terminal to HTML code.
+- playwright <https://github.com/microsoft/playwright>
+    > Playwright is a framework for Web Testing and Automation. It allows testing Chromium, Firefox and WebKit with a single API. Playwright is built to enable cross-browser web automation that is ever-green, capable, reliable and fast.
 - MonaLisa <https://www.monolisa.dev/>
     > MonoLisa is a font that was designed by professionals to improve developers’ productivity and reduce fatigue.
 - monalisa-nerdfont-patch <https://github.com/daylinmorgan/monolisa-nerdfont-patch>
