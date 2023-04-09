@@ -51,7 +51,7 @@ M.generateCSSFile = function(font, destination)
     uv.fs_write(fd, '    zoom: ' .. opts.scale .. ';\n')
     uv.fs_write(fd, '    position: absolute;\n')
     uv.fs_write(fd, '    /* avoid pre first line spacing */\n')
-    uv.fs_write(fd, '    top: ' .. -1 * (opts.scale:gsub('%%', '') / 100) .. 'em;\n')
+    uv.fs_write(fd, '    top: -1em;\n')
     uv.fs_write(fd, '    left: 0em;\n')
     uv.fs_write(fd, '}\n\n')
 

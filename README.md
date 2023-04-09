@@ -6,6 +6,8 @@ Neovim plugin to take screenshots of your Neovim session.
 <!-- panvimdoc-ignore-start -->
 
 [![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
+[![aha: v0.5.1](https://img.shields.io/static/v1?style=for-the-badge&label=aha&message=v0.5.1&labelColor=282828&color=dbbc5f)](https://github.com/theZiz/aha)
+[![playwright: v1.32.0](https://img.shields.io/static/v1?style=for-the-badge&label=playwright&message=v1.32.0&logo=playwright&labelColor=282828&logoColor=d6991d&color=9dbad4)](https://playwright.dev/)
 [![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
 
 <!-- panvimdoc-ignore-end -->
@@ -46,6 +48,10 @@ return {
 3. Converts the `.html` file to `.png` via [playwright](https://playwright.dev/). Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
 
 ## 🤝 Ackowledgements
+- [aha - Ansi HTML Adapter](https://github.com/theZiz/aha) 
+    > Converts ANSI escape sequences of a unix terminal to HTML code.
+- [playwright](https://github.com/microsoft/playwright)
+    > Playwright is a framework for Web Testing and Automation. It allows testing Chromium, Firefox and WebKit with a single API. Playwright is built to enable cross-browser web automation that is ever-green, capable, reliable and fast.
 - [MonaLisa](https://www.monolisa.dev/) 
     > MonoLisa is a font that was designed by professionals to improve developers’ productivity and reduce fatigue.
 - [monalisa-nerdfont-patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch) 

@@ -14,6 +14,7 @@ M.cmd = function(files)
   end
   return {
     'aha',
+    '--no-header',
     '--css',
     opts.files.render_css,
     '-f',
@@ -26,7 +27,24 @@ M.cmd_opts = function(files)
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, aha_result)
-      vim.fn.writefile(aha_result, files.html)
+      vim.fn.writefile({
+        '<!DOCTYPE html>',
+        '<!-- This file was generated with render.nvim (https://github.com/mikesmithgh/render.nvim) -->',
+        '<!-- by using aha Ansi HTML Adapter (https://github.com/theZiz/aha) Thanks aha authors! :) -->',
+        '<html>',
+        '<head>',
+        '<title>render.nvim</title>',
+        '<link rel="stylesheet" href="' .. opts.files.render_css .. '">',
+        '</head>',
+        '<body>',
+        '<pre>',
+      }, files.html, 'ab')
+      vim.fn.writefile(aha_result, files.html, 'ab')
+      vim.fn.writefile({
+        '</pre>',
+        '</body>',
+        '</html>',
+      }, files.html, 'a')
 
       -- render png
       vim.fn.jobstart(
