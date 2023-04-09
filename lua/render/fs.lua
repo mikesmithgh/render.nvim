@@ -53,6 +53,7 @@ M.generateCSSFile = function(font, destination)
     uv.fs_write(fd, '    /* avoid pre first line spacing */\n')
     uv.fs_write(fd, '    top: -1em;\n')
     uv.fs_write(fd, '    left: 0em;\n')
+    uv.fs_write(fd, '    display: -webkit-box;\n')
     uv.fs_write(fd, '}\n\n')
 
     uv.fs_close(fd)
