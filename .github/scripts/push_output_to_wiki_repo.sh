@@ -110,8 +110,13 @@ fi
 
 printf "[+] Copying contents of source repository folder %s to folder %s in git repo %s\n" "$source_dir" "$target_dir" "$repo"
 cp -a "$source_dir" "$clone_dir/$target_dir"
-cd "$clone_dir"
+cd "$clone_dir/$target_dir"
 
+for file in *; do 
+  mv "$file" "intro.${file##*.}"
+done 
+
+cd "$clone_dir"
 printf "[+] Files that will be pushed\n"
 ls -la
 

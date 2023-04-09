@@ -76,7 +76,7 @@ jobs:
       - name: Render test
         run: |
           tmux new-session -d -s render
-          tmux send-keys -t render 'nvim -c "set columns=156 lines=72"' Enter
+          tmux send-keys -t render 'nvim -c "set columns=156 lines=52"' Enter
 
           wait=0
           until [ $wait -gt 60 ] || (cd "$HOME/.local/share/nvim/render/output" && [ $(ls -1 *.png 2>/dev/null | wc -l) != 0 ]); do 
