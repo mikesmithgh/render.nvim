@@ -86,6 +86,9 @@ jobs:
           done
           if [ $wait -gt 60 ]; then exit 1; fi
           cd "$HOME/.local/share/nvim/render/output"
+          for file in *; do 
+            mv "$file" "intro.${file##*.}"
+          done 
           ls -1 | grep 'cat$' | xargs cat
 
       - name: Upload artifacts
