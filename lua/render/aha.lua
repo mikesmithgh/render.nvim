@@ -15,8 +15,6 @@ M.cmd = function(files)
   return {
     'aha',
     '--no-header',
-    '--css',
-    opts.files.render_css,
     '-f',
     files.cat,
   }
@@ -34,7 +32,12 @@ M.cmd_opts = function(files)
         '<html>',
         '<head>',
         '<title>render.nvim</title>',
-        '<link rel="stylesheet" href="' .. opts.files.render_css .. '">',
+        '<style>',
+      }, files.html)
+      local css = vim.fn.readfile(opts.files.render_css)
+      vim.fn.writefile(css, files.html, 'ab')
+      vim.fn.writefile({
+        '</style>',
         '</head>',
         '<body>',
         '<pre>',
