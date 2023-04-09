@@ -41,6 +41,15 @@ return {
 }
 ```
 
+### Using Neovim's built-in package support [pack](https://neovim.io/doc/user/usr_05.html#05.4)
+```bash
+mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
+cd $HOME/.local/share/nvim/site/pack/mikesmithgh/start
+git clone git@github.com:mikesmithgh/render.nvim.git
+nvim -u NONE -c "helptags render.nvim/doc" -c q
+echo "require('render').setup()" >> "$HOME/.config/nvim/init.lua" 
+```
+
 <!-- panvimdoc-ignore-start -->
 
 ## 👇 Example
@@ -50,7 +59,7 @@ Neovim intro screen captured with render.nvim
 
 <!-- panvimdoc-ignore-end -->
 
-### How does it work?
+## 🤷 How does it work?
 1. render.nvim calls the `vim.api.nvim__screenshot` API to create a `.cat` file containing ANSI escape sequences representing the current Neovim session. This is an undocumented API and may be at risk of breaking changes.
 2. Converts the `.cat` file to `.html` via [aha](https://github.com/theZiz/aha).
 3. Converts the `.html` file to `.png` via [playwright](https://playwright.dev/). Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
