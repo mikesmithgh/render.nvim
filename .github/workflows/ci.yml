@@ -76,7 +76,7 @@ jobs:
       - name: Render test
         run: |
           tmux new-session -d -s render
-          tmux send-keys -t render 'nvim -c "set columns=156 lines=72"' Enter
+          tmux send-keys -t render 'nvim -c "set columns=156 lines=52"' Enter
 
           wait=0
           until [ $wait -gt 60 ] || (cd "$HOME/.local/share/nvim/render/output" && [ $(ls -1 *.png 2>/dev/null | wc -l) != 0 ]); do 
@@ -86,6 +86,9 @@ jobs:
           done
           if [ $wait -gt 60 ]; then exit 1; fi
           cd "$HOME/.local/share/nvim/render/output"
+          for file in *; do 
+            mv "$file" "intro.${file##*.}"
+          done 
           ls -1 | grep 'cat$' | xargs cat
 
       - name: Upload artifacts
