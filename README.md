@@ -22,7 +22,6 @@ https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-
 
 <!-- panvimdoc-ignore-end -->
 
-
 ## 📦 Installation
 
 ### Prerequisites
@@ -41,6 +40,15 @@ return {
   },
 }
 ```
+
+<!-- panvimdoc-ignore-start -->
+
+## 👇 Example
+Neovim intro screen captured with render.nvim
+
+![intro screenshot](https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/output/intro.png)
+
+<!-- panvimdoc-ignore-end -->
 
 ### How does it work?
 1. render.nvim calls the `vim.api.nvim__screenshot` API to create a `.cat` file containing ANSI escape sequences representing the current Neovim session. This is an undocumented API and may be at risk of breaking changes.
