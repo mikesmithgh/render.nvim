@@ -5,6 +5,7 @@ Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
   - Installation                        |render.nvim-render.nvim-installation|
+  - How does it work?              |render.nvim-render.nvim-how-does-it-work?|
   - Ackowledgements                  |render.nvim-render.nvim-ackowledgements|
 
 
@@ -45,7 +46,18 @@ USING LAZY.NVIM ~
 <
 
 
-HOW DOES IT WORK? ~
+USING NEOVIM’S BUILT-IN PACKAGE SUPPORT PACK ~
+
+>bash
+    mkdir -p "$HOME/.local/share/nvim/site/pack/mikesmithgh/start/"
+    cd $HOME/.local/share/nvim/site/pack/mikesmithgh/start
+    git clone git@github.com:mikesmithgh/render.nvim.git
+    nvim -u NONE -c "helptags render.nvim/doc" -c q
+    echo "require('render').setup()" >> "$HOME/.config/nvim/init.lua" 
+<
+
+
+HOW DOES IT WORK?                  *render.nvim-render.nvim-how-does-it-work?*
 
 
 1. render.nvim calls the `vim.api.nvim__screenshot` API to create a `.cat` file containing ANSI escape sequences representing the current Neovim session. This is an undocumented API and may be at risk of breaking changes.2. Converts the `.cat` file to `.html` via aha <https://github.com/theZiz/aha>.3. Converts the `.html` file to `.png` via playwright <https://playwright.dev/>. Playwright spins up a headless chromium browser of the `.html` page and captures the screenshot.
