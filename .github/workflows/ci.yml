@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output
-          path: "${{ env.HOME }}/.local/share/nvim/render/output"
+          path: ~/.local/share/nvim/render/output
 
       - name: Push output to wiki repo
         run: | 
