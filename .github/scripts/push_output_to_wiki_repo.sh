@@ -44,13 +44,13 @@ shift $(("$OPTIND" - 1)) # remove options from positional parameters
 
 if [ -n "${ssh_deploy_key:=}" ]; then
 
-	echo "[+] using ssh_deploy_key"
+	printf "[+] using ssh_deploy_key"
 
   # Inspired by https://github.com/cpina/github-action-push-to-another-repository/blob/main/entrypoint.sh, thanks!
 	# which was inspired by https://github.com/leigholiver/commit-with-deploy-key/blob/main/entrypoint.sh , thanks!
 	mkdir --parents "$HOME/.ssh"
 	deploy_key_file="$HOME/.ssh/deploy_key"
-	echo "${ssh_deploy_key}" > "$deploy_key_file"
+	printf "%s" "${ssh_deploy_key}" > "$deploy_key_file"
 	chmod 600 "$deploy_key_file"
 
 	ssh_known_hosts_file="$HOME/.ssh/known_hosts"
