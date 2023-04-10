@@ -105,7 +105,7 @@ jobs:
             printf "GITHUB_HEAD_REF is empty, using GITHUB_REF_NAME\n"
             target_dir="$GITHUB_REF_NAME"
           fi
-          printf "target dir is %s" "$target_dir\n"
+          printf "target dir is %s\n" "$target_dir"
           ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir "$target_dir"
 
       # # for debugging

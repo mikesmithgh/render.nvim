@@ -113,7 +113,7 @@ cp -a "$source_dir" "$clone_dir/$target_dir"
 cd "$clone_dir"
 
 printf "[+] Files that will be pushed\n"
-ls -la
+tree
 
 printf "[+] Set directory is safe (%s)\n" "$clone_dir"
 # Related to https://github.com/cpina/github-action-push-to-another-repository/issues/64 and https://github.com/cpina/github-action-push-to-another-repository/issues/64
@@ -132,5 +132,8 @@ git diff-index --quiet HEAD || git commit --message "$commit_msg"
 printf "[+] Pushing git commit\n"
 # --set-upstream: sets the branch when pushing to a branch that does not exist
 git push "$repo" --set-upstream "master"
+
+printf "### Artifacts\n" >> "$GITHUB_STEP_SUMMARY"
+find . -type file | sed -e 's/^\.\///' | xargs -I {} printf "- https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/%s/%s\n" "$target_dir" "{}" >> "$GITHUB_STEP_SUMMARY"
 
 set +eu
