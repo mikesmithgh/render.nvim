@@ -106,7 +106,7 @@ jobs:
             target_dir="$GITHUB_REF_NAME"
           fi
           printf "target dir is %s" "$target_dir"
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir 
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir "$target_dir"
 
       # # for debugging
       # - name: Setup upterm session
