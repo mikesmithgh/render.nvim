@@ -90,7 +90,7 @@ M.sanitize_ansi_screenshot = function(screenshot)
 
     -- tmux and screen print hex 15 shift out character
     -- see https://en.wikipedia.org/wiki/shift_out_and_shift_in_characters
-    screenshot[i] = vim.fn.substitute(line, '\\v%u0f', '', 'g')
+    line = vim.fn.substitute(line, '\\v%u0f', '', 'g')
 
     -- fzf-lua prints en space which is half the width of regular font
     -- see https://en.wikipedia.org/wiki/En_(typography)
