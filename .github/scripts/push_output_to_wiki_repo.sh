@@ -134,6 +134,6 @@ printf "[+] Pushing git commit\n"
 git push "$repo" --set-upstream "master"
 
 printf "### Artifacts\n" >> "$GITHUB_STEP_SUMMARY"
-find . -type file | sed -e 's/^\.\///' | xargs -I {} printf "- https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/%s/%s\n" "$target_dir" "{}" >> "$GITHUB_STEP_SUMMARY"
+find . -type f | sed -e 's/^\.\///' | xargs -I {} printf "- https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/%s/%s\n" "$target_dir" "{}" >> "$GITHUB_STEP_SUMMARY"
 
 set +eu
