@@ -5,10 +5,10 @@ Neovim plugin to take screenshots of your Neovim session.
 
 <!-- panvimdoc-ignore-start -->
 
-[![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
-[![aha: v0.5.1](https://img.shields.io/static/v1?style=for-the-badge&label=aha&message=v0.5.1&labelColor=282828&color=dbbc5f)](https://github.com/theZiz/aha)
-[![playwright: v1.32.0](https://img.shields.io/static/v1?style=for-the-badge&label=playwright&message=v1.32.0&logo=playwright&labelColor=282828&logoColor=ff6961&color=ff6961)](https://playwright.dev/)
-[![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
+[![neovim: v0.9+](https://img.shields.io/static/v1?style=flat-square&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
+[![aha: v0.5.1](https://img.shields.io/static/v1?style=flat-square&label=aha&message=v0.5.1&labelColor=282828&color=dbbc5f&logoWidth=10&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE9SURBVHhe7dJBAQAgDAAhm66oTQwzg3APGnDenY2rALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4AqAKwCuALgC4ApAm/2Zc0sUAj5geAAAAABJRU5ErkJggg==)](https://github.com/theZiz/aha)<!-- search: https://www.htmlcsscolor.com/hex/DBBC5F and encode: https://www.base64-image.de/  -->
+[![playwright: v1.32.0](https://img.shields.io/static/v1?style=flat-square&label=playwright&message=v1.32.0&logo=playwright&labelColor=282828&logoColor=ff6961&color=ff6961)](https://playwright.dev/)
+[![semantic-release: angular](https://img.shields.io/static/v1?style=flat-square&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
 
 <!-- panvimdoc-ignore-end -->
 
@@ -55,7 +55,7 @@ echo "require('render').setup()" >> "$HOME/.config/nvim/init.lua"
 ## 👇 Example
 Neovim intro screen captured with render.nvim
 
-![intro screenshot](https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/output/intro.png)
+![intro screenshot](https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/main/output/intro.png)
 
 <!-- panvimdoc-ignore-end -->
 
