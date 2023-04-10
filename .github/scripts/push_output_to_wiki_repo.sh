@@ -44,13 +44,13 @@ shift $(("$OPTIND" - 1)) # remove options from positional parameters
 
 if [ -n "${ssh_deploy_key:=}" ]; then
 
-	echo "[+] using ssh_deploy_key"
+	printf "[+] using ssh_deploy_key\n"
 
   # Inspired by https://github.com/cpina/github-action-push-to-another-repository/blob/main/entrypoint.sh, thanks!
 	# which was inspired by https://github.com/leigholiver/commit-with-deploy-key/blob/main/entrypoint.sh , thanks!
 	mkdir --parents "$HOME/.ssh"
 	deploy_key_file="$HOME/.ssh/deploy_key"
-	echo "${ssh_deploy_key}" > "$deploy_key_file"
+	printf "%s\n" "${ssh_deploy_key}" > "$deploy_key_file"
 	chmod 600 "$deploy_key_file"
 
 	ssh_known_hosts_file="$HOME/.ssh/known_hosts"
@@ -113,7 +113,7 @@ cp -a "$source_dir" "$clone_dir/$target_dir"
 cd "$clone_dir"
 
 printf "[+] Files that will be pushed\n"
-ls -la
+tree
 
 printf "[+] Set directory is safe (%s)\n" "$clone_dir"
 # Related to https://github.com/cpina/github-action-push-to-another-repository/issues/64 and https://github.com/cpina/github-action-push-to-another-repository/issues/64
@@ -132,5 +132,8 @@ git diff-index --quiet HEAD || git commit --message "$commit_msg"
 printf "[+] Pushing git commit\n"
 # --set-upstream: sets the branch when pushing to a branch that does not exist
 git push "$repo" --set-upstream "master"
+
+printf "### Artifacts\n" >> "$GITHUB_STEP_SUMMARY"
+find "${target_dir}" -not -iwholename '*.git*' -type f | sed -e 's/^\.\///' | xargs -I {} printf "- https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/%s\n" "{}" >> "$GITHUB_STEP_SUMMARY"
 
 set +eu

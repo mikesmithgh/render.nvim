@@ -80,7 +80,7 @@ jobs:
 
           wait=0
           until [ $wait -gt 60 ] || (cd "$HOME/.local/share/nvim/render/output" && [ $(ls -1 *.png 2>/dev/null | wc -l) != 0 ]); do 
-            echo "waiting for file with png file extension..."
+            printf "waiting for file with png file extension...\n"
             wait=$((wait + 5)) 
             sleep 5
           done
@@ -100,7 +100,13 @@ jobs:
       - name: Push output to wiki repo
         run: | 
           cd "$GITHUB_WORKSPACE/.github/scripts"
-          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir "$GITHUB_HEAD_REF" 
+          target_dir="$GITHUB_HEAD_REF" 
+          if [[ -z "$target_dir" ]]; then
+            printf "GITHUB_HEAD_REF is empty, using GITHUB_REF_NAME\n"
+            target_dir="$GITHUB_REF_NAME"
+          fi
+          printf "target dir is %s\n" "$target_dir"
+          ./push_output_to_wiki_repo.sh --ssh-deploy-key "${{ secrets.RENDER_WIKI_DEPLOY_KEY }}" --source-dir "$HOME/.local/share/nvim/render/output" --target-dir "$target_dir"
 
       # # for debugging
       # - name: Setup upterm session
