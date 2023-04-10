@@ -75,4 +75,29 @@ M.new_output_files = function()
   }
 end
 
+M.sanitize_ansi_screenshot = function(screenshot)
+  -- parse and remove dimensions of the screenshot
+  local first_line = screenshot[1]
+  local dimensions = vim.fn.split(first_line, ',')
+  local height = dimensions[1]
+  local width = dimensions[2]
+  if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
+    table.remove(screenshot, 1)
+  end
+  for i, line in pairs(screenshot) do
+    -- lua's pattern matching facilities work byte by byte. in general, this will not work for unicode pattern matching, although some things will work as you want.
+    -- see http://lua-users.org/wiki/LuaUnicode
+
+    -- tmux and screen print hex 15 shift out character
+    -- see https://en.wikipedia.org/wiki/shift_out_and_shift_in_characters
+    screenshot[i] = vim.fn.substitute(line, '\\v%u0f', '', 'g')
+
+    -- fzf-lua prints en space which is half the width of regular font
+    -- see https://en.wikipedia.org/wiki/En_(typography)
+    -- see https://github.com/ibhagwan/fzf-lua/blob/b454e05d44530e50c0d049b87ca6eeece958ff6a/doc/fzf-lua.txt#L1199
+    screenshot[i] = vim.fn.substitute(line, '\\v%u2002', ' ', 'g')
+  end
+  return height, width
+end
+
 return M

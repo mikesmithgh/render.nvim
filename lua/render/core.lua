@@ -26,28 +26,14 @@ M.render = function()
       })
       return
     end
-
-    -- TODO move logic into a sanitize function
-    -- parse and remove dimensions of the screenshot
-    local first_line = screenshot[1]
-    local dimensions = vim.fn.split(first_line, ',')
-    local height = dimensions[1]
-    local width = dimensions[2]
-    if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
-      table.remove(screenshot, 1)
-      render_msg.notify('screenshot dimensions', vim.log.levels.DEBUG, {
-        height = height,
-        width = width,
-      })
-    end
-    for i, line in pairs(screenshot) do
-      -- tmux and screen print hex 15 shift out character (https://en.wikipedia.org/wiki/Shift_Out_and_Shift_In_characters)
-      screenshot[i] = line:gsub('\15', '')
-    end
-
+    local height, width = render_fn.sanitize_ansi_screenshot(screenshot)
+    render_msg.notify('screenshot dimensions', vim.log.levels.DEBUG, {
+      height = height,
+      width = width,
+    })
     vim.fn.writefile(screenshot, out_files.cat)
 
-    -- render html
+    -- convert ansi to html
     vim.fn.jobstart(opts.fn.aha.cmd(out_files), opts.fn.aha.opts(out_files))
   end)
 end
