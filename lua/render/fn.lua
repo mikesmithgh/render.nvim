@@ -72,6 +72,11 @@ M.new_output_files = function()
     cat = out_file .. '.' .. render_constants.cat,
     html = out_file .. '.' .. render_constants.html,
     png = out_file .. '.' .. render_constants.png,
+    jpg = out_file .. '.' .. render_constants.jpg,
+    gif = out_file .. '.' .. render_constants.gif,
+    pdf = out_file .. '.' .. render_constants.pdf,
+    tiff = out_file .. '.' .. render_constants.tiff,
+    mov = out_file .. '.' .. render_constants.mov,
   }
 end
 

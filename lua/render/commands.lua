@@ -1,4 +1,5 @@
 local render_core = require('render.core')
+local render_screencapture = require('render.screencapture')
 local render_fn = require('render.fn')
 local render_fs = require('render.fs')
 local M = {}
@@ -10,6 +11,10 @@ M.setup = function(render_opts)
   vim.api.nvim_create_user_command('Render', function()
     -- small delay to avoid capturing :Render command and flash
     vim.defer_fn(render_core.render, 200)
+  end, {})
+
+  vim.api.nvim_create_user_command('RenderInterrupt', function()
+    render_screencapture.interrupt()
   end, {})
 
   vim.api.nvim_create_user_command('RenderClean', function()

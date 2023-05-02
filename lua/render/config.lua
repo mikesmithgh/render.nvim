@@ -1,9 +1,14 @@
-local render_constants = require('render.constants')
-local render_fn = require('render.fn')
-local render_aha = require('render.aha')
-local render_playwright = require('render.playwright')
-local render_keymaps = require('render.keymaps')
+local render_constants     = require('render.constants')
+local render_fn            = require('render.fn')
+local render_aha           = require('render.aha')
+local render_playwright    = require('render.playwright')
+local render_windowinfo    = require('render.windowinfo')
+local render_screencapture = require('render.screencapture')
+local render_keymaps       = require('render.keymaps')
+
+
 local M = {}
+
 
 local standard_opts = {
   features = {
@@ -25,6 +30,18 @@ local standard_opts = {
       cmd = render_playwright.cmd,
       opts = render_playwright.cmd_opts,
     },
+    window_info = {
+      cmd = render_windowinfo.cmd,
+      opts = render_windowinfo.cmd_opts,
+    },
+    screencapture = {
+      cmd = render_screencapture.cmd,
+      opts = render_screencapture.cmd_opts,
+    },
+    screencapture_location = {
+      cmd = render_screencapture.location_cmd,
+      opts = render_screencapture.location_cmd_opts,
+    },
     keymap_setup = render_keymaps.setup_default_keymaps,
     flash = render_fn.flash,
     open_cmd = render_fn.open_cmd,
@@ -42,8 +59,17 @@ local standard_opts = {
     runtime_scripts = vim.api.nvim_get_runtime_file('scripts/*', true),
     runtime_fonts = vim.api.nvim_get_runtime_file('font/*', true),
   },
+  mode_opts = {
+    type = render_constants.screencapture.type.video,
+    mode = render_constants.screencapture.mode.save,
+    filetype = render_constants.mov,
+    delay = nil,
+    show_clicks = false,
+    video_limit = nil,
+  },
 }
-standard_opts.font = {
+
+standard_opts.font  = {
   faces = {
     {
       name = render_constants.normal_font,
@@ -68,16 +94,20 @@ standard_opts.font = {
   },
   size = 11,
 }
+
+
 standard_opts.files.render_script = standard_opts.dirs.scripts
   .. '/'
   .. render_constants.shortname
   .. '.spec.ts'
-standard_opts.files.render_css = standard_opts.dirs.css
+standard_opts.files.render_css    = standard_opts.dirs.css
   .. '/'
   .. render_constants.shortname
   .. '.css'
 
+
+
 M.default_opts = standard_opts
-M.opts = {}
+M.opts         = {}
 
 return M
