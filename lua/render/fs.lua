@@ -65,15 +65,16 @@ M.createInitFiles = function(init_files)
     for _, source in pairs(sources) do
       local dest = destination_dir .. '/' .. vim.fn.fnamemodify(source, ':t')
       uv.fs_copyfile(source, dest, { excl = true }, function(err, success)
-        if success == nil then
-          local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
-          if ignore then
-            return
-          end
-          if fs_err ~= nil then
-            error(fs_err)
-          end
-        end
+        -- print("in copytfile")
+        -- if success == nil then
+        --   local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
+        --   if ignore then
+        --     return
+        --   end
+        --   if fs_err ~= nil then
+        --     error(fs_err)
+        --   end
+        -- end
       end)
     end
   end
