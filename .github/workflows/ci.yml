@@ -26,6 +26,7 @@ jobs:
       - name: Open Finder Window
         run: |
           open .
+          brew install kitty
 
       - name: Setup Neovim nightly
         uses: rhysd/action-setup-vim@v1
@@ -95,8 +96,11 @@ jobs:
       #     ls -1 | grep 'cat$' | xargs cat
 
       # for debugging
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
+      # - name: Setup upterm session
+      #   uses: lhotari/action-upterm@v1
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v2
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
