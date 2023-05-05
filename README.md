@@ -29,6 +29,10 @@ https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-
 - Install [aha](https://github.com/theZiz/aha)
 - Install [playwright](https://playwright.dev/)
 
+### Privacy & Security
+- accessibilty -> required for window dimensions. will receive an error that we can handle to notify user
+- screen recording -> required for screenshot. will silently fail and only take a screenshot of desktop
+
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 return {
