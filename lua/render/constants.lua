@@ -23,7 +23,6 @@ M.black_hex = '#ffffff'
 
 M.unnamed_file = 'noname'
 
-
 M.screencapture = {
   type = {
     video = 'video',

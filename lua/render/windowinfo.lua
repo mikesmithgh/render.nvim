@@ -11,7 +11,11 @@ end
 M.cmd = function()
   local window_info_script = vim.api.nvim_get_runtime_file('scripts/window_info.scpt', false)[1]
   if window_info_script == nil then
-    render_msg.notify('error getting window information script from runtime path', vim.log.levels.ERROR, {})
+    render_msg.notify(
+      'error getting window information script from runtime path',
+      vim.log.levels.ERROR,
+      {}
+    )
     return
   end
   return {

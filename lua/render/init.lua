@@ -1,15 +1,14 @@
-local render_aha           = require('render.aha')
-local render_commands      = require('render.commands')
-local render_config        = require('render.config')
-local render_core          = require('render.core')
-local render_fn            = require('render.fn')
-local render_fs            = require('render.fs')
-local render_keymaps       = require('render.keymaps')
-local render_msg           = require('render.msg')
-local render_playwright    = require('render.playwright')
-local render_windowinfo    = require('render.windowinfo')
+local render_aha = require('render.aha')
+local render_commands = require('render.commands')
+local render_config = require('render.config')
+local render_core = require('render.core')
+local render_fn = require('render.fn')
+local render_fs = require('render.fs')
+local render_keymaps = require('render.keymaps')
+local render_msg = require('render.msg')
+local render_playwright = require('render.playwright')
+local render_windowinfo = require('render.windowinfo')
 local render_screencapture = require('render.screencapture')
-
 
 local M = {}
 

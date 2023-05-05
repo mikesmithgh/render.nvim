@@ -15,10 +15,7 @@ M.render = function(mode_opts)
 
   local out_files = render_fn.new_output_files()
 
-  vim.fn.jobstart(
-    opts.fn.window_info.cmd(),
-    opts.fn.window_info.opts(out_files, mode_opts)
-  )
+  vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, mode_opts))
 end
 
 M.render_png = function()

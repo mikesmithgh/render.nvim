@@ -1,14 +1,12 @@
-local render_constants     = require('render.constants')
-local render_fn            = require('render.fn')
-local render_aha           = require('render.aha')
-local render_playwright    = require('render.playwright')
-local render_windowinfo    = require('render.windowinfo')
+local render_constants = require('render.constants')
+local render_fn = require('render.fn')
+local render_aha = require('render.aha')
+local render_playwright = require('render.playwright')
+local render_windowinfo = require('render.windowinfo')
 local render_screencapture = require('render.screencapture')
-local render_keymaps       = require('render.keymaps')
-
+local render_keymaps = require('render.keymaps')
 
 local M = {}
-
 
 local standard_opts = {
   features = {
@@ -82,19 +80,17 @@ local standard_opts = {
     end,
     countdown_window_opts = function()
       return vim.tbl_extend('force', {
-          relative = 'editor',
-          noautocmd = true,
-          zindex = 1000,
-          style = 'minimal',
-          focusable = false,
-        },
-        render_fn.center_window_options(17, 6, vim.o.columns, vim.o.lines)
-      )
-    end
+        relative = 'editor',
+        noautocmd = true,
+        zindex = 1000,
+        style = 'minimal',
+        focusable = false,
+      }, render_fn.center_window_options(17, 6, vim.o.columns, vim.o.lines))
+    end,
   },
 }
 
-standard_opts.font  = {
+standard_opts.font = {
   faces = {
     {
       name = render_constants.normal_font,
@@ -120,19 +116,16 @@ standard_opts.font  = {
   size = 11,
 }
 
-
 standard_opts.files.render_script = standard_opts.dirs.scripts
   .. '/'
   .. render_constants.shortname
   .. '.spec.ts'
-standard_opts.files.render_css    = standard_opts.dirs.css
+standard_opts.files.render_css = standard_opts.dirs.css
   .. '/'
   .. render_constants.shortname
   .. '.css'
 
-
-
 M.default_opts = standard_opts
-M.opts         = {}
+M.opts = {}
 
 return M
