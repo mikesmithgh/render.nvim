@@ -141,13 +141,13 @@ end
 M.setup_files_and_dirs = function()
   M.create_dirs(opts.dirs)
 
-  local ok, err = pcall(M.generateCSSFile, opts.font, opts.files.render_css)
-  if not ok then
-    render_msg.notify(err, vim.log.levels.ERROR, {
-      font = opts.font,
-      render_style = opts.files.render_css,
-    })
-  end
+  -- local ok, err = pcall(M.generateCSSFile, opts.font, opts.files.render_css)
+  -- if not ok then
+  --   render_msg.notify(err, vim.log.levels.ERROR, {
+  --     font = opts.font,
+  --     render_style = opts.files.render_css,
+  --   })
+  -- end
 
   local init_files = {}
   init_files[opts.files.runtime_fonts] = opts.dirs.font
