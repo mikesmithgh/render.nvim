@@ -14,6 +14,11 @@ M.partial = function(fn, ...)
   end
 end
 
+M.trim = function(s)
+  -- see http://lua-users.org/wiki/StringTrim
+  return (s:gsub('^%s*(.-)%s*$', '%1'))
+end
+
 M.os = function()
   if vim.fn.has('mac') == 1 or vim.fn.has('macunix') == 1 then
     return 'mac'

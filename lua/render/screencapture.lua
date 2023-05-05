@@ -89,6 +89,7 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
   if mode_opts.mode == mode.open then
     -- screen capture output will open in Preview or QuickTime Player if video
     table.insert(screencapture_cmd, '-P')
+    out_files = vim.tbl_map(function() return "''" end, out_files)
   end
 
   if mode_opts.mode == mode.clipboard then
@@ -100,6 +101,7 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
   if mode_opts.mode == mode.preview then
     -- present UI after screencapture is complete. files passed to command line will be ignored
     table.insert(screencapture_cmd, '-u')
+    out_files = vim.tbl_map(function() return "''" end, out_files)
   end
 
   if mode_opts.type == nil or mode_opts.type == type.image then
@@ -160,8 +162,11 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
   return nil
 end
 
-M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
-  local mode = render_constants.screencapture.mode
+local function screencapture_cmd_tostring(mode_opts, screencapture_cmd)
+  if screencapture_cmd == nil or next(screencapture_cmd) == nil then
+    return ''
+  end
+
   local screencapture_cmd_str = nil
   if screencapture_cmd ~= nil then
     for i, s in pairs(screencapture_cmd) do
@@ -175,6 +180,13 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
       end
     end
   end
+
+  return render_fn.trim(screencapture_cmd_str)
+end
+
+M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
+  local mode = render_constants.screencapture.mode
+  local screencapture_cmd_str = screencapture_cmd_tostring(mode_opts, screencapture_cmd)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -204,13 +216,16 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
           else
             vim.fn.jobstart(
               opts.fn.screencapture_location.cmd(),
-              opts.fn.screencapture_location.opts({ cmd = screencapture_cmd_str })
+              opts.fn.screencapture_location.opts({
+                cmd = screencapture_cmd_str,
+              })
             )
           end
         end
 
         if msg ~= nil then
           msg['cmd'] = screencapture_cmd_str
+          msg['details'] = 'using render.nvim output location'
           render_msg.notify('screencapture available', vim.log.levels.INFO, msg)
         end
 
@@ -242,18 +257,33 @@ M.location_cmd_opts = function(msg)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
+    on_exit = function(_, exit_code, _)
+      if exit_code ~= 0 then
+        render_msg.notify('screencapture available', vim.log.levels.INFO,
+          vim.tbl_extend('force', msg, {
+            location = render_constants.screencapture.default_location,
+            details =
+              'failed to read macos default screencapture location; defaulting location to ' .. render_constants.screencapture.default_location
+          })
+        )
+        M.location = render_constants.screencapture.default_location
+      end
+    end,
     on_stdout = function(_, location_result)
       local screencapture_location = location_result[1]
-      render_msg.notify('screencapture available', vim.log.levels.INFO,
-        vim.tbl_extend('force', msg, {
-          location = screencapture_location,
-        })
-      )
-      M.location = screencapture_location
+      if screencapture_location ~= nil and screencapture_location ~= '' then
+        render_msg.notify('screencapture available', vim.log.levels.INFO,
+          vim.tbl_extend('force', msg, {
+            location = screencapture_location,
+            details = 'using macos default screencapture location'
+          })
+        )
+        M.location = screencapture_location
+      end
     end,
     on_stderr = function(_, result)
       if result[1] ~= nil and result[1] ~= '' then
-        render_msg.notify('error getting screencapture file location', vim.log.levels.ERROR, result)
+        render_msg.notify('error getting screencapture file location', vim.log.levels.DEBUG, result)
       end
     end,
   }

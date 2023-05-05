@@ -34,7 +34,8 @@ M.screencapture = {
     clipboard = 'clipboard',
     preview = 'preview',
     open = 'open',
-  }
+  },
+  default_location = '~/Desktop',
 }
 
 return M
