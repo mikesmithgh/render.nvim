@@ -30,7 +30,6 @@ M.screencapture = {
     image = 'image',
   },
   mode = {
-    noop = 'noop',
     save = 'save',
     clipboard = 'clipboard',
     preview = 'preview',

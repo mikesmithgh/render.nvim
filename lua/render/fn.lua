@@ -29,14 +29,7 @@ end
 
 M.flash = function()
   local render_ns = vim.api.nvim_create_namespace('render')
-  local normal_hl = vim.api.nvim_get_hl(0, { name = 'CursorLine' })
-  local flash_color = normal_hl.bg
-  if flash_color == nil or flash_color == '' then
-    flash_color = render_constants.black_hex
-    if vim.opt.bg:get() == render_constants.dark_mode then
-      flash_color = render_constants.white_hex
-    end
-  end
+  local flash_color = opts.ui.flash_color()
   vim.api.nvim_set_hl(render_ns, 'Normal', { fg = flash_color, bg = flash_color })
   vim.api.nvim_set_hl_ns(render_ns)
   vim.cmd.mode()
@@ -103,6 +96,19 @@ M.sanitize_ansi_screenshot = function(screenshot)
     screenshot[i] = vim.fn.substitute(line, '\\v%u2002', ' ', 'g')
   end
   return height, width
+end
+
+-- copied from lazy.nvim
+M.center_window_options = function(width, height, columns, lines)
+  local function size(max, value)
+    return value > 1 and math.min(value, max) or math.floor(max * value)
+  end
+  return {
+    width = size(columns, width),
+    height = size(lines, height),
+    row = math.floor((lines - height) / 2),
+    col = math.floor((columns - width) / 2),
+  }
 end
 
 return M

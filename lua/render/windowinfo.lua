@@ -20,7 +20,7 @@ M.cmd = function()
   }
 end
 
-M.cmd_opts = function(out_files)
+M.cmd_opts = function(out_files, mode_opts)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -30,12 +30,13 @@ M.cmd_opts = function(out_files)
         window_info_result[2], -- y
         window_info_result[3], -- width
         window_info_result[4], -- height
-        out_files
+        out_files,
+        mode_opts
       )
       if screencapture_cmd ~= nil then
         local job_id = vim.fn.jobstart(
           screencapture_cmd,
-          opts.fn.screencapture.opts(out_files)
+          opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
         )
         if job_id > 0 then
           render_screencapture.job_ids[job_id] = {

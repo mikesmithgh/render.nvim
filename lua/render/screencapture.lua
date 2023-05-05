@@ -1,6 +1,8 @@
+local render_fn = require('render.fn')
 local luv = vim.loop
 local M = {
-  job_ids = {}
+  job_ids = {},
+  timers = {},
 }
 
 local render_msg = require('render.msg')
@@ -8,29 +10,81 @@ local render_constants = require('render.constants')
 
 local opts = {}
 
+
+local function open_countdown_timer(delay)
+  local buffer_id = vim.api.nvim_create_buf(false, true)
+  local window_id = vim.api.nvim_open_win(buffer_id, false, opts.ui.countdown_window_opts())
+
+  -- float window with warning highlighting
+  local render_timer_ns = vim.api.nvim_create_namespace('render_timer')
+  vim.api.nvim_win_set_hl_ns(window_id, render_timer_ns)
+  local normal_float_hl = vim.api.nvim_get_hl(0, { name = 'NormalFloat' })
+  local comment_hl = vim.api.nvim_get_hl(0, { name = 'WarningMsg' })
+  local timer_hl = vim.tbl_extend('force', normal_float_hl, comment_hl)
+  vim.api.nvim_set_hl(render_timer_ns, 'Normal', timer_hl)
+
+  vim.api.nvim_buf_set_lines(buffer_id, 0, 4, false, {})
+  vim.api.nvim_buf_set_lines(buffer_id, 0, 0, false, { '', '   render.nvim', '', '        ' .. tostring(delay) })
+
+  if delay - 1 <= 0 then
+    M.timers[buffer_id] = nil
+  else
+    M.timers[buffer_id] = {
+      count = delay - 1,
+    }
+  end
+
+  local timer_id = vim.fn.timer_start(1000,
+    function(tid)
+      if M.timers[buffer_id] == nil then
+        vim.api.nvim_buf_delete(buffer_id, { force = true })
+        vim.fn.timer_stop(tid)
+      else
+        vim.api.nvim_buf_set_lines(buffer_id, 0, 4, false, {})
+        vim.api.nvim_buf_set_lines(buffer_id, 0, 0, false, { '', '   render.nvim', '', '        ' .. tostring(M.timers[buffer_id].count) })
+        M.timers[buffer_id].count = M.timers[buffer_id].count - 1
+        if M.timers[buffer_id].count < 1 then
+          M.timers[buffer_id] = nil
+        end
+      end
+    end, {
+      ['repeat'] = delay,
+    })
+
+  if M.timers[buffer_id] ~= nil then
+    M.timers[buffer_id].timer_id = timer_id
+  end
+end
+
 M.setup = function(render_opts)
   opts = render_opts
 end
 
-M.cmd = function(x, y, width, height, out_files)
-  local mode_opts = opts.mode_opts
+M.cmd = function(x, y, width, height, out_files, mode_opts)
+  local screencapture_cmd = { 'screencapture' }
   local mode = render_constants.screencapture.mode
   local type = render_constants.screencapture.type
-  local noop = { 'sh', '-c', ':' }
-  local screencapture_cmd = {
-    'screencapture',
-    '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height,
-  }
+
+  if mode_opts.dry_run then
+    -- no operation is used for troubleshooting
+    local screencapture_dryrun_script = vim.api.nvim_get_runtime_file('scripts/screencapture_dryrun.sh', false)[1]
+    if screencapture_dryrun_script == nil then
+      render_msg.notify('error getting screencapture dryrun script from runtime path', vim.log.levels.ERROR, {})
+      return
+    end
+    screencapture_cmd = { screencapture_dryrun_script }
+  end
+
+  table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
 
   if mode_opts.delay ~= nil then
     -- take the capture after a delay of <seconds>
     table.insert(screencapture_cmd, '-T' .. mode_opts.delay)
+    if mode_opts.delay > 0 then
+      open_countdown_timer(mode_opts.delay)
+    end
   end
 
-  if mode_opts.mode == mode.noop then
-    -- no operation is used for troubleshooting
-    return noop
-  end
 
   if mode_opts.mode == mode.open then
     -- screen capture output will open in Preview or QuickTime Player if video
@@ -106,40 +160,62 @@ M.cmd = function(x, y, width, height, out_files)
   return nil
 end
 
-M.cmd_opts = function(out_files)
-  local mode_opts = opts.mode_opts
+M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
   local mode = render_constants.screencapture.mode
+  local screencapture_cmd_str = nil
+  if screencapture_cmd ~= nil then
+    for i, s in pairs(screencapture_cmd) do
+      if i == 1 then
+        screencapture_cmd_str = s
+        if mode_opts.dry_run then
+          screencapture_cmd_str = 'screencapture'
+        end
+      else
+        screencapture_cmd_str = screencapture_cmd_str .. ' ' .. s
+      end
+    end
+  end
   return {
     stdout_buffered = true,
     stderr_buffered = true,
-    on_stdout = function(job_id, _)
-      if opts.features.flash then
-        opts.fn.flash()
-      end
-
-      local msg = nil
-      if mode_opts.mode == nil or mode_opts.mode == mode.save then
-        msg = { location = out_files[mode_opts.filetype] }
-      end
-      if mode_opts.mode == mode.clipboard then
-        msg = { location = mode.clipboard }
-      end
-      if mode_opts.mode == mode.preview or mode_opts.mode == mode.open then
-        if M.location ~= nil then
-          msg = { location = M.location }
-        else
-          vim.fn.jobstart(
-            opts.fn.screencapture_location.cmd(),
-            opts.fn.screencapture_location.opts()
-          )
+    on_exit = function(job_id, exit_code, _)
+      if exit_code == 0 then
+        if opts.features.flash then
+          opts.fn.flash()
         end
-      end
+        local msg = nil
+        if mode_opts.mode == nil or mode_opts.mode == mode.save then
+          local out_file = out_files[mode_opts.filetype]
+          if opts.features.auto_open then
+            local open_cmd = opts.fn.open_cmd()
+            if open_cmd ~= nil then
+              table.insert(open_cmd, out_file)
+              vim.fn.jobstart(open_cmd)
+            end
+          end
+          msg = { location = out_file }
+        end
+        if mode_opts.mode == mode.clipboard then
+          msg = { location = mode.clipboard }
+        end
+        if mode_opts.mode == mode.preview or mode_opts.mode == mode.open then
+          if M.location ~= nil then
+            msg = { location = M.location }
+          else
+            vim.fn.jobstart(
+              opts.fn.screencapture_location.cmd(),
+              opts.fn.screencapture_location.opts({ cmd = screencapture_cmd_str })
+            )
+          end
+        end
 
-      if msg ~= nil then
-        render_msg.notify('screencapture available', vim.log.levels.INFO, msg)
-      end
+        if msg ~= nil then
+          msg['cmd'] = screencapture_cmd_str
+          render_msg.notify('screencapture available', vim.log.levels.INFO, msg)
+        end
 
-      M.job_ids[job_id] = nil
+        M.job_ids[job_id] = nil
+      end
     end,
     on_stderr = function(job_id, result)
       if result[1] ~= nil and result[1] ~= '' then
@@ -159,15 +235,20 @@ M.location_cmd = function()
   }
 end
 
-M.location_cmd_opts = function()
+M.location_cmd_opts = function(msg)
+  if msg == nil then
+    msg = {}
+  end
   return {
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, location_result)
       local screencapture_location = location_result[1]
-      render_msg.notify('screencapture available', vim.log.levels.INFO, {
-        location = screencapture_location
-      })
+      render_msg.notify('screencapture available', vim.log.levels.INFO,
+        vim.tbl_extend('force', msg, {
+          location = screencapture_location,
+        })
+      )
       M.location = screencapture_location
     end,
     on_stderr = function(_, result)
@@ -184,6 +265,11 @@ M.interrupt = function()
     luv.kill(pid, 'sigint')
   end
   M.job_ids = {}
+  for buffer_id, timer in pairs(M.timers) do
+    vim.api.nvim_buf_delete(buffer_id, { force = true })
+    vim.fn.timer_stop(timer.timer_id)
+  end
+  M.timers = {}
 end
 
 return M

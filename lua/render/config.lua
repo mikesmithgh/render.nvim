@@ -60,12 +60,37 @@ local standard_opts = {
     runtime_fonts = vim.api.nvim_get_runtime_file('font/*', true),
   },
   mode_opts = {
-    type = render_constants.screencapture.type.video,
+    type = render_constants.screencapture.type.image,
     mode = render_constants.screencapture.mode.save,
-    filetype = render_constants.mov,
+    filetype = render_constants.png,
     delay = nil,
     show_clicks = false,
     video_limit = nil,
+    dry_run = false,
+  },
+  ui = {
+    flash_color = function()
+      local normal_hl = vim.api.nvim_get_hl(0, { name = 'CursorLine' })
+      local flash_color = normal_hl.bg
+      if flash_color == nil or flash_color == '' then
+        flash_color = render_constants.black_hex
+        if vim.opt.bg:get() == render_constants.dark_mode then
+          flash_color = render_constants.white_hex
+        end
+      end
+      return flash_color
+    end,
+    countdown_window_opts = function()
+      return vim.tbl_extend('force', {
+          relative = 'editor',
+          noautocmd = true,
+          zindex = 1000,
+          style = 'minimal',
+          focusable = false,
+        },
+        render_fn.center_window_options(17, 6, vim.o.columns, vim.o.lines)
+      )
+    end
   },
 }
 
