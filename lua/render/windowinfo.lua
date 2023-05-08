@@ -64,8 +64,7 @@ M.cmd_opts = function(out_files, mode_opts)
         end, result)
         if next(accessibility_errors) ~= nil then
           msg = msg
-            ..
-            '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
+            .. '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
         end
         render_msg.notify(msg, vim.log.levels.ERROR, result)
       end
