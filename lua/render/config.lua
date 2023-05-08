@@ -13,7 +13,7 @@ local standard_opts = {
     notify = true,
     keymaps = true,
     flash = true,
-    auto_open = true,
+    auto_open = false,
   },
   notify = {
     level = vim.log.levels.INFO,
