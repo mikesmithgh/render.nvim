@@ -29,10 +29,10 @@ M.cmd_opts = function(out_files, mode_opts)
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, window_info_result)
-      local x = window_info_result[1]
-      local y = window_info_result[2]
-      local width = window_info_result[3]
-      local height = window_info_result[4]
+      local x = math.floor(window_info_result[1])
+      local y = math.floor(window_info_result[2])
+      local width = math.floor(window_info_result[3])
+      local height = math.floor(window_info_result[4])
       if x == nil or y == nil or width == nil or height == nil then
         render_msg.notify(
           'error window information is nil',
@@ -64,7 +64,8 @@ M.cmd_opts = function(out_files, mode_opts)
         end, result)
         if next(accessibility_errors) ~= nil then
           msg = msg
-            .. '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
+            ..
+            '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
         end
         render_msg.notify(msg, vim.log.levels.ERROR, result)
       end
