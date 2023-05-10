@@ -13,7 +13,7 @@ local standard_opts = {
     notify = true,
     keymaps = true,
     flash = true,
-    auto_open = false,
+    auto_open = true,
   },
   notify = {
     level = vim.log.levels.INFO,
@@ -65,6 +65,12 @@ local standard_opts = {
     show_clicks = false,
     video_limit = nil,
     dry_run = false,
+    offsets = {
+      left = 0,
+      top = 0,
+      right = 0,
+      bottom = 0,
+    },
   },
   ui = {
     flash_color = function()
