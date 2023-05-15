@@ -1,7 +1,9 @@
 local render_core = require('render.core')
 local render_screencapture = require('render.screencapture')
-local render_fn = require('render.fn')
+local render_msg = require('render.msg')
 local render_fs = require('render.fs')
+local render_fn = require('render.fn')
+local render_constants = require('render.constants')
 local M = {}
 
 local opts = {}
@@ -27,6 +29,15 @@ M.setup = function(render_opts)
   vim.api.nvim_create_user_command('RenderPdf', function()
     vim.defer_fn(render_core.render_pdf, 200)
   end, {})
+  vim.api.nvim_create_user_command('RenderPsd', function()
+    vim.defer_fn(render_core.render_psd, 200)
+  end, {})
+  vim.api.nvim_create_user_command('RenderTga', function()
+    vim.defer_fn(render_core.render_tga, 200)
+  end, {})
+  vim.api.nvim_create_user_command('RenderBmp', function()
+    vim.defer_fn(render_core.render_bmp, 200)
+  end, {})
   vim.api.nvim_create_user_command('RenderVideo', function()
     vim.defer_fn(render_core.render_video, 200)
   end, {})
@@ -41,36 +52,23 @@ M.setup = function(render_opts)
     render_fs.setup_files_and_dirs()
   end, {})
 
-  vim.api.nvim_create_user_command('RenderQuickfix', function()
-    vim.cmd.vimgrep({
-      args = { '/\\%^/j ' .. opts.dirs.output .. '/*' },
-      mods = { emsg_silent = true },
-    })
-    local render_qflist = vim.tbl_map(function(line)
-      local description = {
-        cat = 'ANSI Escape Sequences',
-        html = 'HyperText Markup Language',
-        png = 'Portable Network Graphics',
-        jpg = 'Joint Photographic Experts Group',
-        jpeg = 'Joint Photographic Experts Group',
-        gif = 'Graphics Interchange Format',
-        tiff = 'Tagged Image File Format',
-        pdf = 'Portable Document Format ',
-        mov = 'QuickTime File Format (QTFF)',
-        qt = 'QuickTime File Format (QTFF)',
-      }
-      local ext = vim.fn.fnamemodify(vim.fn.bufname(line.bufnr), ':e')
-      line.text = description[ext]
-      return line
-    end, vim.fn.getqflist())
-    if next(render_qflist) == nil then
-      render_fn.notify('no output files found', vim.log.levels.INFO, {
-        output = opts.dirs.output,
+  vim.api.nvim_create_user_command('RenderQuickfix',
+    render_fn.partial(render_fn.render_quickfix, vim.cmd.copen)
+    , {})
+
+  vim.api.nvim_create_user_command('RenderQuicklook', function()
+    vim.fn.jobstart(
+      'stat -n -f "%N " * | xargs qlmanage -p',
+      {
+        cwd = opts.dirs.output,
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stderr = function(_, result)
+          if result[1] ~= nil and result[1] ~= '' then
+            render_msg.notify('error opening quicklook', vim.log.levels.ERROR, result)
+          end
+        end,
       })
-    else
-      vim.fn.setqflist(render_qflist)
-      vim.cmd.copen()
-    end
   end, {})
 
   vim.api.nvim_create_user_command('RenderExplore', function()

@@ -58,6 +58,30 @@ M.render_pdf = function()
   M.render(mode_opts)
 end
 
+M.render_psd = function()
+  local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+    type = render_constants.screencapture.type.image,
+    filetype = render_constants.psd,
+  })
+  M.render(mode_opts)
+end
+
+M.render_tga = function()
+  local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+    type = render_constants.screencapture.type.image,
+    filetype = render_constants.tga,
+  })
+  M.render(mode_opts)
+end
+
+M.render_bmp = function()
+  local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+    type = render_constants.screencapture.type.image,
+    filetype = render_constants.bmp,
+  })
+  M.render(mode_opts)
+end
+
 M.render_video = function()
   local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
     type = render_constants.screencapture.type.video,

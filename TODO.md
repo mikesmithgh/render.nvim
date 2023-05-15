@@ -1,2 +1,0 @@
-- look into sips tool for image modifications
-- create standalone app to avoid higher priv to terminal

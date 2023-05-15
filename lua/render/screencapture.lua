@@ -150,6 +150,27 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
       })
     end
 
+    if mode_opts.filetype == render_constants.psd then
+      return vim.list_extend(screencapture_cmd, {
+        '-tpsd',
+        out_files.psd,
+      })
+    end
+
+    if mode_opts.filetype == render_constants.bmp then
+      return vim.list_extend(screencapture_cmd, {
+        '-tbmp',
+        out_files.bmp,
+      })
+    end
+
+    if mode_opts.filetype == render_constants.tga then
+      return vim.list_extend(screencapture_cmd, {
+        '-ttga',
+        out_files.tga,
+      })
+    end
+
     if mode_opts.filetype == render_constants.tiff then
       return vim.list_extend(screencapture_cmd, {
         '-ttiff',
@@ -242,8 +263,13 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
 
         if msg ~= nil then
           msg['cmd'] = screencapture_cmd_str
-          msg['details'] = 'using render.nvim output location'
+          msg['details'] = 'using render.nvim output location' -- TODO: check if this makes sense for preview -u flag
           render_msg.notify('screencapture available', vim.log.levels.INFO, msg)
+        end
+
+        -- refresh quickfix list
+        if vim.fn.getqflist({ title = true }).title == render_constants.longname then
+          render_fn.render_quickfix(vim.cmd.cnext)
         end
 
         M.job_ids[job_id] = nil
