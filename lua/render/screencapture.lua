@@ -278,7 +278,7 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
           if qfidx > 1 then
             render_fn.render_quickfix({
               cb = render_fn.partial(vim.cmd, 'cc ' .. qfidx + 1),
-              toggle = false
+              toggle = false,
             })
           else
             render_fn.render_quickfix({ toggle = false })

@@ -26,8 +26,7 @@ M.createInitFiles = function(init_files)
   for sources, destination_dir in pairs(init_files) do
     for _, source in pairs(sources) do
       local dest = destination_dir .. '/' .. vim.fn.fnamemodify(source, ':t')
-      uv.fs_copyfile(source, dest, { excl = true }, function(err, success)
-      end)
+      uv.fs_copyfile(source, dest, { excl = true }, function(err, success) end)
     end
   end
 end

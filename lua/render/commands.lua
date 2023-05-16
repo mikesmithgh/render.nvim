@@ -52,23 +52,23 @@ M.setup = function(render_opts)
     render_fs.setup_files_and_dirs()
   end, {})
 
-  vim.api.nvim_create_user_command('RenderQuickfix',
-    render_fn.partial(render_fn.render_quickfix, { cb = vim.cmd.copen, toggle = true })
-    , {})
+  vim.api.nvim_create_user_command(
+    'RenderQuickfix',
+    render_fn.partial(render_fn.render_quickfix, { cb = vim.cmd.copen, toggle = true }),
+    {}
+  )
 
   vim.api.nvim_create_user_command('RenderQuicklook', function()
-    vim.fn.jobstart(
-      'stat -n -f "%N " * | xargs qlmanage -p',
-      {
-        cwd = opts.dirs.output,
-        stdout_buffered = true,
-        stderr_buffered = true,
-        on_stderr = function(_, result)
-          if result[1] ~= nil and result[1] ~= '' then
-            opts.notify.msg('error opening quicklook', vim.log.levels.ERROR, result)
-          end
-        end,
-      })
+    vim.fn.jobstart('stat -n -f "%N " * | xargs qlmanage -p', {
+      cwd = opts.dirs.output,
+      stdout_buffered = true,
+      stderr_buffered = true,
+      on_stderr = function(_, result)
+        if result[1] ~= nil and result[1] ~= '' then
+          opts.notify.msg('error opening quicklook', vim.log.levels.ERROR, result)
+        end
+      end,
+    })
   end, {})
 
   vim.api.nvim_create_user_command('RenderExplore', function()

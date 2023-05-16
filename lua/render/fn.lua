@@ -160,7 +160,7 @@ M.render_quickfix = function(qfopts)
                 end
               end
               return l
-            end
+            end,
           })
           if qfopts.cb ~= nil then
             qfopts.cb()
@@ -171,13 +171,18 @@ M.render_quickfix = function(qfopts)
             opts.notify.msg('error listing screencaptures', vim.log.levels.ERROR, result)
           end
         end,
-      })
+      }
+    )
   end
 end
 
 M.open_qfitem = function(keymap)
   local line_index = vim.fn.line('.')
-  if vim.o.buftype == 'quickfix' and vim.fn.getqflist({ title = true }).title == render_constants.longname and line_index > 1 then
+  if
+    vim.o.buftype == 'quickfix'
+    and vim.fn.getqflist({ title = true }).title == render_constants.longname
+    and line_index > 1
+  then
     local items = vim.fn.getqflist({ items = true }).items
     local text = items[line_index].text
     local fname = text:gmatch('%S+')()
@@ -200,7 +205,10 @@ end
 
 M.quicklook_qfitem = function(keymap)
   local line_index = vim.fn.line('.')
-  if vim.o.buftype == 'quickfix' and vim.fn.getqflist({ title = true }).title == render_constants.longname then
+  if
+    vim.o.buftype == 'quickfix'
+    and vim.fn.getqflist({ title = true }).title == render_constants.longname
+  then
     local items = vim.fn.getqflist({ items = true }).items
     local text = items[line_index].text
     local fname = text:gmatch('%S+')()

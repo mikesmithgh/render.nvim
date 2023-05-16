@@ -42,8 +42,7 @@ local standard_opts = {
     run = vim.fn.stdpath('run') .. '/' .. render_constants.shortname,
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
   },
-  files = {
-  },
+  files = {},
   mode_opts = {
     type = render_constants.screencapture.type.image,
     mode = render_constants.screencapture.mode.save,
