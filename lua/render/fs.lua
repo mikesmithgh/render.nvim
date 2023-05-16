@@ -111,7 +111,7 @@ M.wait_for_cat_file = function(out_files, callback)
 
   local timer = uv.new_timer()
   if timer == nil then
-    render_msg.notify('error reading file; failed to create timer', vim.log.levels.ERROR, {
+    opts.notify.msg('error reading file; failed to create timer', vim.log.levels.ERROR, {
       err = {
         file = out_files.cat,
       },
@@ -130,7 +130,7 @@ M.wait_for_cat_file = function(out_files, callback)
     if timer:is_active() then
       timer:stop()
       timer:close()
-      render_msg.notify('error reading file; timeout', vim.log.levels.ERROR, {
+      opts.notify.msg('error reading file; timeout', vim.log.levels.ERROR, {
         err = {
           file = out_files.cat,
         },
@@ -142,20 +142,12 @@ end
 M.setup_files_and_dirs = function()
   M.create_dirs(opts.dirs)
 
-  -- local ok, err = pcall(M.generateCSSFile, opts.font, opts.files.render_css)
-  -- if not ok then
-  --   render_msg.notify(err, vim.log.levels.ERROR, {
-  --     font = opts.font,
-  --     render_style = opts.files.render_css,
-  --   })
-  -- end
-
   local init_files = {}
   init_files[opts.files.runtime_fonts] = opts.dirs.font
   init_files[opts.files.runtime_scripts] = opts.dirs.scripts
   ok, err = pcall(M.createInitFiles, init_files)
   if not ok then
-    render_msg.notify(err, vim.log.levels.ERROR, {
+    opts.notify.msg(err, vim.log.levels.ERROR, {
       font = opts.font,
       render_style = opts.files.render_css,
     })

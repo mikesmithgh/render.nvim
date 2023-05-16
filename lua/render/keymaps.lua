@@ -28,7 +28,6 @@ M.setup_default_keymaps = function()
     { silent = true, remap = true }
   )
 
-  -- TODO: change to toggle
   vim.keymap.set(
     { 'n' },
     '<C-f13>',
@@ -62,8 +61,6 @@ M.setup_default_keymaps = function()
       expr = true,
       replace_keycodes = true
     })
-
-  -- TODO: add cnext/cprev ]q [q
 end
 
 return M

@@ -11,7 +11,7 @@ end
 M.cmd = function()
   local window_info_script = vim.api.nvim_get_runtime_file('scripts/window_info.scpt', false)[1]
   if window_info_script == nil then
-    render_msg.notify(
+    opts.notify.msg(
       'error getting window information script from runtime path',
       vim.log.levels.ERROR,
       {}
@@ -35,7 +35,7 @@ M.cmd_opts = function(out_files, mode_opts)
       local width = math.floor(window_info_result[3]) - (offsets.left or 0) - (offsets.right or 0)
       local height = math.floor(window_info_result[4]) - (offsets.top or 0) - (offsets.bottom or 0)
       if x == nil or y == nil or width == nil or height == nil then
-        render_msg.notify(
+        opts.notify.msg(
           'error window information is nil',
           vim.log.levels.ERROR,
           window_info_result
@@ -68,7 +68,7 @@ M.cmd_opts = function(out_files, mode_opts)
             ..
             '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
         end
-        render_msg.notify(msg, vim.log.levels.ERROR, result)
+        opts.notify.msg(msg, vim.log.levels.ERROR, result)
       end
     end,
   }

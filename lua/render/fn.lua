@@ -119,61 +119,77 @@ M.center_window_options = function(width, height, columns, lines)
   }
 end
 
-M.render_quickfix = function(cb)
-  vim.fn.jobstart(
-    '(printf "%s | render.nvim |\n" $(realpath .); (stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
-    {
-      cwd = opts.dirs.output,
-      stdout_buffered = true,
-      stderr_buffered = true,
-      on_stdout = function(_, result)
-        local result_items = vim.tbl_map(function(r)
-          if r == nil or r == '' then
-            return nil
-          end
-          if r:find('^' .. opts.dirs.output) ~= nil then
-            return {
-              filename = opts.dirs.output .. '/', -- / is required to identify it as a directory
-              text = r,
-            }
-          end
-          return {
-            text = r
-          }
-        end, result)
-        vim.fn.setqflist({}, ' ', {
-          title = render_constants.longname,
-          items = result_items,
-          quickfixtextfunc = function(info)
-            local items = vim.fn.getqflist({ id = info.id, items = true }).items
-            local l = {}
-            for idx = info.start_idx, info.end_idx do
-              local text = items[idx].text
-              local fname = text:gmatch('%S+')()
-              local ext = vim.fn.fnamemodify(fname, ':e'):lower()
-              if next(l) == nil then
-                -- first directory is the output directory
-                table.insert(l, text .. ' ' .. 'Output directory')
-              elseif ext == nil or ext == '' then
-                table.insert(l, text)
-              else
-                table.insert(l, text .. ' ' .. render_constants.extension_description[ext])
-              end
+M.render_quickfix = function(qfopts)
+  local qftitle = vim.fn.getqflist({ title = true }).title
+  local populateqf = false
+  if qfopts.toggle == true and qftitle == render_constants.longname then
+    local nr = vim.fn.winnr('$')
+    vim.cmd.cwindow()
+    if nr == vim.fn.winnr('$') then
+      vim.cmd.cclose()
+    else
+      populateqf = true
+    end
+  else
+    populateqf = true
+  end
+
+  if populateqf then
+    vim.fn.jobstart(
+      '(printf "%s | render.nvim |\n" $(realpath .); (stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
+      {
+        cwd = opts.dirs.output,
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stdout = function(_, result)
+          local result_items = vim.tbl_map(function(r)
+            if r == nil or r == '' then
+              return nil
             end
-            return l
+            if r:find('^' .. opts.dirs.output) ~= nil then
+              return {
+                filename = opts.dirs.output .. '/', -- / is required to identify it as a directory
+                text = r,
+                valid = true,
+              }
+            end
+            return {
+              text = r
+            }
+          end, result)
+          vim.fn.setqflist({}, ' ', {
+            title = render_constants.longname,
+            items = result_items,
+            quickfixtextfunc = function(info)
+              local items = vim.fn.getqflist({ id = info.id, items = true }).items
+              local l = {}
+              for idx = info.start_idx, info.end_idx do
+                local text = items[idx].text
+                local fname = text:gmatch('%S+')()
+                local ext = vim.fn.fnamemodify(fname, ':e'):lower()
+                if next(l) == nil then
+                  -- first directory is the output directory
+                  table.insert(l, text .. ' ' .. 'Output directory')
+                elseif ext == nil or ext == '' then
+                  table.insert(l, text)
+                else
+                  table.insert(l, text .. ' ' .. render_constants.extension_description[ext])
+                end
+              end
+              return l
+            end
+          })
+          if qfopts.cb ~= nil then
+            qfopts.cb()
           end
-        })
-        if cb ~= nil then
-          cb()
-        end
-      end,
-      on_stderr = function(_, result)
-        if result[1] ~= nil and result[1] ~= '' then
-          -- TODO use notify
-          vim.print('error listing screencaptures', vim.log.levels.ERROR, result)
-        end
-      end,
-    })
+        end,
+        on_stderr = function(_, result)
+          if result[1] ~= nil and result[1] ~= '' then
+            opts.notify.msg('error listing screencaptures', vim.log.levels.ERROR, result)
+          end
+        end,
+      })
+  end
 end
 
 M.open_qfitem = function(keymap)

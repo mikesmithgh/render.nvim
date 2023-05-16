@@ -28,8 +28,6 @@ PREREQUISITES ~
 
 
 - Neovim v0.9+ <https://github.com/neovim/neovim/releases>
-- Install aha <https://github.com/theZiz/aha>
-- Install playwright <https://playwright.dev/>
 
 
 USING LAZY.NVIM ~

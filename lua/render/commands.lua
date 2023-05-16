@@ -53,7 +53,7 @@ M.setup = function(render_opts)
   end, {})
 
   vim.api.nvim_create_user_command('RenderQuickfix',
-    render_fn.partial(render_fn.render_quickfix, vim.cmd.copen)
+    render_fn.partial(render_fn.render_quickfix, { cb = vim.cmd.copen, toggle = true })
     , {})
 
   vim.api.nvim_create_user_command('RenderQuicklook', function()
@@ -65,7 +65,7 @@ M.setup = function(render_opts)
         stderr_buffered = true,
         on_stderr = function(_, result)
           if result[1] ~= nil and result[1] ~= '' then
-            render_msg.notify('error opening quicklook', vim.log.levels.ERROR, result)
+            opts.notify.msg('error opening quicklook', vim.log.levels.ERROR, result)
           end
         end,
       })

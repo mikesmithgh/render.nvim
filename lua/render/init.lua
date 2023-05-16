@@ -1,4 +1,3 @@
-local render_aha = require('render.aha')
 local render_commands = require('render.commands')
 local render_config = require('render.config')
 local render_core = require('render.core')
@@ -6,7 +5,6 @@ local render_fn = require('render.fn')
 local render_fs = require('render.fs')
 local render_keymaps = require('render.keymaps')
 local render_msg = require('render.msg')
-local render_playwright = require('render.playwright')
 local render_windowinfo = require('render.windowinfo')
 local render_screencapture = require('render.screencapture')
 
@@ -21,8 +19,6 @@ M.setup = function(override_opts)
   M.opts = render_config.opts
 
   render_msg.setup(M.opts)
-  render_aha.setup(M.opts)
-  render_playwright.setup(M.opts)
   render_windowinfo.setup(M.opts)
   render_screencapture.setup(M.opts)
   render_fn.setup(M.opts)

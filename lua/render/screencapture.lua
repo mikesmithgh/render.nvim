@@ -80,7 +80,7 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
     local screencapture_dryrun_script =
       vim.api.nvim_get_runtime_file('scripts/screencapture_dryrun.sh', false)[1]
     if screencapture_dryrun_script == nil then
-      render_msg.notify(
+      opts.notify.msg(
         'error getting screencapture dryrun script from runtime path',
         vim.log.levels.ERROR,
         {}
@@ -196,7 +196,7 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
     })
   end
 
-  render_msg.notify('unrecognized mode options', vim.log.levels.INFO, mode_opts)
+  opts.notify.msg('unrecognized mode options', vim.log.levels.INFO, mode_opts)
   return nil
 end
 
@@ -263,13 +263,22 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
 
         if msg ~= nil then
           msg['cmd'] = screencapture_cmd_str
-          msg['details'] = 'using render.nvim output location' -- TODO: check if this makes sense for preview -u flag
-          render_msg.notify('screencapture available', vim.log.levels.INFO, msg)
+          msg['details'] = 'using render.nvim output location'
+          opts.notify.msg('screencapture available', vim.log.levels.INFO, msg)
         end
 
         -- refresh quickfix list
-        if vim.fn.getqflist({ title = true }).title == render_constants.longname then
-          render_fn.render_quickfix(vim.cmd.cnext)
+        local qflist = vim.fn.getqflist({ title = true, idx = 0 })
+        if qflist.title == render_constants.longname then
+          local qfidx = qflist.idx
+          if qfidx > 1 then
+            render_fn.render_quickfix({
+              cb = render_fn.partial(vim.cmd, 'cc ' .. qfidx + 1),
+              toggle = false
+            })
+          else
+            render_fn.render_quickfix({ toggle = false })
+          end
         end
 
         M.job_ids[job_id] = nil
@@ -277,7 +286,7 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
     end,
     on_stderr = function(job_id, result)
       if result[1] ~= nil and result[1] ~= '' then
-        render_msg.notify('error taking screencapture', vim.log.levels.ERROR, result)
+        opts.notify.msg('error taking screencapture', vim.log.levels.ERROR, result)
       end
       M.job_ids[job_id] = nil
     end,
@@ -302,7 +311,7 @@ M.location_cmd_opts = function(msg)
     stderr_buffered = true,
     on_exit = function(_, exit_code, _)
       if exit_code ~= 0 then
-        render_msg.notify(
+        opts.notify.msg(
           'screencapture available',
           vim.log.levels.INFO,
           vim.tbl_extend('force', msg, {
@@ -317,7 +326,7 @@ M.location_cmd_opts = function(msg)
     on_stdout = function(_, location_result)
       local screencapture_location = location_result[1]
       if screencapture_location ~= nil and screencapture_location ~= '' then
-        render_msg.notify(
+        opts.notify.msg(
           'screencapture available',
           vim.log.levels.INFO,
           vim.tbl_extend('force', msg, {
@@ -330,7 +339,7 @@ M.location_cmd_opts = function(msg)
     end,
     on_stderr = function(_, result)
       if result[1] ~= nil and result[1] ~= '' then
-        render_msg.notify('error getting screencapture file location', vim.log.levels.DEBUG, result)
+        opts.notify.msg('error getting screencapture file location', vim.log.levels.DEBUG, result)
       end
     end,
   }

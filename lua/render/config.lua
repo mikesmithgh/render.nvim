@@ -1,10 +1,9 @@
 local render_constants = require('render.constants')
 local render_fn = require('render.fn')
-local render_aha = require('render.aha')
-local render_playwright = require('render.playwright')
 local render_windowinfo = require('render.windowinfo')
 local render_screencapture = require('render.screencapture')
 local render_keymaps = require('render.keymaps')
+local render_msg = require('render.msg')
 
 local M = {}
 
@@ -17,17 +16,11 @@ local standard_opts = {
   },
   notify = {
     level = vim.log.levels.INFO,
+    -- TODO: replace all notifies with this
+    msg = render_msg.notify,
   },
   scale = '100%',
   fn = {
-    aha = {
-      cmd = render_aha.cmd,
-      opts = render_aha.cmd_opts,
-    },
-    playwright = {
-      cmd = render_playwright.cmd,
-      opts = render_playwright.cmd_opts,
-    },
     window_info = {
       cmd = render_windowinfo.cmd,
       opts = render_windowinfo.cmd_opts,
