@@ -12,14 +12,13 @@ local standard_opts = {
     notify = true,
     keymaps = true,
     flash = true,
-    auto_open = true,
+    auto_open = false,
+    auto_preview = true,
   },
   notify = {
-    level = vim.log.levels.INFO,
-    -- TODO: replace all notifies with this
+    level = vim.log.levels.WARN,
     msg = render_msg.notify,
   },
-  scale = '100%',
   fn = {
     window_info = {
       cmd = render_windowinfo.cmd,
@@ -42,13 +41,8 @@ local standard_opts = {
     state = vim.fn.stdpath('state') .. '/' .. render_constants.shortname,
     run = vim.fn.stdpath('run') .. '/' .. render_constants.shortname,
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
-    css = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/css',
-    font = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/font',
-    scripts = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/scripts',
   },
   files = {
-    runtime_scripts = vim.api.nvim_get_runtime_file('scripts/*', true),
-    runtime_fonts = vim.api.nvim_get_runtime_file('font/*', true),
   },
   mode_opts = {
     type = render_constants.screencapture.type.image,
@@ -89,42 +83,10 @@ local standard_opts = {
   },
 }
 
-standard_opts.font = {
-  faces = {
-    {
-      name = render_constants.normal_font,
-      src = [[url(']]
-        .. standard_opts.dirs.font
-        .. '/'
-        .. render_constants.normal_font
-        .. '.'
-        .. render_constants.ttf
-        .. [[') format("truetype")]],
-    },
-    {
-      name = render_constants.italic_font,
-      src = [[url(']]
-        .. standard_opts.dirs.font
-        .. '/'
-        .. render_constants.italic_font
-        .. '.'
-        .. render_constants.ttf
-        .. [[') format("truetype")]],
-    },
-  },
-  size = 11,
-}
+M.default_opts = function()
+  return standard_opts
+end
 
-standard_opts.files.render_script = standard_opts.dirs.scripts
-  .. '/'
-  .. render_constants.shortname
-  .. '.spec.ts'
-standard_opts.files.render_css = standard_opts.dirs.css
-  .. '/'
-  .. render_constants.shortname
-  .. '.css'
-
-M.default_opts = standard_opts
 M.opts = {}
 
 return M

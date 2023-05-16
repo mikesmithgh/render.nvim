@@ -5,7 +5,6 @@ local M = {
   timers = {},
 }
 
-local render_msg = require('render.msg')
 local render_constants = require('render.constants')
 
 local opts = {}
@@ -242,6 +241,11 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
               table.insert(open_cmd, out_file)
               vim.fn.jobstart(open_cmd)
             end
+          end
+          if opts.features.auto_preview then
+            vim.fn.jobstart('qlmanage -p ' .. out_file, {
+              cwd = opts.dirs.output,
+            })
           end
           msg = { location = out_file }
         end

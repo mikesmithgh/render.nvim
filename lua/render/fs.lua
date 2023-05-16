@@ -22,59 +22,11 @@ local function error_ignore(err, ignore_errnos)
   end
 end
 
-M.generateCSSFile = function(font, destination)
-  uv.fs_open(destination, 'ax', tonumber('644', 8), function(err, fd)
-    local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
-    if ignore then
-      return
-    end
-    if fs_err ~= nil then
-      error(fs_err)
-    end
-
-    local font_family = {}
-
-    for _, face in pairs(font.faces) do
-      uv.fs_write(fd, '@font-face {\n')
-      uv.fs_write(fd, '    font-family: "' .. face.name .. '";\n')
-      uv.fs_write(fd, '    src: ' .. face.src .. ';\n')
-      uv.fs_write(fd, '}\n\n')
-
-      table.insert(font_family, '"' .. face.name .. '"')
-    end
-
-    uv.fs_write(fd, '* {\n')
-    uv.fs_write(fd, '    font-family: ' .. table.concat(font_family, ', ') .. ';\n')
-    uv.fs_write(fd, '    font-size: ' .. font.size .. 'px;\n')
-    uv.fs_write(fd, '}\n\n\n')
-    uv.fs_write(fd, 'pre {\n')
-    uv.fs_write(fd, '    zoom: ' .. opts.scale .. ';\n')
-    uv.fs_write(fd, '    position: absolute;\n')
-    uv.fs_write(fd, '    /* avoid pre first line spacing */\n')
-    uv.fs_write(fd, '    top: -1em;\n')
-    uv.fs_write(fd, '    left: 0em;\n')
-    uv.fs_write(fd, '    display: -webkit-box;\n')
-    uv.fs_write(fd, '}\n\n')
-
-    uv.fs_close(fd)
-  end)
-end
-
 M.createInitFiles = function(init_files)
   for sources, destination_dir in pairs(init_files) do
     for _, source in pairs(sources) do
       local dest = destination_dir .. '/' .. vim.fn.fnamemodify(source, ':t')
       uv.fs_copyfile(source, dest, { excl = true }, function(err, success)
-        -- print("in copytfile")
-        -- if success == nil then
-        --   local ignore, fs_err = error_ignore(err, { uv.errno.EEXIST })
-        --   if ignore then
-        --     return
-        --   end
-        --   if fs_err ~= nil then
-        --     error(fs_err)
-        --   end
-        -- end
       end)
     end
   end
@@ -141,17 +93,6 @@ end
 
 M.setup_files_and_dirs = function()
   M.create_dirs(opts.dirs)
-
-  local init_files = {}
-  init_files[opts.files.runtime_fonts] = opts.dirs.font
-  init_files[opts.files.runtime_scripts] = opts.dirs.scripts
-  ok, err = pcall(M.createInitFiles, init_files)
-  if not ok then
-    opts.notify.msg(err, vim.log.levels.ERROR, {
-      font = opts.font,
-      render_style = opts.files.render_css,
-    })
-  end
 end
 
 return M

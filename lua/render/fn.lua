@@ -67,8 +67,6 @@ M.new_output_files = function()
   )
   return {
     file = out_file,
-    cat = out_file .. '.' .. render_constants.cat,
-    html = out_file .. '.' .. render_constants.html,
     png = out_file .. '.' .. render_constants.png,
     psd = out_file .. '.' .. render_constants.psd,
     bmp = out_file .. '.' .. render_constants.bmp,
@@ -79,31 +77,6 @@ M.new_output_files = function()
     tiff = out_file .. '.' .. render_constants.tiff,
     mov = out_file .. '.' .. render_constants.mov,
   }
-end
-
-M.sanitize_ansi_screenshot = function(screenshot)
-  -- parse and remove dimensions of the screenshot
-  local first_line = screenshot[1]
-  local dimensions = vim.fn.split(first_line, ',')
-  local height = dimensions[1]
-  local width = dimensions[2]
-  if height ~= nil and height ~= '' and width ~= nil and width ~= '' then
-    table.remove(screenshot, 1)
-  end
-  for i, line in pairs(screenshot) do
-    -- lua's pattern matching facilities work byte by byte. in general, this will not work for unicode pattern matching, although some things will work as you want.
-    -- see http://lua-users.org/wiki/LuaUnicode
-
-    -- tmux and screen print hex 15 shift out character
-    -- see https://en.wikipedia.org/wiki/shift_out_and_shift_in_characters
-    line = vim.fn.substitute(line, '\\v%u0f', '', 'g')
-
-    -- fzf-lua prints en space which is half the width of regular font
-    -- see https://en.wikipedia.org/wiki/En_(typography)
-    -- see https://github.com/ibhagwan/fzf-lua/blob/b454e05d44530e50c0d049b87ca6eeece958ff6a/doc/fzf-lua.txt#L1199
-    screenshot[i] = vim.fn.substitute(line, '\\v%u2002', ' ', 'g')
-  end
-  return height, width
 end
 
 -- copied from lazy.nvim
@@ -136,7 +109,7 @@ M.render_quickfix = function(qfopts)
 
   if populateqf then
     vim.fn.jobstart(
-      '(printf "%s | render.nvim |\n" $(realpath .); (stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
+      '(printf "%s | render.nvim |\n" $(realpath .); ( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
       {
         cwd = opts.dirs.output,
         stdout_buffered = true,
@@ -153,8 +126,17 @@ M.render_quickfix = function(qfopts)
                 valid = true,
               }
             end
+
+            local fname = r:gmatch('%S+')()
+            local ext = vim.fn.fnamemodify(fname, ':e'):lower()
+            local ext_description = render_constants.extension_description[ext]
+            if ext_description ~= nil then
+              fname = nil
+            end
             return {
-              text = r
+              filename = fname,
+              text = r,
+              valid = true,
             }
           end, result)
           vim.fn.setqflist({}, ' ', {
@@ -167,13 +149,14 @@ M.render_quickfix = function(qfopts)
                 local text = items[idx].text
                 local fname = text:gmatch('%S+')()
                 local ext = vim.fn.fnamemodify(fname, ':e'):lower()
+                local ext_description = render_constants.extension_description[ext]
                 if next(l) == nil then
                   -- first directory is the output directory
                   table.insert(l, text .. ' ' .. 'Output directory')
-                elseif ext == nil or ext == '' then
+                elseif ext == nil or ext == '' or ext_description == nil then
                   table.insert(l, text)
                 else
-                  table.insert(l, text .. ' ' .. render_constants.extension_description[ext])
+                  table.insert(l, text .. ' ' .. ext_description)
                 end
               end
               return l
@@ -198,6 +181,11 @@ M.open_qfitem = function(keymap)
     local items = vim.fn.getqflist({ items = true }).items
     local text = items[line_index].text
     local fname = text:gmatch('%S+')()
+    local ext = vim.fn.fnamemodify(fname, ':e'):lower()
+    local ext_description = render_constants.extension_description[ext]
+    if ext_description == nil then
+      return keymap
+    end
     local open_cmd = opts.fn.open_cmd()
     if open_cmd ~= nil then
       table.insert(open_cmd, fname)
