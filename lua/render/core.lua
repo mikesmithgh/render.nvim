@@ -18,6 +18,14 @@ M.render = function(mode_opts)
   vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, mode_opts))
 end
 
+M.renderImage = function(image_type)
+  local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+    type = render_constants.screencapture.type.image,
+    filetype = image_type,
+  })
+  M.render(mode_opts)
+end
+
 M.render_png = function()
   local mode_opts = vim.tbl_extend('force', opts.mode_opts, {
     type = render_constants.screencapture.type.image,

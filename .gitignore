@@ -1,3 +1,4 @@
 *.orig
 .worktrees/
 .DS_Store
+.render.deps/*/

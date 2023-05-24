@@ -22,7 +22,7 @@ M.notify = function(msg, level, extra)
             'keep',
             { msg = string.format('%s: %s', render_constants.longname, msg) },
             extra
-          )
+          ), { newline = ' ', indent = ' ' }
         ),
         level,
         {}

@@ -14,9 +14,11 @@ local standard_opts = {
     flash = true,
     auto_open = false,
     auto_preview = true,
+    sound_effect = false,
+    window_shadow = false,
   },
   notify = {
-    level = vim.log.levels.WARN,
+    level = vim.log.levels.INFO,
     msg = render_msg.notify,
   },
   fn = {
@@ -46,6 +48,7 @@ local standard_opts = {
   mode_opts = {
     type = render_constants.screencapture.type.image,
     mode = render_constants.screencapture.mode.save,
+    capturemode = render_constants.screencapture.capturemode.window,
     filetype = render_constants.png,
     delay = nil,
     show_clicks = false,

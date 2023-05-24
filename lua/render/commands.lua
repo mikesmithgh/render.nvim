@@ -1,46 +1,42 @@
 local render_core = require('render.core')
 local render_screencapture = require('render.screencapture')
-local render_msg = require('render.msg')
+local render_constants = require('render.constants')
 local render_fs = require('render.fs')
 local render_fn = require('render.fn')
-local render_constants = require('render.constants')
 local M = {}
 
 local opts = {}
 
 M.setup = function(render_opts)
   opts = render_opts
-  vim.api.nvim_create_user_command('Render', function()
+  vim.api.nvim_create_user_command('Render', function(o)
+    local filetype = o.args
+    local mode_opts = opts.mode_opts
+    if filetype ~= nil and filetype ~= '' then
+      if not vim.tbl_contains(render_constants.all_types, filetype) then
+        -- TODO: error
+        return
+      end
+      mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+        type = render_constants.screencapture.type.image,
+        filetype = filetype,
+      })
+      if vim.tbl_contains(render_constants.video_types, filetype) then
+        mode_opts = vim.tbl_extend('force', opts.mode_opts, {
+          type = render_constants.screencapture.type.video,
+          filetype = filetype,
+        })
+      end
+    end
     -- small delay to avoid capturing :Render command and flash
-    vim.defer_fn(render_core.render, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderPng', function()
-    vim.defer_fn(render_core.render_png, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderJpg', function()
-    vim.defer_fn(render_core.render_jpg, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderGif', function()
-    vim.defer_fn(render_core.render_gif, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderTiff', function()
-    vim.defer_fn(render_core.render_tiff, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderPdf', function()
-    vim.defer_fn(render_core.render_pdf, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderPsd', function()
-    vim.defer_fn(render_core.render_psd, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderTga', function()
-    vim.defer_fn(render_core.render_tga, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderBmp', function()
-    vim.defer_fn(render_core.render_bmp, 200)
-  end, {})
-  vim.api.nvim_create_user_command('RenderVideo', function()
-    vim.defer_fn(render_core.render_video, 200)
-  end, {})
+    vim.defer_fn(render_fn.partial(render_core.render, mode_opts), 200)
+  end, {
+    nargs = '?',
+    complete = function()
+      return render_constants.all_types
+    end,
+  })
+
   vim.api.nvim_create_user_command('RenderDryRun', render_core.render_dryrun, {})
 
   vim.api.nvim_create_user_command('RenderInterrupt', function()

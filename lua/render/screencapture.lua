@@ -69,9 +69,10 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
-M.cmd = function(x, y, width, height, out_files, mode_opts)
+M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
   local screencapture_cmd = { 'screencapture' }
   local mode = render_constants.screencapture.mode
+  local capturemode = render_constants.screencapture.capturemode
   local type = render_constants.screencapture.type
 
   if mode_opts.dry_run then
@@ -89,7 +90,22 @@ M.cmd = function(x, y, width, height, out_files, mode_opts)
     screencapture_cmd = { screencapture_dryrun_script }
   end
 
-  table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
+  if mode_opts.capturemode == capturemode.window then
+    table.insert(screencapture_cmd, '-l' .. wid)
+  elseif mode_opts.capturemode == capturemode.bounds then
+    table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
+  else
+    opts.notify.msg('unrecognized capturemode options', vim.log.levels.INFO, mode_opts)
+    return nil
+  end
+
+  if not opts.features.sound_effect then
+    table.insert(screencapture_cmd, '-x')
+  end
+
+  if not opts.features.window_shadow then
+    table.insert(screencapture_cmd, '-o')
+  end
 
   if mode_opts.delay ~= nil then
     -- take the capture after a delay of <seconds>

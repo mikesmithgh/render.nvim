@@ -11,7 +11,30 @@ M.tga = 'tga'
 M.bmp = 'bmp'
 M.gif = 'gif'
 M.tiff = 'tiff'
+
+M.image_types = {
+  M.png,
+  M.jpg,
+  M.pdf,
+  M.psd,
+  M.tga,
+  M.bmp,
+  M.gif,
+  M.tiff,
+}
+
 M.mov = 'mov'
+M.video_types = {
+  M.mov,
+}
+
+local all_types = {}
+-- create a shallow copy to avoid mutating during list extend
+for k, v in pairs(M.image_types) do
+  all_types[k] = v
+end
+vim.list_extend(all_types, M.video_types)
+M.all_types = all_types
 
 M.extension_description = {
   bmp = 'Bitmap',
@@ -47,6 +70,10 @@ M.screencapture = {
     open = 'open',
   },
   default_location = '~/Desktop',
+  capturemode = {
+    window = 'window',
+    bounds = 'bounds',
+  },
 }
 
 return M
