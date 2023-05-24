@@ -85,7 +85,7 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
         vim.log.levels.ERROR,
         {}
       )
-      return
+      return nil
     end
     screencapture_cmd = { screencapture_dryrun_script }
   end

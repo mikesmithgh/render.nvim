@@ -1,5 +1,6 @@
 local uv = vim.loop
 local render_fn = require('render.fn')
+local render_constants = require('render.constants')
 
 local valid_sha256s = {
   ['pdubs.tar.gz'] = 'bb8ed34f449825fb4bbfefaa85229a7a5d7130da06aa427011555322bdb5b428',
@@ -115,16 +116,26 @@ M.cmd_opts = function(out_files, mode_opts)
         end
         local screencapture_cmd = opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
         if screencapture_cmd ~= nil then
-          local job_id = vim.fn.jobstart(
-            screencapture_cmd,
-            opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
-          )
-          if job_id > 0 then
-            render_screencapture.job_ids[job_id] = {
-              window_info = window_info_result,
-              out_files = out_files,
-            }
+          local capture_delay = 0
+
+          if mode_opts.type == render_constants.screencapture.type.video and opts.features.flash then
+            opts.fn.flash()
+            capture_delay = 200
           end
+          vim.defer_fn(
+            function()
+              local job_id = vim.fn.jobstart(
+                screencapture_cmd,
+                opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
+              )
+              if job_id > 0 then
+                render_screencapture.job_ids[job_id] = {
+                  window_info = window_info_result,
+                  out_files = out_files,
+                }
+              end
+            end
+            , capture_delay) -- small delay to avoid capturing flash
         end
       end
     end,
