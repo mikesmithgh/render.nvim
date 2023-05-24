@@ -12,7 +12,6 @@ local render_screencapture = require('render.screencapture')
 
 local opts = {}
 
-
 M.setup = function(render_opts)
   opts = render_opts
 
@@ -106,7 +105,11 @@ M.cmd_opts = function(out_files, mode_opts)
         local width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
         local height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
         if x == nil or y == nil or width == nil or height == nil then
-          opts.notify.msg('error window bounds information is nil', vim.log.levels.ERROR, window_info_result)
+          opts.notify.msg(
+            'error window bounds information is nil',
+            vim.log.levels.ERROR,
+            window_info_result
+          )
           return
         end
         local wid = result[1].kCGWindowNumber
@@ -114,28 +117,29 @@ M.cmd_opts = function(out_files, mode_opts)
           opts.notify.msg('error window ID number is nil', vim.log.levels.ERROR, window_info_result)
           return
         end
-        local screencapture_cmd = opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
+        local screencapture_cmd =
+          opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
         if screencapture_cmd ~= nil then
           local capture_delay = 0
 
-          if mode_opts.type == render_constants.screencapture.type.video and opts.features.flash then
+          if
+            mode_opts.type == render_constants.screencapture.type.video and opts.features.flash
+          then
             opts.fn.flash()
             capture_delay = 200
           end
-          vim.defer_fn(
-            function()
-              local job_id = vim.fn.jobstart(
-                screencapture_cmd,
-                opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
-              )
-              if job_id > 0 then
-                render_screencapture.job_ids[job_id] = {
-                  window_info = window_info_result,
-                  out_files = out_files,
-                }
-              end
+          vim.defer_fn(function()
+            local job_id = vim.fn.jobstart(
+              screencapture_cmd,
+              opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
+            )
+            if job_id > 0 then
+              render_screencapture.job_ids[job_id] = {
+                window_info = window_info_result,
+                out_files = out_files,
+              }
             end
-            , capture_delay) -- small delay to avoid capturing flash
+          end, capture_delay) -- small delay to avoid capturing flash
         end
       end
     end,

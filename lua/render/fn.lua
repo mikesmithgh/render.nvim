@@ -235,9 +235,7 @@ end
 M.check_sha256 = function(sha256, fpath)
   local input = "'" .. sha256 .. ' *' .. fpath .. "'"
   local cmd = 'echo ' .. input .. ' | shasum -c'
-  local jid = vim.fn.jobstart(
-    cmd
-  )
+  local jid = vim.fn.jobstart(cmd)
   return 0 == vim.fn.jobwait({ jid }, 5000)[1]
 end
 
