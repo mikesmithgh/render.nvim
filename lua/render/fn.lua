@@ -232,49 +232,12 @@ M.quicklook_qfitem = function(keymap)
   end
 end
 
-
-M.arch = function()
-  local cached_arch = M.cache['arch']
-  if cached_arch ~= nil and cached_arch ~= '' then
-    return cached_arch
-  end
-
-  local jid = vim.fn.jobstart(
-    'arch',
-    {
-      stdout_buffered = true,
-      stderr_buffered = true,
-      on_stdout = function(_, result)
-        -- vim.print(result)
-        M.cache['arch'] = result[1]
-      end,
-      -- on_stderr = function(_, result)
-      --   vim.print(result)
-      -- end,
-    }
-  )
-
-  local exitcode = vim.fn.jobwait({ jid }, 5000)[1]
-  -- TODO add logic here
-
-  -- -1 if the timeout was exceeded
-  -- -2 if the job was interrupted (by |CTRL-C|)
-  -- -3 if the job-id is invalid
-  return M.cache['arch']
-end
-
 M.check_sha256 = function(sha256, fpath)
   local input = "'" .. sha256 .. ' *' .. fpath .. "'"
   local cmd = 'echo ' .. input .. ' | shasum -c'
-  -- vim.print(cmd)
   local jid = vim.fn.jobstart(
     cmd
-  -- { [[echo ']] .. sha256 .. [[ *]] .. fpath .. [[' | shasum -c ]] },
   )
-  -- vim.print('input', input)
-  -- vim.fn.chansend(jid, input)
-  -- vim.fn.chanclose(jid, 'stdin')
-  -- { [[echo ']] .. sha256 .. [[ *]] .. fpath .. [[' | shasum -c ]] },
   return 0 == vim.fn.jobwait({ jid }, 5000)[1]
 end
 
@@ -283,7 +246,6 @@ M.download_file = function(url, out_dir, out_fname)
   local jid = vim.fn.jobstart(cmd, {
     cwd = out_dir,
   })
-
   return 0 == vim.fn.jobwait({ jid }, 5000)[1]
 end
 
@@ -292,7 +254,6 @@ M.extract_targz = function(fpath, out_dir)
   local jid = vim.fn.jobstart(cmd, {
     cwd = out_dir,
   })
-
   return 0 == vim.fn.jobwait({ jid }, 5000)[1]
 end
 

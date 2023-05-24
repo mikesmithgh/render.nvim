@@ -114,8 +114,6 @@ M.cmd_opts = function(out_files, mode_opts)
           return
         end
         local screencapture_cmd = opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
-        -- vim.print(screencapture_cmd)
-        -- vim.print(table.concat(screencapture_cmd))
         if screencapture_cmd ~= nil then
           local job_id = vim.fn.jobstart(
             screencapture_cmd,
@@ -132,16 +130,7 @@ M.cmd_opts = function(out_files, mode_opts)
     end,
     on_stderr = function(_, result)
       if result[1] ~= nil and result[1] ~= '' then
-        local msg = 'error getting window information'
-        local accessibility_errors = vim.tbl_filter(function(r)
-          return string.match(r, '.*assistive.*') ~= nil
-        end, result)
-        if next(accessibility_errors) ~= nil then
-          msg = msg
-            ..
-            '; accessibility is disabled. Visit https://support.apple.com/guide/mac-help/allow-accessibility-apps-to-access-your-mac-mh43185/13.0/mac/13.0 to see instructions to enabled accessibility. render.nvim uses accessbility features to determine the window position and dimensions of your nvim instance.'
-        end
-        opts.notify.msg(msg, vim.log.levels.ERROR, result)
+        opts.notify.msg('error getting window information', vim.log.levels.ERROR, result)
       end
     end,
   }
