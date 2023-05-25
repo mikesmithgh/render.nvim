@@ -14,21 +14,19 @@ M.notify = function(msg, level, extra)
     and opts.notify.level ~= vim.log.levels.OFF
     and level >= opts.notify.level
   then
-    vim.schedule(
-      render_fn.partial(
-        vim.notify,
-        vim.inspect(
-          vim.tbl_extend(
-            'keep',
-            { msg = string.format('%s: %s', render_constants.longname, msg) },
-            extra
-          ),
-          { newline = ' ', indent = ' ' }
+    local message = string.format('%s: %s', render_constants.longname, msg)
+    if opts.notify.verbose then
+      message = vim.inspect(
+        vim.tbl_extend(
+          'keep',
+          { msg = string.format('%s: %s', render_constants.longname, msg) },
+          extra
         ),
-        level,
-        {}
+        { newline = ' ', indent = ' ' }
       )
-    )
+    end
+
+    vim.schedule(render_fn.partial(vim.notify, message, level, {}))
   end
 end
 

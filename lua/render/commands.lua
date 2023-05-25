@@ -3,6 +3,7 @@ local render_screencapture = require('render.screencapture')
 local render_constants = require('render.constants')
 local render_fs = require('render.fs')
 local render_fn = require('render.fn')
+local render_windowinfo = require('render.windowinfo')
 local M = {}
 
 local opts = {}
@@ -70,6 +71,13 @@ M.setup = function(render_opts)
   vim.api.nvim_create_user_command('RenderExplore', function()
     vim.cmd.edit(opts.dirs.output)
   end, {})
+
+  vim.api.nvim_create_user_command('RenderSetWindowInfo',
+    function(o)
+      render_windowinfo.set_window_info(o.args)
+    end, {
+      nargs = '?',
+    })
 end
 
 return M

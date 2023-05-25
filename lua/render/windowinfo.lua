@@ -12,6 +12,35 @@ local render_screencapture = require('render.screencapture')
 
 local opts = {}
 
+M.set_window_info = function(pid)
+  local window_info_cmd = opts.fn.window_info.cmd()
+  if pid ~= nil and pid ~= '' then
+    window_info_cmd = window_info_cmd .. ' ' .. pid
+  end
+  local offsets = opts.mode_opts.offsets
+  vim.fn.jobstart(window_info_cmd, {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    cwd = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1], -- TODO: stuff this in a var and nil check
+    on_stdout = function(_, window_info_result)
+      local result = vim.json.decode(table.concat(window_info_result))
+      if result ~= nil and result[1] ~= nil then
+        local bounds = result[1].kCGWindowBounds
+        render_fn.cache.window.x = math.floor(bounds.X) + (offsets.left or 0)
+        render_fn.cache.window.y = math.floor(bounds.Y) + (offsets.top or 0)
+        render_fn.cache.window.width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
+        render_fn.cache.window.height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
+        render_fn.cache.window.id = result[1].kCGWindowNumber
+      end
+    end,
+    on_stderr = function(_, result)
+      if result[1] ~= nil and result[1] ~= '' then
+        opts.notify.msg('error getting window id', vim.log.levels.ERROR, result)
+      end
+    end,
+  })
+end
+
 M.setup = function(render_opts)
   opts = render_opts
 
@@ -83,6 +112,10 @@ M.setup = function(render_opts)
     opts.notify.msg('pdubs binary found on runtime path', vim.log.levels.DEBUG, {
       path = '.render.deps/pdubs/pdubs',
     })
+
+    if opts.mode_opts.capture_window_info_mode == render_constants.screencapture.window_info_mode.frontmost_on_startup then
+      M.set_window_info()
+    end
   end
 end
 
@@ -95,24 +128,31 @@ M.cmd_opts = function(out_files, mode_opts)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
-    cwd = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1], -- TODO: stuff this is a var and nil check
+    cwd = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1], -- TODO: stuff this in a var and nil check
     on_stdout = function(_, window_info_result)
       local result = vim.json.decode(table.concat(window_info_result))
       if result ~= nil and result[1] ~= nil then
-        local bounds = result[1].kCGWindowBounds
-        local x = math.floor(bounds.X) + (offsets.left or 0)
-        local y = math.floor(bounds.Y) + (offsets.top or 0)
-        local width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
-        local height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
-        if x == nil or y == nil or width == nil or height == nil then
-          opts.notify.msg(
-            'error window bounds information is nil',
-            vim.log.levels.ERROR,
-            window_info_result
-          )
-          return
+        local wid = render_fn.cache.window.id
+        local x = render_fn.cache.window.x
+        local y = render_fn.cache.window.y
+        local width = render_fn.cache.window.width
+        local height = render_fn.cache.window.height
+        if mode_opts.capture_window_info_mode == render_constants.screencapture.window_info_mode.frontmost then
+          wid = result[1].kCGWindowNumber
+          local bounds = result[1].kCGWindowBounds
+          x = math.floor(bounds.X) + (offsets.left or 0)
+          y = math.floor(bounds.Y) + (offsets.top or 0)
+          width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
+          height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
+          if x == nil or y == nil or width == nil or height == nil then
+            opts.notify.msg(
+              'error window bounds information is nil',
+              vim.log.levels.ERROR,
+              window_info_result
+            )
+            return
+          end
         end
-        local wid = result[1].kCGWindowNumber
         if wid == nil then
           opts.notify.msg('error window ID number is nil', vim.log.levels.ERROR, window_info_result)
           return
@@ -122,9 +162,7 @@ M.cmd_opts = function(out_files, mode_opts)
         if screencapture_cmd ~= nil then
           local capture_delay = 0
 
-          if
-            mode_opts.type == render_constants.screencapture.type.video and opts.features.flash
-          then
+          if mode_opts.type == render_constants.screencapture.type.video and opts.features.flash then
             opts.fn.flash()
             capture_delay = 200
           end
@@ -134,9 +172,22 @@ M.cmd_opts = function(out_files, mode_opts)
               opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
             )
             if job_id > 0 then
+              local video_timer = nil
+              if mode_opts.type == render_constants.screencapture.type.video and mode_opts.video_limit ~= nil then
+                -- limits video capture to specified seconds
+                local video_timeout = mode_opts.video_limit * 1000
+                local delay = mode_opts.delay
+                if delay ~= nil then
+                  video_timeout = video_timeout + (delay * 1000)
+                end
+                video_timer = vim.defer_fn(render_fn.partial(vim.fn.chansend, job_id, {
+                  'type any character (or ctrl-c) to stop screen recording'
+                }), video_timeout)
+              end
               render_screencapture.job_ids[job_id] = {
                 window_info = window_info_result,
                 out_files = out_files,
+                timer = video_timer
               }
             end
           end, capture_delay) -- small delay to avoid capturing flash

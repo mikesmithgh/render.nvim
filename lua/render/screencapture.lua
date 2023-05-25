@@ -90,12 +90,13 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     screencapture_cmd = { screencapture_dryrun_script }
   end
 
-  if mode_opts.capturemode == capturemode.window then
-    table.insert(screencapture_cmd, '-l' .. wid)
-  elseif mode_opts.capturemode == capturemode.bounds then
+  -- video does not support capture by window ID
+  if mode_opts.type == type.video or mode_opts.image_capture_mode == capturemode.bounds then
     table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
+  elseif mode_opts.image_capture_mode == capturemode.window then
+    table.insert(screencapture_cmd, '-l' .. wid)
   else
-    opts.notify.msg('unrecognized capturemode options', vim.log.levels.INFO, mode_opts)
+    opts.notify.msg('unrecognized capturemode options', vim.log.levels.ERROR, mode_opts)
     return nil
   end
 
@@ -195,11 +196,6 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
   end
 
   if mode_opts.type == type.video then
-    if mode_opts.video_limit ~= nil then
-      -- limits video capture to specified seconds
-      table.insert(screencapture_cmd, '-V' .. mode_opts.video_limit)
-    end
-
     if mode_opts.show_clicks then
       -- show clicks in video recording mode
       table.insert(screencapture_cmd, '-k')
@@ -211,7 +207,7 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     })
   end
 
-  opts.notify.msg('unrecognized mode options', vim.log.levels.INFO, mode_opts)
+  opts.notify.msg('unrecognized mode options', vim.log.levels.ERROR, mode_opts)
   return nil
 end
 
@@ -366,7 +362,12 @@ M.location_cmd_opts = function(msg)
 end
 
 M.interrupt = function()
-  for job_id, _ in pairs(M.job_ids) do
+  for job_id, job_info in pairs(M.job_ids) do
+    local timer = job_info.timer
+    if job_info ~= nil and timer ~= nil then
+      timer:stop()
+      timer:close()
+    end
     local pid = vim.fn.jobpid(job_id)
     luv.kill(pid, 'sigint')
   end

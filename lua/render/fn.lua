@@ -1,6 +1,8 @@
 local render_constants = require('render.constants')
 local M = {}
-M.cache = {}
+M.cache = {
+  window = {}
+}
 
 local opts = {}
 
@@ -48,7 +50,7 @@ end
 M.open_cmd = function()
   local cmd = {
     unix = { 'xdg-open' },
-    mac = { 'open', '--background' },
+    mac = { 'open' },
     windows = { cmd = 'cmd', args = { '/c', 'start', '""' } },
   }
   return cmd[M.os()]

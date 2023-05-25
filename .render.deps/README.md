@@ -9,6 +9,7 @@ This folder contains dependencies that are downloaded during runtime.
 y = yes
 * = can support, need to implement
 ? = can support, may not implement
+~ = support different impl
 
   y -c         force screen capture to go to the clipboard
   y -D<display> screen capture or record from the display specified. -D 1 is main display, -D 2 secondary, etc.
@@ -19,7 +20,7 @@ y = yes
   y -l<windowid> capture this windowsid
   y -R<x,y,w,h> capture screen rect
   y -v        capture video recording of the screen
-  y -V<seconds> limits video capture to specified seconds
+  ~ -V<seconds> limits video capture to specified seconds
   y -k        show clicks in video recording mode
   y -u        present UI after screencapture is complete. files passed to command line will be ignored
 

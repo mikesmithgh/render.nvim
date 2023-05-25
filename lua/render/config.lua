@@ -20,6 +20,7 @@ local standard_opts = {
   notify = {
     level = vim.log.levels.INFO,
     msg = render_msg.notify,
+    verbose = false,
   },
   fn = {
     window_info = {
@@ -48,16 +49,17 @@ local standard_opts = {
   mode_opts = {
     type = render_constants.screencapture.type.image,
     mode = render_constants.screencapture.mode.save,
-    capturemode = render_constants.screencapture.capturemode.window,
+    image_capture_mode = render_constants.screencapture.capturemode.bounds,
+    capture_window_info_mode = render_constants.screencapture.window_info_mode.frontmost_on_startup,
     filetype = render_constants.png,
-    delay = nil,
+    delay = 5,
     show_clicks = false,
-    video_limit = 60,
+    video_limit = 5,
     dry_run = false,
     offsets = {
       left = 0,
-      top = 0,
-      right = 0,
+      top = 0, -- 27, tested with iterm,
+      right = 0, -- 13,
       bottom = 0,
     },
   },

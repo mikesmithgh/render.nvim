@@ -74,6 +74,11 @@ M.screencapture = {
     window = 'window',
     bounds = 'bounds',
   },
+  window_info_mode = {
+    frontmost = 'frontmost',
+    frontmost_on_startup = 'frontmost_on_startup',
+    manual = 'manual',
+  },
 }
 
 return M
