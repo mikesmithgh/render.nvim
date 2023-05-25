@@ -28,8 +28,12 @@ M.set_window_info = function(pid)
         local bounds = result[1].kCGWindowBounds
         render_fn.cache.window.x = math.floor(bounds.X) + (offsets.left or 0)
         render_fn.cache.window.y = math.floor(bounds.Y) + (offsets.top or 0)
-        render_fn.cache.window.width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
-        render_fn.cache.window.height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
+        render_fn.cache.window.width = math.floor(bounds.Width)
+          - (offsets.left or 0)
+          - (offsets.right or 0)
+        render_fn.cache.window.height = math.floor(bounds.Height)
+          - (offsets.top or 0)
+          - (offsets.bottom or 0)
         render_fn.cache.window.id = result[1].kCGWindowNumber
       end
     end,
@@ -113,7 +117,10 @@ M.setup = function(render_opts)
       path = '.render.deps/pdubs/pdubs',
     })
 
-    if opts.mode_opts.capture_window_info_mode == render_constants.screencapture.window_info_mode.frontmost_on_startup then
+    if
+      opts.mode_opts.capture_window_info_mode
+      == render_constants.screencapture.window_info_mode.frontmost_on_startup
+    then
       M.set_window_info()
     end
   end
@@ -137,7 +144,10 @@ M.cmd_opts = function(out_files, mode_opts)
         local y = render_fn.cache.window.y
         local width = render_fn.cache.window.width
         local height = render_fn.cache.window.height
-        if mode_opts.capture_window_info_mode == render_constants.screencapture.window_info_mode.frontmost then
+        if
+          mode_opts.capture_window_info_mode
+          == render_constants.screencapture.window_info_mode.frontmost
+        then
           wid = result[1].kCGWindowNumber
           local bounds = result[1].kCGWindowBounds
           x = math.floor(bounds.X) + (offsets.left or 0)
@@ -162,7 +172,9 @@ M.cmd_opts = function(out_files, mode_opts)
         if screencapture_cmd ~= nil then
           local capture_delay = 0
 
-          if mode_opts.type == render_constants.screencapture.type.video and opts.features.flash then
+          if
+            mode_opts.type == render_constants.screencapture.type.video and opts.features.flash
+          then
             opts.fn.flash()
             capture_delay = 200
           end
@@ -173,21 +185,27 @@ M.cmd_opts = function(out_files, mode_opts)
             )
             if job_id > 0 then
               local video_timer = nil
-              if mode_opts.type == render_constants.screencapture.type.video and mode_opts.video_limit ~= nil then
+              if
+                mode_opts.type == render_constants.screencapture.type.video
+                and mode_opts.video_limit ~= nil
+              then
                 -- limits video capture to specified seconds
                 local video_timeout = mode_opts.video_limit * 1000
                 local delay = mode_opts.delay
                 if delay ~= nil then
                   video_timeout = video_timeout + (delay * 1000)
                 end
-                video_timer = vim.defer_fn(render_fn.partial(vim.fn.chansend, job_id, {
-                  'type any character (or ctrl-c) to stop screen recording'
-                }), video_timeout)
+                video_timer = vim.defer_fn(
+                  render_fn.partial(vim.fn.chansend, job_id, {
+                    'type any character (or ctrl-c) to stop screen recording',
+                  }),
+                  video_timeout
+                )
               end
               render_screencapture.job_ids[job_id] = {
                 window_info = window_info_result,
                 out_files = out_files,
-                timer = video_timer
+                timer = video_timer,
               }
             end
           end, capture_delay) -- small delay to avoid capturing flash

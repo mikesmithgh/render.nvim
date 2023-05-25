@@ -72,12 +72,11 @@ M.setup = function(render_opts)
     vim.cmd.edit(opts.dirs.output)
   end, {})
 
-  vim.api.nvim_create_user_command('RenderSetWindowInfo',
-    function(o)
-      render_windowinfo.set_window_info(o.args)
-    end, {
-      nargs = '?',
-    })
+  vim.api.nvim_create_user_command('RenderSetWindowInfo', function(o)
+    render_windowinfo.set_window_info(o.args)
+  end, {
+    nargs = '?',
+  })
 end
 
 return M

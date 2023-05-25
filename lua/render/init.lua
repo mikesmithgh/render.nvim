@@ -22,9 +22,13 @@ M.setup = function(override_opts)
   render_msg.setup(M.opts)
   local os = render_fn.os()
   if os ~= 'mac' then
-    M.opts.notify.msg(render_constants.longname .. ' is only compatible with macOS', vim.log.levels.ERROR, {
-      os = os,
-    })
+    M.opts.notify.msg(
+      render_constants.longname .. ' is only compatible with macOS',
+      vim.log.levels.ERROR,
+      {
+        os = os,
+      }
+    )
     return
   end
 

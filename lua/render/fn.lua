@@ -1,7 +1,7 @@
 local render_constants = require('render.constants')
 local M = {}
 M.cache = {
-  window = {}
+  window = {},
 }
 
 local opts = {}
