@@ -1,41 +1,70 @@
 local uv = vim.loop
 local render_fn = require('render.fn')
 local render_constants = require('render.constants')
+local render_screencapture = require('render.screencapture')
+
+local M = {}
+local opts = {}
 
 local valid_sha256s = {
   ['pdubs.tar.gz'] = 'bb8ed34f449825fb4bbfefaa85229a7a5d7130da06aa427011555322bdb5b428',
 }
 local pdubs_download_url = 'https://github.com/mikesmithgh/pdubs/releases/download/v1.0.0/'
 
-local M = {}
-local render_screencapture = require('render.screencapture')
+M.as_window_info = function(json, offsets)
+  local window_info = nil
+  if offsets == nil then
+    offsets = {
+      left = 0,
+      right = 0,
+      up = 0,
+      down = 0,
+    }
+  end
+  local result = vim.json.decode(table.concat(json))
+  if result ~= nil and result[1] ~= nil then
+    window_info = {}
+    local bounds = result[1].kCGWindowBounds
+    window_info.x = math.floor(bounds.X) + (offsets.left or 0)
+    window_info.y = math.floor(bounds.Y) + (offsets.top or 0)
+    window_info.width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
+    window_info.height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
+    window_info.id = result[1].kCGWindowNumber
+  end
+  return window_info
+end
 
-local opts = {}
+M.render_deps_dir = function()
+  return vim.api.nvim_get_runtime_file(render_constants.render_deps_dir, false)[1]
+end
+M.pdubs_dir = function()
+  return vim.api.nvim_get_runtime_file(render_constants.pdubs_dir, false)[1]
+end
+M.pdubs_fpath = function()
+  return vim.api.nvim_get_runtime_file(render_constants.pdubs_file, false)[1]
+end
 
 M.set_window_info = function(pid)
   local window_info_cmd = opts.fn.window_info.cmd()
   if pid ~= nil and pid ~= '' then
     window_info_cmd = window_info_cmd .. ' ' .. pid
   end
-  local offsets = opts.mode_opts.offsets
+  local dir = M.pdubs_dir()
+  if dir == nil then
+    opts.notify.msg('error getting pdubs dir', vim.log.levels.ERROR, {})
+    return
+  end
   vim.fn.jobstart(window_info_cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
-    cwd = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1], -- TODO: stuff this in a var and nil check
+    cwd = dir,
     on_stdout = function(_, window_info_result)
-      local result = vim.json.decode(table.concat(window_info_result))
-      if result ~= nil and result[1] ~= nil then
-        local bounds = result[1].kCGWindowBounds
-        render_fn.cache.window.x = math.floor(bounds.X) + (offsets.left or 0)
-        render_fn.cache.window.y = math.floor(bounds.Y) + (offsets.top or 0)
-        render_fn.cache.window.width = math.floor(bounds.Width)
-          - (offsets.left or 0)
-          - (offsets.right or 0)
-        render_fn.cache.window.height = math.floor(bounds.Height)
-          - (offsets.top or 0)
-          - (offsets.bottom or 0)
-        render_fn.cache.window.id = result[1].kCGWindowNumber
-      end
+      local window_info = M.as_window_info(window_info_result, opts.mode_opts.offsets)
+      render_fn.cache.window.x = window_info.x
+      render_fn.cache.window.y = window_info.y
+      render_fn.cache.window.width = window_info.width
+      render_fn.cache.window.height = window_info.height
+      render_fn.cache.window.id = window_info.id
     end,
     on_stderr = function(_, result)
       if result[1] ~= nil and result[1] ~= '' then
@@ -45,25 +74,50 @@ M.set_window_info = function(pid)
   })
 end
 
-M.setup = function(render_opts)
-  opts = render_opts
-
-  -- TODO: move to a function
-  -- TODO: add to render clean logic
-  local render_deps = vim.api.nvim_get_runtime_file('.render.deps', false)[1]
-  local pdubs_dir = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1]
-  local pdubs_fpath = vim.api.nvim_get_runtime_file('.render.deps/pdubs/pdubs', false)[1]
+M.remove_pdubs = function()
+  local render_deps = M.render_deps_dir()
+  local pdubs_dir = M.pdubs_dir()
+  local pdubs_fpath = M.pdubs_fpath()
 
   if render_deps == nil then
     opts.notify.msg('pdubs failed to find render deps directory', vim.log.levels.ERROR, {
-      dir = '.render.deps',
+      dir = render_constants.render_deps_dir,
     })
-    return
+    return false
+  end
+
+  if pdubs_dir == nil or pdubs_fpath == nil then
+    return true
+  else
+    if vim.fn.delete(pdubs_dir, 'rf') == 0 then
+      opts.notify.msg('pdubs successfully deleted pdubs directory', vim.log.levels.DEBUG, {
+        dir = pdubs_dir,
+      })
+      return true
+    else
+      opts.notify.msg('pdubs failed to delete pdubs directory', vim.log.levels.ERROR, {
+        dir = pdubs_dir,
+      })
+    end
+  end
+  return false
+end
+
+M.install_pdubs = function()
+  local render_deps = M.render_deps_dir()
+  local pdubs_dir = M.pdubs_dir()
+  local pdubs_fpath = M.pdubs_fpath()
+
+  if render_deps == nil then
+    opts.notify.msg('pdubs failed to find render deps directory', vim.log.levels.ERROR, {
+      dir = render_constants.render_deps_dir,
+    })
+    return false
   end
 
   if pdubs_dir == nil then
     vim.fn.mkdir(render_deps .. '/pdubs')
-    pdubs_dir = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1]
+    pdubs_dir = M.pdubs_dir()
   end
 
   if pdubs_dir ~= nil and pdubs_fpath == nil then
@@ -107,74 +161,68 @@ M.setup = function(render_opts)
   end
 
   -- get the file again to verify it exists
-  pdubs_fpath = vim.api.nvim_get_runtime_file('.render.deps/pdubs/pdubs', false)[1]
+  pdubs_fpath = M.pdubs_fpath()
   if pdubs_fpath == nil then
     opts.notify.msg('pdubs binary not found on runtime path', vim.log.levels.ERROR, {
-      path = '.render.deps/pdubs/pdubs',
+      path = render_constants.pdubs_file,
     })
   else
     opts.notify.msg('pdubs binary found on runtime path', vim.log.levels.DEBUG, {
-      path = '.render.deps/pdubs/pdubs',
+      path = render_constants.pdubs_file,
     })
+    return true
+  end
+  return false
+end
 
-    if
-      opts.mode_opts.capture_window_info_mode
-      == render_constants.screencapture.window_info_mode.frontmost_on_startup
-    then
-      M.set_window_info()
-    end
+M.setup = function(render_opts)
+  opts = render_opts
+
+  local window_info_mode = render_constants.screencapture.window_info_mode
+  if M.install_pdubs() and opts.mode_opts.capture_window_info_mode == window_info_mode.frontmost_on_startup then
+    M.set_window_info()
   end
 end
 
 M.cmd = function()
-  return 'pdubs'
+  return render_constants.pdubs
 end
 
 M.cmd_opts = function(out_files, mode_opts)
   local offsets = mode_opts.offsets or {}
+  local screencapture = render_constants.screencapture
   return {
     stdout_buffered = true,
     stderr_buffered = true,
-    cwd = vim.api.nvim_get_runtime_file('.render.deps/pdubs', false)[1], -- TODO: stuff this in a var and nil check
+    cwd = M.pdubs_dir(),
     on_stdout = function(_, window_info_result)
-      local result = vim.json.decode(table.concat(window_info_result))
-      if result ~= nil and result[1] ~= nil then
+      local window_info = M.as_window_info(window_info_result, offsets)
+      if window_info ~= nil then
         local wid = render_fn.cache.window.id
         local x = render_fn.cache.window.x
         local y = render_fn.cache.window.y
         local width = render_fn.cache.window.width
         local height = render_fn.cache.window.height
-        if
-          mode_opts.capture_window_info_mode
-          == render_constants.screencapture.window_info_mode.frontmost
-        then
-          wid = result[1].kCGWindowNumber
-          local bounds = result[1].kCGWindowBounds
-          x = math.floor(bounds.X) + (offsets.left or 0)
-          y = math.floor(bounds.Y) + (offsets.top or 0)
-          width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
-          height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
-          if x == nil or y == nil or width == nil or height == nil then
-            opts.notify.msg(
-              'error window bounds information is nil',
-              vim.log.levels.ERROR,
-              window_info_result
-            )
-            return
-          end
+        if mode_opts.capture_window_info_mode == screencapture.window_info_mode.frontmost then
+          wid = window_info.id
+          x = window_info.x
+          y = window_info.y
+          width = window_info.width
+          height = window_info.height
         end
-        if wid == nil then
-          opts.notify.msg('error window ID number is nil', vim.log.levels.ERROR, window_info_result)
+        if wid == nil or x == nil or y == nil or width == nil or height == nil then
+          opts.notify.msg(
+            'error window information is nil',
+            vim.log.levels.ERROR,
+            window_info_result
+          )
           return
         end
-        local screencapture_cmd =
-          opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
+        local screencapture_cmd = opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
         if screencapture_cmd ~= nil then
           local capture_delay = 0
 
-          if
-            mode_opts.type == render_constants.screencapture.type.video and opts.features.flash
-          then
+          if mode_opts.type == screencapture.type.video and opts.features.flash then
             opts.fn.flash()
             capture_delay = 200
           end
@@ -185,10 +233,7 @@ M.cmd_opts = function(out_files, mode_opts)
             )
             if job_id > 0 then
               local video_timer = nil
-              if
-                mode_opts.type == render_constants.screencapture.type.video
-                and mode_opts.video_limit ~= nil
-              then
+              if mode_opts.type == screencapture.type.video and mode_opts.video_limit ~= nil then
                 -- limits video capture to specified seconds
                 local video_timeout = mode_opts.video_limit * 1000
                 local delay = mode_opts.delay

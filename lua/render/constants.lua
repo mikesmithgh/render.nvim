@@ -2,6 +2,10 @@ local M = {}
 
 M.shortname = 'render'
 M.longname = 'render.nvim'
+M.render_deps_dir = '.render.deps'
+M.pdubs = 'pdubs'
+M.pdubs_dir = M.render_deps_dir .. '/pdubs'
+M.pdubs_file = M.pdubs_dir .. '/pdubs'
 
 M.png = 'png'
 M.jpg = 'jpg'

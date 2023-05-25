@@ -15,7 +15,9 @@ M.setup = function(render_opts)
     local mode_opts = opts.mode_opts
     if filetype ~= nil and filetype ~= '' then
       if not vim.tbl_contains(render_constants.all_types, filetype) then
-        -- TODO: error
+        opts.notify.msg('unrecognized filetype', vim.log.levels.ERROR, {
+          filetype = filetype
+        })
         return
       end
       mode_opts = vim.tbl_extend('force', opts.mode_opts, {
@@ -47,6 +49,9 @@ M.setup = function(render_opts)
   vim.api.nvim_create_user_command('RenderClean', function()
     render_fs.remove_dirs(opts.dirs)
     render_fs.setup_files_and_dirs()
+    if render_windowinfo.remove_pdubs() then
+      render_windowinfo.install_pdubs()
+    end
   end, {})
 
   vim.api.nvim_create_user_command(
