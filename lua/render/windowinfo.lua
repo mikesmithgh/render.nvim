@@ -179,7 +179,10 @@ M.setup = function(render_opts)
   opts = render_opts
 
   local window_info_mode = render_constants.screencapture.window_info_mode
-  if M.install_pdubs() and opts.mode_opts.capture_window_info_mode == window_info_mode.frontmost_on_startup then
+  if
+    M.install_pdubs()
+    and opts.mode_opts.capture_window_info_mode == window_info_mode.frontmost_on_startup
+  then
     M.set_window_info()
   end
 end
@@ -218,7 +221,8 @@ M.cmd_opts = function(out_files, mode_opts)
           )
           return
         end
-        local screencapture_cmd = opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
+        local screencapture_cmd =
+          opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
         if screencapture_cmd ~= nil then
           local capture_delay = 0
 

@@ -16,7 +16,7 @@ M.setup = function(render_opts)
     if filetype ~= nil and filetype ~= '' then
       if not vim.tbl_contains(render_constants.all_types, filetype) then
         opts.notify.msg('unrecognized filetype', vim.log.levels.ERROR, {
-          filetype = filetype
+          filetype = filetype,
         })
         return
       end
