@@ -4,6 +4,7 @@
 Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
+  - Features                                |render.nvim-render.nvim-features|
   - Installation                        |render.nvim-render.nvim-installation|
   - How does it work?              |render.nvim-render.nvim-how-does-it-work?|
   - Supported OS versions      |render.nvim-render.nvim-supported-os-versions|
@@ -16,6 +17,29 @@ Table of Contents                              *render.nvim-table-of-contents*
 1. render.nvim                                       *render.nvim-render.nvim*
 
 Neovim plugin to take screenshots of your Neovim session on MacOS.
+
+
+FEATURES                                    *render.nvim-render.nvim-features*
+
+- Capture to clipboard
+- Save capture to file
+- Capture image by Window
+- Capture image or video by Window bounds
+- Decorate capture with Window shadow
+- Configurable delay with countdown
+- Sound effect
+- Flash
+- Video recording
+- Show clicks during video recording
+- Show floating thumbnail
+- Open all screencaptures in Quick View
+- Open all screencaptures in Quickfix List
+- Open or Preview capture
+- Limit Video recording length
+- Multiple image formats supported
+    - `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
+- `mov` Video format support
+- Configurable bound cropping
 
 
 INSTALLATION                            *render.nvim-render.nvim-installation*
