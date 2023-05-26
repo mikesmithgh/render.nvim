@@ -29,7 +29,10 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/bffe65ff-891b-4726-bf
 
 https://github.com/mikesmithgh/render.nvim/assets/10135646/6a97a683-fd63-4546-b7f9-5762d1d6ea4f
 
-- Flash
+- 💥 Flash
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/46300927-097a-4c55-b1c6-2b9f39fd77ca
+
 - Video recording
 - 🖱️ Show clicks during video recording
 
