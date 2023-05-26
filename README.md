@@ -3,6 +3,27 @@
 # 📸 render.nvim
 Neovim plugin to take screenshots of your Neovim session on MacOS.
 
+## ✨ Features
+- Capture to clipboard
+- Save capture to file
+- Capture image by Window
+- Capture image or video by Window bounds
+- Decorate capture with Window shadow
+- Configurable delay with countdown
+- Sound effect
+- Flash
+- Video recording
+- Show clicks during video recording
+- Show floating thumbnail
+- Open all screencaptures in Quick View
+- Open all screencaptures in Quickfix List
+- Open or Preview capture
+- Limit Video recording length
+- Multiple image formats supported
+  - `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
+- `mov` Video format support
+- Configurable bound cropping
+
 <!-- panvimdoc-ignore-start -->
 
 [![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
