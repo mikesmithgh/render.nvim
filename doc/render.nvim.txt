@@ -31,6 +31,10 @@ FEATURES                                    *render.nvim-render.nvim-features*
 - Flash
 - Video recording
 - Show clicks during video recording
+
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/4e1b1df2-384d-407b-b6b0-0400e55ff66c
+
 - Show floating thumbnail
 
 
