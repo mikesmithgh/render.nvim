@@ -13,12 +13,13 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 - Sound effect
 - Flash
 - Video recording
-- Show clicks during video recording
-- Show floating thumbnail
+- 🖱️ Show clicks during video recording
 
+https://github.com/mikesmithgh/render.nvim/assets/10135646/4e1b1df2-384d-407b-b6b0-0400e55ff66c
+
+- 💅 Show floating thumbnail
 
 https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8bb6-5327c1cc27e5
-
 
 - Open all screencaptures in Quick View
 - Open all screencaptures in Quickfix List
