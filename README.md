@@ -20,7 +20,12 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 
 https://github.com/mikesmithgh/render.nvim/assets/10135646/bffe65ff-891b-4726-bfb8-0b4cbf574a2b
 
-- Sound effect
+- 🎧 Sound effect
+
+(Watch with sound on)
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/6a97a683-fd63-4546-b7f9-5762d1d6ea4f
+
 - Flash
 - Video recording
 - 🖱️ Show clicks during video recording
