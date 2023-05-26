@@ -3,6 +3,7 @@ local uv = vim.loop
 local M = {}
 local opts = {}
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
   M.setup_files_and_dirs()

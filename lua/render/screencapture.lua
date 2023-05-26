@@ -65,6 +65,7 @@ local function open_countdown_timer(delay)
   end
 end
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
 end

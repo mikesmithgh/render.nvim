@@ -5,6 +5,7 @@ local M = {}
 
 local opts = {}
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
   if opts.features.keymaps then
@@ -12,7 +13,8 @@ M.setup = function(render_opts)
   end
 end
 
--- <f13> == <shift-f1> == print screen
+---Setup default keymaps
+--- <f13> == <shift-f1> == print screen
 M.setup_default_keymaps = function()
   vim.keymap.set(
     { 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' },

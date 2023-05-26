@@ -11,6 +11,8 @@ local render_screencapture = require('render.screencapture')
 
 local M = {}
 
+---Initialize render.nvim
+---@param override_opts? RenderOptions Optional render.nvim configuration overrides
 M.setup = function(override_opts)
   M.default_opts = render_config.default_opts()
   if override_opts == nil then

@@ -4,6 +4,7 @@ local M = {}
 
 local opts = {}
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
 end

@@ -4,10 +4,12 @@ local render_fn = require('render.fn')
 
 local opts = {}
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
 end
 
+---@param mode_opts RenderOptionsModeOptions
 M.render = function(mode_opts)
   if mode_opts == nil then
     mode_opts = opts.mode_opts

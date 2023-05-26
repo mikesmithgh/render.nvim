@@ -8,6 +8,7 @@ local M = {}
 
 local opts = {}
 
+---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
   vim.api.nvim_create_user_command('Render', function(o)
