@@ -9,6 +9,13 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 - Capture image by Window
 - Capture image or video by Window bounds
 - Decorate capture with Window shadow
+  - With shadow
+![render-nvim-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/19b7324e-c90d-4f13-828e-144bc53b9289)
+  - Without shadow
+
+![render-nvim-no-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/6916d741-95b5-4d9a-b77c-cd23eda47bc5)
+
+
 - Configurable delay with countdown
 - Sound effect
 - Flash
