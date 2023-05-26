@@ -30,6 +30,10 @@ FEATURES                                    *render.nvim-render.nvim-features*
     - Without shadow
 
 - Configurable delay with countdown
+
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/bffe65ff-891b-4726-bfb8-0b4cbf574a2b
+
 - Sound effect
 - Flash
 - Video recording
