@@ -113,6 +113,7 @@ M.render_quickfix = function(qfopts)
 
   if populateqf then
     vim.fn.jobstart(
+    -- TODO: remove realpath
       '(printf "%s | render.nvim |\n" $(realpath .); ( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
       {
         cwd = opts.dirs.output,
