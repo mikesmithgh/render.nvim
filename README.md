@@ -46,10 +46,10 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8b
 - 🔧 Open all screencaptures in Quickfix List
 - 🔍 Open or Preview capture
 - ⏰ Limit Video recording length
-- Multiple image formats supported
+- 🤳 Multiple image formats supported
   - `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
-- `mov` Video format support
-- Configurable bound cropping
+- 🎬 `mov` Video format support
+- 📝 Configurable bound cropping
 
 <!-- panvimdoc-ignore-start -->
 
