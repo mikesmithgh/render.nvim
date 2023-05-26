@@ -6,6 +6,8 @@ Table of Contents                              *render.nvim-table-of-contents*
 1. render.nvim                                       |render.nvim-render.nvim|
   - Installation                        |render.nvim-render.nvim-installation|
   - How does it work?              |render.nvim-render.nvim-how-does-it-work?|
+  - Supported OS versions      |render.nvim-render.nvim-supported-os-versions|
+  - Privacy & Security            |render.nvim-render.nvim-privacy-&-security|
   - Ackowledgements                  |render.nvim-render.nvim-ackowledgements|
 
 
@@ -13,12 +15,7 @@ Table of Contents                              *render.nvim-table-of-contents*
 ==============================================================================
 1. render.nvim                                       *render.nvim-render.nvim*
 
-Neovim plugin to take screenshots of your Neovim session.
-
-
-  This project is still a work in progress and may have breaking changes
-Thisplugin is under early development. If you have any ideas, feedback, or bugs
-please open an issue!
+Neovim plugin to take screenshots of your Neovim session on MacOS.
 
 
 INSTALLATION                            *render.nvim-render.nvim-installation*
@@ -77,7 +74,14 @@ HOW DOES IT WORK?                  *render.nvim-render.nvim-how-does-it-work?*
 - Window information and configuration options are parsed and translated to a screencapture <https://ss64.com/osx/screencapture.html> command
 
 
-PRIVACY & SECURITY ~
+SUPPORTED OS VERSIONS          *render.nvim-render.nvim-supported-os-versions*
+
+- macOS 13 Ventura
+- macOS 12 Monterey
+- macOS 11 Big Sur
+
+
+PRIVACY & SECURITY                *render.nvim-render.nvim-privacy-&-security*
 
 Screen recording must be enabled in order for render.nvim to take
 screencaptures. This will need to be enabled for the application that is
