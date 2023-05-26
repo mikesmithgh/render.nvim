@@ -26,29 +26,27 @@ INSTALLATION                            *render.nvim-render.nvim-installation*
 
 PREREQUISITES AND DEPENDENCIES ~
 
-- Neovim v0.9+ <https://github.com/neovim/neovim/releases>
-- screencapture <https://ss64.com/osx/screencapture.html>
-    - Captures image and video of the whole, or part of the screen
-- qlmanage <https://ss64.com/osx/qlmanage.html>
-    - Displays Quick Look previews
-- pdubs <https://github.com/mikesmithgh/pdubs>
-- `curl`, `shasum`, `tar`
-    - Required to download, extract, and verify `pdubs` binary
+  -----------------------------------------------------------------------
+  Name                    Description             Installation Method
+  ----------------------- ----------------------- -----------------------
+  Neovim v0.9+            Neovim version 0.9 or   User installed
+                          greater                 
 
+  screencapture           Captures image and      Included on Mac
+                          video of the whole, or  
+                          part of the screen      
 
-PRIVACY & SECURITY ~
+  qlmanage                Displays Quick Look     Included on Mac
+                          previews                
 
-Screen recording must be enabled in order for render.nvim to take
-screencaptures. This will need to be enabled for the application that is
-running Neovim. For example, Kitty, Alacritty, iTerm2, Neovide, etc. The first
-time you attempt to take a screenshot, you may see a prompt to allow access.
+  pdubs                   Retreives window        Downloaded by
+                          information for the     render.nvim
+                          Neovim session          
 
-Open System Settings and enable screen recording for your application.
-
-- Choose Apple menu > System Settings, then click Privacy & Security in the sidebar. (You may need to scroll down.)
-- Click Screen Recording.
-- Turn screen recording on or off for each app in the list.
-
+  curl, shasum, tar       Required to download,   Included on Mac
+                          extract, and verify     
+                          pdubs binary            
+  -----------------------------------------------------------------------
 
 USING LAZY.NVIM ~
 
@@ -77,6 +75,20 @@ HOW DOES IT WORK?                  *render.nvim-render.nvim-how-does-it-work?*
 
 - Window information such as window ID, size and position are determined for the current process using pdubs <https://github.com/mikesmithgh/pdubs>
 - Window information and configuration options are parsed and translated to a screencapture <https://ss64.com/osx/screencapture.html> command
+
+
+PRIVACY & SECURITY ~
+
+Screen recording must be enabled in order for render.nvim to take
+screencaptures. This will need to be enabled for the application that is
+running Neovim. For example, Kitty, Alacritty, iTerm2, Neovide, etc. The first
+time you attempt to take a screenshot, you may see a prompt to allow access.
+
+Open System Settings and enable screen recording for your application.
+
+- Choose Apple menu > System Settings, then click Privacy & Security in the sidebar. (You may need to scroll down.)
+- Click Screen Recording.
+- Turn screen recording on or off for each app in the list.
 
 
 ACKOWLEDGEMENTS                      *render.nvim-render.nvim-ackowledgements*
