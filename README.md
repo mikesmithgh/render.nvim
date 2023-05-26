@@ -3,6 +3,16 @@
 # 📸 render.nvim
 Neovim plugin to take screenshots of your Neovim session on MacOS.
 
+<!-- panvimdoc-ignore-start -->
+
+[![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
+[![macos: 11+](https://img.shields.io/static/v1?style=for-the-badge&label=macos&message=11%2b&logo=apple&labelColor=282828&logoColor=968c81&color=968c81)](https://www.apple.com/macos)
+[![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
+
+https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
+
+<!-- panvimdoc-ignore-end -->
+
 ## ✨ Features
 - ✂️ Capture to clipboard
 
@@ -51,15 +61,54 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8b
 - 🎬 `mov` Video format support
 - 📝 Configurable bound cropping
 
-<!-- panvimdoc-ignore-start -->
+## ✨ Features
+- ✂️ Capture to clipboard
 
-[![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
-[![macos: 11+](https://img.shields.io/static/v1?style=for-the-badge&label=macos&message=11%2b&logo=apple&labelColor=282828&logoColor=968c81&color=968c81)](https://www.apple.com/macos)
-[![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
+https://github.com/mikesmithgh/render.nvim/assets/10135646/aa0e0ad4-d402-4a2d-aacb-8c60755746ea
 
-https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
+- 💾 Save capture to file
+- 🆔 Capture image by Window
+- 🟪 Capture image or video by Window bounds
+- 🔳 Decorate capture with Window shadow
+  - With shadow
+![render-nvim-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/19b7324e-c90d-4f13-828e-144bc53b9289)
+  - Without shadow
 
-<!-- panvimdoc-ignore-end -->
+![render-nvim-no-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/6916d741-95b5-4d9a-b77c-cd23eda47bc5)
+
+
+- 🔢 Configurable delay with countdown
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/bffe65ff-891b-4726-bfb8-0b4cbf574a2b
+
+- 🎧 Sound effect
+
+(Watch with sound on)
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/6a97a683-fd63-4546-b7f9-5762d1d6ea4f
+
+- 💥 Flash
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/46300927-097a-4c55-b1c6-2b9f39fd77ca
+
+- 🎥 Video recording
+- 🖱️ Show clicks during video recording
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/4e1b1df2-384d-407b-b6b0-0400e55ff66c
+
+- 💅 Show floating thumbnail
+
+https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8bb6-5327c1cc27e5
+
+- 🏃‍♂️ Open all screencaptures in Quick View
+- 🔧 Open all screencaptures in Quickfix List
+- 🔍 Open or Preview capture
+- ⏰ Limit Video recording length
+- 🤳 Multiple image formats supported
+  - `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
+- 🎬 `mov` Video format support
+- 📝 Configurable bound cropping
+
 
 ## 📦 Installation
 
