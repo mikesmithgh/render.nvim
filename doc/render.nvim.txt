@@ -1,10 +1,14 @@
-*render.nvim.txt*            For NVIM v0.9+           Last change: 2023 May 26
+*render.nvim.txt*            For NVIM v0.9+           Last change: 2023 May 27
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
   - Features                                |render.nvim-render.nvim-features|
+  - 🫡 Commands                      |render.nvim-render.nvim-🫡-commands|
+  - Keymapping                            |render.nvim-render.nvim-keymapping|
+  - Configuration                      |render.nvim-render.nvim-configuration|
+  - 🟰 Screencapture equivalent|render.nvim-render.nvim-🟰-screencapture-equivalent|
   - TODO: move demos to another page|render.nvim-render.nvim-todo:-move-demos-to-another-page|
   - Installation                        |render.nvim-render.nvim-installation|
   - How does it work?              |render.nvim-render.nvim-how-does-it-work?|
@@ -22,25 +26,86 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 
 FEATURES                                    *render.nvim-render.nvim-features*
 
+- Capture image by window ID
+- Capture video recording
+- Capture image or video by window boundaries
 - Capture to clipboard
-- Save capture to file
-- Capture image by Window
-- Capture image or video by Window bounds
-- Decorate capture with Window shadow
-- Configurable delay with countdown
-- Sound effect
-- Flash
-- Video recording
+- Capture to file
+- Add window’s shadow in window capture mode
+- Take capture after a delay
+- Play sound effect on capture
+- Flash window on capture
 - Show clicks during video recording
-- Show floating thumbnail
-- ‍ Open all screencaptures in Quick View
-- Open all screencaptures in Quickfix List
-- Open or Preview capture
-- Limit Video recording length
-- Multiple image formats supported (`png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`)
-- `mov` Video format support
-- Configurable bound cropping
+- Show floating thumbnail after capture
+- ‍ Open captures in quick view
+- Open captures in quickfix list
+- Automatically open or preview capture
+- Limit capture video recording time
+- Fine-tune cropping of window boundaries
+- Image formats `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
+- Video format `mov`
 
+
+🫡 COMMANDS                          *render.nvim-render.nvim-🫡-commands*
+
+  -----------------------------------------------------------------------------
+  Command               Description
+  --------------------- -------------------------------------------------------
+  Render                Capture image or video recording
+
+  RenderClean           Delete existing captures in output directory and
+                        reinstall dependencies
+
+  RenderExplore         Open render output directory in Neovim
+
+  RenderQuickfix        Open output directory in quickfix window
+
+  RenderInterrupt       Send interrupt to stop video recoring
+
+  RenderQuicklook       Open all files in output directory with quick look
+
+  RenderSetWindowInfo   Set the window information to the active Neovim session
+  -----------------------------------------------------------------------------
+
+KEYMAPPING                                *render.nvim-render.nvim-keymapping*
+
+TODO
+
+
+CONFIGURATION                          *render.nvim-render.nvim-configuration*
+
+TODO
+
+
+🟰 SCREENCAPTURE EQUIVALENT*render.nvim-render.nvim-🟰-screencapture-equivalent*
+
+  -----------------------------------------------------------------------------------------------------
+  render.nvim option                        argument       description
+  ----------------------------------------- -------------- --------------------------------------------
+  mode_opts.mode = 'clipboard'              -c             Force screen capture to go to the clipboard
+
+  features.window_shadow = false            -o             In window capture mode, do not capture the
+                                                           shadow of the window
+
+  mode_opts.filetype = '<format>'           -t<format>     Image format to create, default is png
+                                                           (other options include pdf, jpg, tiff and
+                                                           other formats)
+
+  mode_opts.delay = <seconds>               -T<seconds>    Take the picture after a delay of
+
+  features.sound_effect = false             -x             Do not play sounds
+
+  mode_opts.image_capture_mode = 'window'   -l<windowid>   Capture this windowsid
+
+  mode_opts.image_capture_mode = 'bounds'   -R<x,y,w,h>    Capture screen rect
+
+  mode_opts.type = 'video'                  -v             Capture video recording of the screen
+
+  mode_opts.show_clicks = true              -k             Show clicks in video recording mode
+
+  mode_opts.mode = 'preview'                -u             Present UI after screencapture is complete.
+                                                           files passed to command line will be ignored
+  -----------------------------------------------------------------------------------------------------
 
 TODO: MOVE DEMOS TO ANOTHER PAGE*render.nvim-render.nvim-todo:-move-demos-to-another-page*
 
@@ -99,27 +164,26 @@ INSTALLATION                            *render.nvim-render.nvim-installation*
 
 PREREQUISITES AND DEPENDENCIES ~
 
-  -----------------------------------------------------------------------
-  Name                    Description             Installation Method
-  ----------------------- ----------------------- -----------------------
-  Neovim v0.9+            Neovim version 0.9 or   User installed
-                          greater                 
+  -------------------------------------------------------------------------
+  Name                         Description                   Installation
+                                                             Method
+  ---------------------------- ----------------------------- --------------
+  Neovim v0.9+                 Neovim version 0.9 or greater User installed
 
-  screencapture           Captures image and      Included on Mac
-                          video of the whole, or  
-                          part of the screen      
+  screencapture                Captures image and video of   Included on
+                               the whole, or part of the     Mac
+                               screen                        
 
-  qlmanage                Displays Quick Look     Included on Mac
-                          previews                
+  qlmanage                     Displays quick look previews  Included on
+                                                             Mac
 
-  pdubs                   Retreives window        Downloaded by
-                          information for the     render.nvim
-                          Neovim session          
+  pdubs                        Retreives window information  Downloaded by
+                               for the Neovim session        render.nvim
 
-  curl, shasum, tar       Required to download,   Included on Mac
-                          extract, and verify     
-                          pdubs binary            
-  -----------------------------------------------------------------------
+  curl, shasum, tar            Required to download,         Included on
+                               extract, and verify pdubs     Mac
+                               binary                        
+  -------------------------------------------------------------------------
 
 USING LAZY.NVIM ~
 
