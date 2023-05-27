@@ -25,7 +25,7 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 
 FEATURES                                    *render.nvim-render.nvim-features*
 
-- Capture image by window ID
+- Capture image of window by process ID
 - Capture video recording
 - Capture image or video by window boundaries
 - Capture to clipboard
