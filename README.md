@@ -64,55 +64,6 @@ TODO
 | `mode_opts.show_clicks = true`            | `-k`           | Show clicks in video recording mode                             |
 | `mode_opts.mode = 'preview'`              | `-u`           | Present UI after screencapture is complete                      |
 
-## ✨ TODO: move demos to another page
-- ✂️ Capture to clipboard
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/aa0e0ad4-d402-4a2d-aacb-8c60755746ea
-
-- 💾 Save capture to file
-- 🆔 Capture image by Window
-- 🟪 Capture image or video by Window bounds
-- 🔳 Decorate capture with Window shadow
-  - With shadow
-![render-nvim-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/19b7324e-c90d-4f13-828e-144bc53b9289)
-  - Without shadow
-
-![render-nvim-no-shadow](https://github.com/mikesmithgh/render.nvim/assets/10135646/6916d741-95b5-4d9a-b77c-cd23eda47bc5)
-
-
-- 🔢 Configurable delay with countdown
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/bffe65ff-891b-4726-bfb8-0b4cbf574a2b
-
-- 🎧 Sound effect
-
-(Watch with sound on)
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/6a97a683-fd63-4546-b7f9-5762d1d6ea4f
-
-- 💥 Flash
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/46300927-097a-4c55-b1c6-2b9f39fd77ca
-
-- 🎥 Video recording
-- 🖱️ Show clicks during video recording
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/4e1b1df2-384d-407b-b6b0-0400e55ff66c
-
-- 💅 Show floating thumbnail
-
-https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8bb6-5327c1cc27e5
-
-- 🏃‍♂️ Open all screencaptures in Quick View
-- 🔧 Open all screencaptures in Quickfix List
-- 🔍 Open or Preview capture
-- ⏰ Limit Video recording length
-- 🤳 Multiple image formats supported
-  - `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
-- 🎬 `mov` Video format support
-- 📝 Configurable bound cropping
-
-
 ## 📦 Installation
 
 ### Prerequisites and Dependencies
