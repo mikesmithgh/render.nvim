@@ -16,7 +16,7 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 <!-- panvimdoc-ignore-end -->
 
 ## ✨ Features
-- 📷 Capture image by window ID
+- 📷 Capture image of window by process ID
 - 🎥 Capture video recording
 - 🟪 Capture image or video by window boundaries
 - ✂️  Capture to clipboard
