@@ -79,15 +79,17 @@ TODO
 
 🟰 SCREENCAPTURE EQUIVALENT*render.nvim-render.nvim-🟰-screencapture-equivalent*
 
-  -----------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------
   render.nvim option                        argument       description
-  ----------------------------------------- -------------- --------------------------------------------
-  mode_opts.mode = 'clipboard'              -c             Force screen capture to go to the clipboard
+  ----------------------------------------- -------------- -------------------------------------
+  mode_opts.mode = 'clipboard'              -c             Force screen capture to go to the
+                                                           clipboard
 
-  features.window_shadow = false            -o             In window capture mode, do not capture the
-                                                           shadow of the window
+  features.window_shadow = false            -o             In window capture mode, do not
+                                                           capture the shadow of the window
 
-  mode_opts.filetype = '<format>'           -t<format>     Image format to create, default is png
+  mode_opts.filetype = '<format>'           -t<format>     Image format to create, default is
+                                                           png
 
   mode_opts.delay = <seconds>               -T<seconds>    Take the picture after a delay of
 
@@ -101,8 +103,9 @@ TODO
 
   mode_opts.show_clicks = true              -k             Show clicks in video recording mode
 
-  mode_opts.mode = 'preview'                -u             Present UI after screencapture is complete
-  -----------------------------------------------------------------------------------------------------
+  mode_opts.mode = 'preview'                -u             Present UI after screencapture is
+                                                           complete
+  ----------------------------------------------------------------------------------------------
 
 TODO: MOVE DEMOS TO ANOTHER PAGE*render.nvim-render.nvim-todo:-move-demos-to-another-page*
 
