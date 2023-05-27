@@ -119,5 +119,5 @@ Open System Settings and enable screen recording for your application.
 ![screencapture-settings](https://github.com/mikesmithgh/render.nvim/assets/10135646/8fe09d3f-2427-4633-abf2-a54e9c9b8fb4)
 
 ## 🤝 Ackowledgements
-- 🐿️ [gruvsquirrel.nvim](https://github.com/mikesmithgh/gruvsquirrel.nvim)
-- 🦬 [pdubs](https://github.com/mikesmithgh/pdubs)
+- 🐿️ [gruvsquirrel.nvim](https://github.com/mikesmithgh/gruvsquirrel.nvim) Neovim colorscheme written in Lua inspired by gruvbox
+- 🦬 [pdubs](https://github.com/mikesmithgh/pdubs) A simple command-line utility to return macos window information for a given pid.
