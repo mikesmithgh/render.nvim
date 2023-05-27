@@ -14,24 +14,55 @@ https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-
 <!-- panvimdoc-ignore-end -->
 
 ## ✨ Features
-- ✂️ Capture to clipboard
-- 💾 Save capture to file
-- 🆔 Capture image by Window
-- 🟪 Capture image or video by Window bounds
-- 🔳 Decorate capture with Window shadow
-- 🔢 Configurable delay with countdown
-- 🎧 Sound effect
-- 💥 Flash
-- 🎥 Video recording
+- 📷 Capture image by window ID
+- 🎥 Capture video recording
+- 🟪 Capture image or video by window boundaries
+- ✂️  Capture to clipboard
+- 💾 Capture to file
+- 🔳 Add window's shadow in window capture mode
+- 🔢 Take capture after a delay
+- 🎧 Play sound effect on capture
+- 💥 Flash window on capture
 - 🖱️ Show clicks during video recording
-- 💅 Show floating thumbnail
-- 🏃‍♂️ Open all screencaptures in Quick View
-- 🔧 Open all screencaptures in Quickfix List
-- 🔍 Open or Preview capture
-- ⏰ Limit Video recording length
-- 🤳 Multiple image formats supported (`png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`)
-- 🎬 `mov` Video format support
-- 📝 Configurable bound cropping
+- 💅 Show floating thumbnail after capture
+- 🏃‍♂️ Open captures in quick view
+- 🔧 Open captures in quickfix list
+- 🔍 Automatically open or preview capture
+- ⏰ Limit capture video recording time
+- 📝 Fine-tune cropping of window boundaries
+- 🤳 Image formats `png` `jpg` `pdf` `psd` `tga` `bmp` `gif` `tif`
+- 🎬 Video format `mov`
+
+## 🫡 Commands
+| Command             | Description                                                             |
+|---------------------|-------------------------------------------------------------------------|
+| Render              | Capture image or video recording                                        |                                                                                               
+| RenderClean         | Delete existing captures in output directory and reinstall dependencies |
+| RenderExplore       | Open render output directory in Neovim                                  |
+| RenderQuickfix      | Open output directory in quickfix window                                |
+| RenderInterrupt     | Send interrupt to stop video recoring                                   |
+| RenderQuicklook     | Open all files in output directory with quick look                      |
+| RenderSetWindowInfo | Set the window information to the active Neovim session                 |
+
+## ⌨️ Keymapping
+TODO
+
+## ✍️ Configuration
+TODO
+
+## 🟰 Screencapture equivalent
+| render.nvim option                        | argument       | description                                                                                     |
+|-------------------------------------------|----------------|-------------------------------------------------------------------------------------------------|
+| `mode_opts.mode = 'clipboard'`            | `-c`           | Force screen capture to go to the clipboard                                                     |
+| `features.window_shadow = false`          | `-o`           | In window capture mode, do not capture the shadow of the window                                 |
+| `mode_opts.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png (other options include pdf, jpg, tiff and other formats) |
+| `mode_opts.delay = <seconds>`             | `-T<seconds>`  | Take the picture after a delay of <seconds>                                                     |
+| `features.sound_effect = false`           | `-x`           | Do not play sounds                                                                              |
+| `mode_opts.image_capture_mode = 'window'` | `-l<windowid>` | Capture this windowsid                                                                          |
+| `mode_opts.image_capture_mode = 'bounds'` | `-R<x,y,w,h>`  | Capture screen rect                                                                             |
+| `mode_opts.type = 'video'`                | `-v`           | Capture video recording of the screen                                                           |
+| `mode_opts.show_clicks = true`            | `-k`           | Show clicks in video recording mode                                                             |
+| `mode_opts.mode = 'preview'`              | `-u`           | Present UI after screencapture is complete. files passed to command line will be ignored        |
 
 ## ✨ TODO: move demos to another page
 - ✂️ Capture to clipboard
@@ -85,13 +116,13 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/13bd13ec-e352-4ee1-8b
 ## 📦 Installation
 
 ### Prerequisites and Dependencies
-| Name | Description | Installation Method |
-|-|-|-|
-| [Neovim v0.9+](https://github.com/neovim/neovim/releases) | Neovim version 0.9 or greater | User installed |
-| [screencapture](https://ss64.com/osx/screencapture.html) | Captures image and video of the whole, or part of the screen | Included on Mac |
-| [qlmanage](https://ss64.com/osx/qlmanage.html) |  Displays Quick Look previews | Included on Mac |
-| [pdubs](https://github.com/mikesmithgh/pdubs) | Retreives window information for the Neovim session | Downloaded by render.nvim |
-| `curl`, `shasum`, `tar` | Required to download, extract, and verify `pdubs` binary | Included on Mac |
+| Name                                                      | Description                                                  | Installation Method       |
+|-----------------------------------------------------------|--------------------------------------------------------------|---------------------------|
+| [Neovim v0.9+](https://github.com/neovim/neovim/releases) | Neovim version 0.9 or greater                                | User installed            |
+| [screencapture](https://ss64.com/osx/screencapture.html)  | Captures image and video of the whole, or part of the screen | Included on Mac           |
+| [qlmanage](https://ss64.com/osx/qlmanage.html)            | Displays quick look previews                                 | Included on Mac           |
+| [pdubs](https://github.com/mikesmithgh/pdubs)             | Retreives window information for the Neovim session          | Downloaded by render.nvim |
+| `curl`, `shasum`, `tar`                                   | Required to download, extract, and verify `pdubs` binary     | Included on Mac           |
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
