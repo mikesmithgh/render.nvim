@@ -9,6 +9,8 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 [![macos: 11+](https://img.shields.io/static/v1?style=for-the-badge&label=macos&message=11%2b&logo=apple&labelColor=282828&logoColor=968c81&color=968c81)](https://www.apple.com/macos)
 [![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
 
+See [wiki](https://github.com/mikesmithgh/render.nvim/wiki#demos) for additional demos
+
 https://user-images.githubusercontent.com/10135646/224586255-bbb49b38-f363-4389-a40b-790efa4121f8.mov
 
 <!-- panvimdoc-ignore-end -->
@@ -93,15 +95,6 @@ git clone git@github.com:mikesmithgh/render.nvim.git
 nvim -u NONE -c "helptags render.nvim/doc" -c q
 echo "require('render').setup()" >> "$HOME/.config/nvim/init.lua" 
 ```
-
-<!-- panvimdoc-ignore-start -->
-
-## 👇 Example
-Neovim intro screen captured with render.nvim
-
-![intro screenshot](https://raw.githubusercontent.com/wiki/mikesmithgh/render.nvim/ci/main/output/intro.png)
-
-<!-- panvimdoc-ignore-end -->
 
 ## 🤷 How does it work?
 - Window information such as window ID, size and position are determined for the current process using [pdubs](https://github.com/mikesmithgh/pdubs)
