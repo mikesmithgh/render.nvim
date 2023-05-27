@@ -88,8 +88,6 @@ TODO
                                                            shadow of the window
 
   mode_opts.filetype = '<format>'           -t<format>     Image format to create, default is png
-                                                           (other options include pdf, jpg, tiff and
-                                                           other formats)
 
   mode_opts.delay = <seconds>               -T<seconds>    Take the picture after a delay of
 
@@ -103,8 +101,7 @@ TODO
 
   mode_opts.show_clicks = true              -k             Show clicks in video recording mode
 
-  mode_opts.mode = 'preview'                -u             Present UI after screencapture is complete.
-                                                           files passed to command line will be ignored
+  mode_opts.mode = 'preview'                -u             Present UI after screencapture is complete
   -----------------------------------------------------------------------------------------------------
 
 TODO: MOVE DEMOS TO ANOTHER PAGE*render.nvim-render.nvim-todo:-move-demos-to-another-page*
