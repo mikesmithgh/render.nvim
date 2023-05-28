@@ -83,8 +83,8 @@ local standard_opts = {
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
   },
   ---@class ModeOptions
-  ---@field type ScreenCaptureType
-  ---@field mode ScreenCaptureMode
+  ---@field type string | 'image' | 'video'
+  ---@field mode string | 'save' | 'clipboard' | 'preview' | 'open'
   ---@field image_capture_mode ScreenCaptureCaptureMode
   ---@field capture_window_info_mode ScreenCaptureWindowInfoMode
   ---@field filetype render_filetypes Capture will save with given filetype

@@ -84,12 +84,11 @@ M.unnamed_file = 'noname'
 ---@field window_info_mode ScreenCaptureWindowInfoMode
 M.screencapture = {
   ---@class ScreenCaptureType
-  ---@field video string video
   ---@field image string image
-  ---@enum
+  ---@field video string video
   type = {
-    video = 'video',
     image = 'image',
+    video = 'video',
   },
   ---@class ScreenCaptureMode
   ---@field save string save
