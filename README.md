@@ -36,15 +36,15 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 - 🎬 Video format `mov`
 
 ## 🫡 Commands
-| Command             | Description                                                             |
-|---------------------|-------------------------------------------------------------------------|
-| Render              | Capture image or video recording                                        |                                                                                               
-| RenderClean         | Delete existing captures in output directory and reinstall dependencies |
-| RenderExplore       | Open render output directory in Neovim                                  |
-| RenderQuickfix      | Open output directory in quickfix window                                |
-| RenderInterrupt     | Send interrupt to stop video recoring                                   |
-| RenderQuicklook     | Open all files in output directory with quick look                      |
-| RenderSetWindowInfo | Set the window information to the active Neovim session                 |
+| Command             | Description                                                              |
+|---------------------|--------------------------------------------------------------------------|
+| Render              | Capture image or video recording                                         |                                                                                               
+| RenderClean         | Delete existing captures in output directory and reinstall dependencies  |
+| RenderExplore       | Open render output directory in Neovim                                   |
+| RenderQuickfix      | Open output directory in quickfix window                                 |
+| RenderInterrupt     | Send interrupt to stop video recoring                                    |
+| RenderQuicklook     | Open all files in output directory with quick look                       |
+| RenderSetWindowInfo | Set the window information to the active Neovim session or by process ID |
 
 ## ⌨️ Keymapping
 TODO
