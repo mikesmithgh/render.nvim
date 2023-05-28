@@ -76,14 +76,14 @@ M.black_hex = '#ffffff'
 
 M.unnamed_file = 'noname'
 
----@class RenderConstantsScreenCapture
----@field type RenderConstantsScreenCaptureType
----@field mode RenderConstantsScreenCaptureMode
+---@class ScreenCapture
+---@field type ScreenCaptureType
+---@field mode ScreenCaptureMode
 ---@field default_location string
----@field capturemode RenderConstantsScreenCaptureCaptureMode
----@field window_info_mode RenderConstantsScreenCaptureWindowInfoMode
+---@field capturemode ScreenCaptureCaptureMode
+---@field window_info_mode ScreenCaptureWindowInfoMode
 M.screencapture = {
-  ---@class RenderConstantsScreenCaptureType
+  ---@class ScreenCaptureType
   ---@field video string video
   ---@field image string image
   ---@enum
@@ -91,7 +91,7 @@ M.screencapture = {
     video = 'video',
     image = 'image',
   },
-  ---@class RenderConstantsScreenCaptureMode
+  ---@class ScreenCaptureMode
   ---@field save string save
   ---@field clipboard string clipboard
   ---@field preview string preview
@@ -104,7 +104,7 @@ M.screencapture = {
     open = 'open',
   },
   default_location = '~/Desktop',
-  ---@class RenderConstantsScreenCaptureCaptureMode
+  ---@class ScreenCaptureCaptureMode
   ---@field window string window
   ---@field bounds string bounds
   ---@enum
@@ -112,7 +112,7 @@ M.screencapture = {
     window = 'window',
     bounds = 'bounds',
   },
-  ---@class RenderConstantsScreenCaptureWindowInfoMode
+  ---@class ScreenCaptureWindowInfoMode
   ---@field frontmost string frontmost
   ---@field frontmost_on_startup string frontmost_on_startup
   ---@field manual string manual

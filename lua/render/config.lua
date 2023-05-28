@@ -9,10 +9,10 @@ local M = {}
 
 ---Configuration options to modify behavior of render.nvim
 ---@class RenderOptions
----@field features RenderOptionsFeatures Feature flags to toggle behavior
----@field notify RenderOptionsNotify Notification configuration
+---@field features Features Feature flags to toggle behavior
+---@field notify Notify Notification configuration
 local standard_opts = {
-  ---@class RenderOptionsFeatures
+  ---@class Features
   ---@field notify boolean If true, send notify messages
   ---@field keymaps boolean If true, setup default keymappings
   ---@field flash boolean If true, flash effect by changing background and foreground color before a screencapture
@@ -29,7 +29,7 @@ local standard_opts = {
     sound_effect = false,
     window_shadow = false,
   },
-  ---@class RenderOptionsNotify
+  ---@class Notify
   ---@field level number Level of notification corresponding to `vim.log.levels`
   ---@field msg function The function that will be invoked for notifications
   ---@field verbose boolean If true, enable additional information in notifications
@@ -38,29 +38,29 @@ local standard_opts = {
     msg = render_msg.notify,
     verbose = false,
   },
-  ---@class RenderOptionsFunctions
-  ---@field window_info RenderOptionsFunctionsWindowInfo
-  ---@field screencapture RenderOptionsFunctionsScreenCapture
-  ---@field screencapture_location RenderOptionsFunctionsScreenCaptureLocation
+  ---@class Functions
+  ---@field window_info FunctionsWindowInfo
+  ---@field screencapture FunctionsScreenCapture
+  ---@field screencapture_location FunctionsScreenCaptureLocation
   ---@field keymap_setup function
   ---@field flash function
   ---@field open_cmd function
   fn = {
-    ---@class RenderOptionsFunctionsWindowInfo
+    ---@class FunctionsWindowInfo
     ---@field cmd function
     ---@field opts function
     window_info = {
       cmd = render_windowinfo.cmd,
       opts = render_windowinfo.cmd_opts,
     },
-    ---@class RenderOptionsFunctionsScreenCapture
+    ---@class FunctionsScreenCapture
     ---@field cmd function
     ---@field opts function
     screencapture = {
       cmd = render_screencapture.cmd,
       opts = render_screencapture.cmd_opts,
     },
-    ---@class RenderOptionsFunctionsScreenCaptureLocation
+    ---@class FunctionsScreenCaptureLocation
     ---@field cmd function
     ---@field opts function
     screencapture_location = {
@@ -71,7 +71,7 @@ local standard_opts = {
     flash = render_fn.flash,
     open_cmd = render_fn.open_cmd,
   },
-  ---@class RenderOptionsDirectories
+  ---@class Directories
   ---@field data string
   ---@field state string
   ---@field run string
@@ -82,17 +82,17 @@ local standard_opts = {
     run = vim.fn.stdpath('run') .. '/' .. render_constants.shortname,
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
   },
-  ---@class RenderOptionsModeOptions
-  ---@field type RenderConstantsScreenCaptureType
-  ---@field mode RenderConstantsScreenCaptureMode
-  ---@field image_capture_mode RenderConstantsScreenCaptureCaptureMode
-  ---@field capture_window_info_mode RenderConstantsScreenCaptureWindowInfoMode
-  ---@field filetype render_filetypes
-  ---@field delay integer
-  ---@field show_clicks boolean
-  ---@field video_limit integer
-  ---@field dry_run boolean
-  ---@field offsets RenderOptionsModeOptionsOffsets
+  ---@class ModeOptions
+  ---@field type ScreenCaptureType
+  ---@field mode ScreenCaptureMode
+  ---@field image_capture_mode ScreenCaptureCaptureMode
+  ---@field capture_window_info_mode ScreenCaptureWindowInfoMode
+  ---@field filetype render_filetypes Capture will save with given filetype
+  ---@field delay integer Take the capture after a delay seconds
+  ---@field show_clicks boolean If true, show clicks in video recording mode
+  ---@field video_limit integer Limits video capture to the specific seconds
+  ---@field dry_run boolean If true, do not take screencapture. This is useful for troubleshooting
+  ---@field offsets ModeOptionsOffsets Offsets to rectangle in bounds image capture mode
   mode_opts = {
     type = render_constants.screencapture.type.image,
     mode = render_constants.screencapture.mode.save,
@@ -103,11 +103,12 @@ local standard_opts = {
     show_clicks = false,
     video_limit = 60,
     dry_run = false,
-    ---@class RenderOptionsModeOptionsOffsets
-    ---@field left integer
-    ---@field top integer
-    ---@field right integer
-    ---@field bottom integer
+    ---Positive and negative integers are valid
+    ---@class ModeOptionsOffsets
+    ---@field left integer Number of units to adjust left bounds
+    ---@field top integer Number of units to adjust top bounds
+    ---@field right integer Number of units to adjust right bounds
+    ---@field bottom integer Number of units to adjust bottom bounds
     offsets = {
       left = 0,
       top = 0, -- 27, tested with iterm,
@@ -115,9 +116,15 @@ local standard_opts = {
       bottom = 0,
     },
   },
-  ---@class RenderOptionsUserInterface
-  ---@field flash_color function
-  ---@field countdown_window_opts function
+  ---@class UserInterface
+  ---Function returning a color name or "#RRGGBB" that will be
+  ---displayed during screen flash
+  ---@field flash_color fun(): string
+  ---Function returning a table defining configuration options for
+  ---delay countdown window
+  ---@field countdown_window_opts fun(): table
+  ---@see nvim_set_hl()
+  ---@see nvim_open_win()
   ui = {
     flash_color = function()
       local normal_hl = vim.api.nvim_get_hl(0, { name = 'CursorLine' })
