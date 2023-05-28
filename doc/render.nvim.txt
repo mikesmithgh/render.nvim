@@ -64,6 +64,7 @@ FEATURES                                    *render.nvim-render.nvim-features*
   RenderQuicklook       Open all files in output directory with quick look
 
   RenderSetWindowInfo   Set the window information to the active Neovim session
+                        or by process ID
   -----------------------------------------------------------------------------
 
 KEYMAPPING                                *render.nvim-render.nvim-keymapping*
