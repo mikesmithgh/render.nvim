@@ -60,7 +60,7 @@ TODO
 | `mode_opts.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png                          |
 | `mode_opts.delay = <seconds>`             | `-T<seconds>`  | Take the picture after a delay of <seconds>                     |
 | `features.sound_effect = false`           | `-x`           | Do not play sounds                                              |
-| `mode_opts.image_capture_mode = 'window'` | `-l<id>`       | Capture windows by id                                           |
+| `mode_opts.image_capture_mode = 'window'` | `-l<id>`       | Capture window by id                                            |
 | `mode_opts.image_capture_mode = 'bounds'` | `-R<x,y,w,h>`  | Capture screen rect                                             |
 | `mode_opts.type = 'video'`                | `-v`           | Capture video recording of the screen                           |
 | `mode_opts.show_clicks = true`            | `-k`           | Show clicks in video recording mode                             |
