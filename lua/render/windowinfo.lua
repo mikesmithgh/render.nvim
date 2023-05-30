@@ -4,6 +4,7 @@ local render_constants = require('render.constants')
 local render_screencapture = require('render.screencapture')
 
 local M = {}
+---type RenderOptions
 local opts = {}
 
 local valid_sha256s = {
@@ -12,6 +13,10 @@ local valid_sha256s = {
 local pdubs_download_url = 'https://github.com/mikesmithgh/pdubs/releases/download/v1.0.0/'
 
 M.as_window_info = function(json, offsets)
+  if json == nil or next(json) == nil or json == '' or json[1] == '' then
+    opts.notify.msg('error getting window info', vim.log.levels.ERROR, {})
+    return nil
+  end
   local window_info = nil
   if offsets == nil then
     offsets = {
@@ -44,10 +49,14 @@ M.pdubs_fpath = function()
   return vim.api.nvim_get_runtime_file(render_constants.pdubs_file, false)[1]
 end
 
-M.set_window_info = function(pid)
+M.set_window_info = function(pid, profile)
   local window_info_cmd = opts.fn.window_info.cmd()
   if pid ~= nil and pid ~= '' then
     window_info_cmd = window_info_cmd .. ' ' .. pid
+  end
+  profile = render_fn.profile_or_default(profile, opts.profiles)
+  if profile == nil then
+    return
   end
   local dir = M.pdubs_dir()
   if dir == nil then
@@ -59,7 +68,10 @@ M.set_window_info = function(pid)
     stderr_buffered = true,
     cwd = dir,
     on_stdout = function(_, window_info_result)
-      local window_info = M.as_window_info(window_info_result, opts.mode_opts.offsets)
+      local window_info = M.as_window_info(window_info_result, profile.offsets)
+      if window_info == nil then
+        return
+      end
       render_fn.cache.window.x = window_info.x
       render_fn.cache.window.y = window_info.y
       render_fn.cache.window.width = window_info.width
@@ -175,16 +187,22 @@ M.install_pdubs = function()
   return false
 end
 
+---comment
 ---@param render_opts RenderOptions
-M.setup = function(render_opts)
+---@param profile? ProfileOptions
+M.setup = function(render_opts, profile)
   opts = render_opts
 
+  profile = render_fn.profile_or_default(profile, opts.profiles)
+  if profile == nil then
+    return
+  end
   local window_info_mode = render_constants.screencapture.window_info_mode
   if
     M.install_pdubs()
-    and opts.mode_opts.capture_window_info_mode == window_info_mode.frontmost_on_startup
+    and profile.capture_window_info_mode == window_info_mode.frontmost_on_startup
   then
-    M.set_window_info()
+    M.set_window_info(nil, profile)
   end
 end
 
@@ -192,74 +210,82 @@ M.cmd = function()
   return render_constants.pdubs
 end
 
-M.cmd_opts = function(out_files, mode_opts)
-  local offsets = mode_opts.offsets or {}
+---comment
+---@param out_files table
+---@param profile ProfilesOptions
+---@return table
+M.cmd_opts = function(out_files, profile)
+  local offsets = profile.offsets or {}
   local screencapture = render_constants.screencapture
+  local filetype = profile.filetype
+  local is_video = vim.tbl_contains(render_constants.video_types, filetype)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
     cwd = M.pdubs_dir(),
     on_stdout = function(_, window_info_result)
       local window_info = M.as_window_info(window_info_result, offsets)
-      if window_info ~= nil then
-        local wid = render_fn.cache.window.id
-        local x = render_fn.cache.window.x
-        local y = render_fn.cache.window.y
-        local width = render_fn.cache.window.width
-        local height = render_fn.cache.window.height
-        if mode_opts.capture_window_info_mode == screencapture.window_info_mode.frontmost then
-          wid = window_info.id
-          x = window_info.x
-          y = window_info.y
-          width = window_info.width
-          height = window_info.height
-        end
-        if wid == nil or x == nil or y == nil or width == nil or height == nil then
-          opts.notify.msg(
-            'error window information is nil',
-            vim.log.levels.ERROR,
-            window_info_result
-          )
-          return
-        end
-        local screencapture_cmd =
-          opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, mode_opts)
-        if screencapture_cmd ~= nil then
-          local capture_delay = 0
+      if window_info == nil then
+        return
+      end
+      local wid = render_fn.cache.window.id
+      local x = render_fn.cache.window.x
+      local y = render_fn.cache.window.y
+      local width = render_fn.cache.window.width
+      local height = render_fn.cache.window.height
+      if profile.capture_window_info_mode == screencapture.window_info_mode.frontmost then
+        wid = window_info.id
+        x = window_info.x
+        y = window_info.y
+        width = window_info.width
+        height = window_info.height
+      end
+      if wid == nil or x == nil or y == nil or width == nil or height == nil then
+        opts.notify.msg(
+          'error window information is nil',
+          vim.log.levels.ERROR,
+          window_info_result
+        )
+        return
+      end
+      local screencapture_cmd =
+        opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, profile)
+      if screencapture_cmd ~= nil then
+        local capture_delay = 0
 
-          if mode_opts.type == screencapture.type.video and opts.features.flash then
-            opts.fn.flash()
-            capture_delay = 200
-          end
-          vim.defer_fn(function()
-            local job_id = vim.fn.jobstart(
-              screencapture_cmd,
-              opts.fn.screencapture.opts(out_files, mode_opts, screencapture_cmd)
-            )
-            if job_id > 0 then
-              local video_timer = nil
-              if mode_opts.type == screencapture.type.video and mode_opts.video_limit ~= nil then
-                -- limits video capture to specified seconds
-                local video_timeout = mode_opts.video_limit * 1000
-                local delay = mode_opts.delay
-                if delay ~= nil then
-                  video_timeout = video_timeout + (delay * 1000)
-                end
-                video_timer = vim.defer_fn(
-                  render_fn.partial(vim.fn.chansend, job_id, {
-                    'type any character (or ctrl-c) to stop screen recording',
-                  }),
-                  video_timeout
-                )
-              end
-              render_screencapture.job_ids[job_id] = {
-                window_info = window_info_result,
-                out_files = out_files,
-                timer = video_timer,
-              }
-            end
-          end, capture_delay) -- small delay to avoid capturing flash
+
+        if is_video and opts.features.flash then
+          opts.fn.flash()
+          capture_delay = 200
         end
+        vim.defer_fn(function()
+          local job_id = vim.fn.jobstart(
+            screencapture_cmd,
+            opts.fn.screencapture.opts(out_files, profile, screencapture_cmd)
+          )
+          if job_id > 0 then
+            local video_timer = nil
+            if is_video and profile.video_limit ~= nil then
+              -- limits video capture to specified seconds
+              local video_timeout = profile.video_limit * 1000
+              local delay = profile.delay
+              if delay ~= nil then
+                video_timeout = video_timeout + (delay * 1000)
+              end
+              video_timer = vim.defer_fn(
+                render_fn.partial(vim.fn.chansend, job_id, {
+                  'type any character (or ctrl-c) to stop screen recording',
+                }),
+                video_timeout
+              )
+            end
+            render_screencapture.job_ids[job_id] = {
+              window_info = window_info_result,
+              out_files = out_files,
+              timer = video_timer,
+            }
+          end
+        end, capture_delay) -- small delay to avoid capturing flash
       end
     end,
     on_stderr = function(_, result)

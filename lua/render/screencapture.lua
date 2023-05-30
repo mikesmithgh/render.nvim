@@ -70,13 +70,24 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
-M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
+---comment
+---@param wid integer
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@param out_files table
+---@param profile ProfileOptions
+---@return nil
+M.cmd = function(wid, x, y, width, height, out_files, profile)
   local screencapture_cmd = { 'screencapture' }
   local mode = render_constants.screencapture.mode
   local capturemode = render_constants.screencapture.capturemode
   local type = render_constants.screencapture.type
+  local filetype = profile.filetype
+  local is_video = vim.tbl_contains(render_constants.video_types, filetype)
 
-  if mode_opts.dry_run then
+  if profile.dry_run then
     -- no operation is used for troubleshooting
     local screencapture_dryrun_script =
       vim.api.nvim_get_runtime_file('scripts/screencapture_dryrun.sh', false)[1]
@@ -92,12 +103,12 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
   end
 
   -- video does not support capture by window ID
-  if mode_opts.type == type.video or mode_opts.image_capture_mode == capturemode.bounds then
+  if is_video or profile.image_capture_mode == capturemode.bounds then
     table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
-  elseif mode_opts.image_capture_mode == capturemode.window then
+  elseif profile.image_capture_mode == capturemode.window then
     table.insert(screencapture_cmd, '-l' .. wid)
   else
-    opts.notify.msg('unrecognized capturemode options', vim.log.levels.ERROR, mode_opts)
+    opts.notify.msg('unrecognized capturemode options', vim.log.levels.ERROR, profile)
     return nil
   end
 
@@ -105,19 +116,19 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     table.insert(screencapture_cmd, '-x')
   end
 
-  if not opts.features.window_shadow then
+  if not profile.window_shadow then
     table.insert(screencapture_cmd, '-o')
   end
 
-  if mode_opts.delay ~= nil then
+  if profile.delay ~= nil then
     -- take the capture after a delay of <seconds>
-    table.insert(screencapture_cmd, '-T' .. mode_opts.delay)
-    if mode_opts.delay > 0 then
-      open_countdown_timer(mode_opts.delay)
+    table.insert(screencapture_cmd, '-T' .. profile.delay)
+    if profile.delay > 0 then
+      open_countdown_timer(profile.delay)
     end
   end
 
-  if mode_opts.mode == mode.open then
+  if profile.mode == mode.open then
     -- screen capture output will open in Preview or QuickTime Player if video
     table.insert(screencapture_cmd, '-P')
     out_files = vim.tbl_map(function()
@@ -125,12 +136,12 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     end, out_files)
   end
 
-  if mode_opts.mode == mode.clipboard then
+  if profile.mode == mode.clipboard then
     -- force screen capture to go to the clipboard
     table.insert(screencapture_cmd, '-c')
   end
 
-  if mode_opts.mode == mode.preview then
+  if profile.mode == mode.preview then
     -- present UI after screencapture is complete. files passed to command line will be ignored
     table.insert(screencapture_cmd, '-u')
     out_files = vim.tbl_map(function()
@@ -138,57 +149,57 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     end, out_files)
   end
 
-  if mode_opts.type == nil or mode_opts.type == type.image then
-    if mode_opts.filetype == nil or mode_opts.filetype == render_constants.png then
+  if profile.type == nil or profile.type == type.image then
+    if filetype == nil or filetype == render_constants.png then
       return vim.list_extend(screencapture_cmd, {
         '-tpng',
         out_files.png,
       })
     end
 
-    if mode_opts.filetype == render_constants.jpg then
+    if filetype == render_constants.jpg then
       return vim.list_extend(screencapture_cmd, {
         '-tjpg',
         out_files.jpg,
       })
     end
 
-    if mode_opts.filetype == render_constants.gif then
+    if filetype == render_constants.gif then
       return vim.list_extend(screencapture_cmd, {
         '-tgif',
         out_files.gif,
       })
     end
 
-    if mode_opts.filetype == render_constants.pdf then
+    if filetype == render_constants.pdf then
       return vim.list_extend(screencapture_cmd, {
         '-tpdf',
         out_files.pdf,
       })
     end
 
-    if mode_opts.filetype == render_constants.psd then
+    if filetype == render_constants.psd then
       return vim.list_extend(screencapture_cmd, {
         '-tpsd',
         out_files.psd,
       })
     end
 
-    if mode_opts.filetype == render_constants.bmp then
+    if filetype == render_constants.bmp then
       return vim.list_extend(screencapture_cmd, {
         '-tbmp',
         out_files.bmp,
       })
     end
 
-    if mode_opts.filetype == render_constants.tga then
+    if filetype == render_constants.tga then
       return vim.list_extend(screencapture_cmd, {
         '-ttga',
         out_files.tga,
       })
     end
 
-    if mode_opts.filetype == render_constants.tiff then
+    if filetype == render_constants.tiff then
       return vim.list_extend(screencapture_cmd, {
         '-ttiff',
         out_files.tiff,
@@ -196,8 +207,8 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     end
   end
 
-  if mode_opts.type == type.video then
-    if mode_opts.show_clicks then
+  if is_video then
+    if profile.show_clicks then
       -- show clicks in video recording mode
       table.insert(screencapture_cmd, '-k')
     end
@@ -208,11 +219,15 @@ M.cmd = function(wid, x, y, width, height, out_files, mode_opts)
     })
   end
 
-  opts.notify.msg('unrecognized mode options', vim.log.levels.ERROR, mode_opts)
+  opts.notify.msg('unrecognized mode options', vim.log.levels.ERROR, profile)
   return nil
 end
 
-local function screencapture_cmd_tostring(mode_opts, screencapture_cmd)
+---comment
+---@param profile ProfileOptions
+---@param screencapture_cmd table
+---@return string
+local function screencapture_cmd_tostring(profile, screencapture_cmd)
   if screencapture_cmd == nil or next(screencapture_cmd) == nil then
     return ''
   end
@@ -222,7 +237,7 @@ local function screencapture_cmd_tostring(mode_opts, screencapture_cmd)
     for i, s in pairs(screencapture_cmd) do
       if i == 1 then
         screencapture_cmd_str = s
-        if mode_opts.dry_run then
+        if profile.dry_run then
           screencapture_cmd_str = 'screencapture'
         end
       else
@@ -234,9 +249,14 @@ local function screencapture_cmd_tostring(mode_opts, screencapture_cmd)
   return render_fn.trim(screencapture_cmd_str)
 end
 
-M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
+---comment
+---@param out_files table
+---@param profile ProfileOptions
+---@param screencapture_cmd string
+---@return table
+M.cmd_opts = function(out_files, profile, screencapture_cmd)
   local mode = render_constants.screencapture.mode
-  local screencapture_cmd_str = screencapture_cmd_tostring(mode_opts, screencapture_cmd)
+  local screencapture_cmd_str = screencapture_cmd_tostring(profile, screencapture_cmd)
   return {
     stdout_buffered = true,
     stderr_buffered = true,
@@ -246,8 +266,8 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
           opts.fn.flash()
         end
         local msg = nil
-        if mode_opts.mode == nil or mode_opts.mode == mode.save then
-          local out_file = out_files[mode_opts.filetype]
+        if profile.mode == nil or profile.mode == mode.save then
+          local out_file = out_files[profile.filetype]
           if opts.features.auto_open then
             local open_cmd = opts.fn.open_cmd()
             if open_cmd ~= nil then
@@ -262,10 +282,10 @@ M.cmd_opts = function(out_files, mode_opts, screencapture_cmd)
           end
           msg = { location = out_file }
         end
-        if mode_opts.mode == mode.clipboard then
+        if profile.mode == mode.clipboard then
           msg = { location = mode.clipboard }
         end
-        if mode_opts.mode == mode.preview or mode_opts.mode == mode.open then
+        if profile.mode == mode.preview or profile.mode == mode.open then
           if M.location ~= nil then
             msg = { location = M.location }
           else

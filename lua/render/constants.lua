@@ -7,17 +7,6 @@ M.pdubs = 'pdubs'
 M.pdubs_dir = M.render_deps_dir .. '/pdubs'
 M.pdubs_file = M.pdubs_dir .. '/pdubs'
 
----Render file types
----@alias render_filetypes
----| 'png'
----| 'jpg'
----| 'pdf'
----| 'psd'
----| 'tga'
----| 'bmp'
----| 'gif'
----| 'tiff'
----| 'mov'
 M.png = 'png'
 M.jpg = 'jpg'
 M.pdf = 'pdf'

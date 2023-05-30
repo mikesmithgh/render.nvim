@@ -19,7 +19,6 @@ local standard_opts = {
   ---@field auto_open boolean If true, open the file after the screencapture
   ---@field auto_preview boolean If true, preview the file after the screencapture
   ---@field sound_effect boolean If true, play a sound effect during screencapture
-  ---@field window_shadow boolean If true, create a shadow around the screencapture when image_capture_mode is window
   features = {
     notify = true,
     keymaps = true,
@@ -27,7 +26,6 @@ local standard_opts = {
     auto_open = false,
     auto_preview = true,
     sound_effect = false,
-    window_shadow = false,
   },
   ---@class Notify
   ---@field level number Level of notification corresponding to `vim.log.levels`
@@ -36,7 +34,7 @@ local standard_opts = {
   notify = {
     level = vim.log.levels.INFO,
     msg = render_msg.notify,
-    verbose = false,
+    verbose = true,
   },
   ---@class Functions
   ---@field window_info FunctionsWindowInfo
@@ -82,40 +80,42 @@ local standard_opts = {
     run = vim.fn.stdpath('run') .. '/' .. render_constants.shortname,
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
   },
-  ---@class ModeOptions
-  ---@field type string | 'image' | 'video'
-  ---@field mode string | 'save' | 'clipboard' | 'preview' | 'open'
-  ---@field image_capture_mode ScreenCaptureCaptureMode
-  ---@field capture_window_info_mode ScreenCaptureWindowInfoMode
-  ---@field filetype render_filetypes Capture will save with given filetype
-  ---@field delay integer Take the capture after a delay seconds
-  ---@field show_clicks boolean If true, show clicks in video recording mode
-  ---@field video_limit integer Limits video capture to the specific seconds
-  ---@field dry_run boolean If true, do not take screencapture. This is useful for troubleshooting
-  ---@field offsets ModeOptionsOffsets Offsets to rectangle in bounds image capture mode
-  mode_opts = {
-    type = render_constants.screencapture.type.image,
-    mode = render_constants.screencapture.mode.save,
-    image_capture_mode = render_constants.screencapture.capturemode.window,
-    capture_window_info_mode = render_constants.screencapture.window_info_mode.frontmost_on_startup,
-    filetype = render_constants.png,
-    delay = nil,
-    show_clicks = false,
-    video_limit = 60,
-    dry_run = false,
-    ---Positive and negative integers are valid
-    ---@class ModeOptionsOffsets
-    ---@field left integer Number of units to adjust left bounds
-    ---@field top integer Number of units to adjust top bounds
-    ---@field right integer Number of units to adjust right bounds
-    ---@field bottom integer Number of units to adjust bottom bounds
-    offsets = {
-      left = 0,
-      top = 0, -- 27, tested with iterm,
-      right = 0, -- 13,
-      bottom = 0,
+  profiles = vim.tbl_deep_extend('force', {
+    ---@class ProfileOptions
+    ---@field mode string | 'save' | 'clipboard' | 'preview' | 'open'
+    ---@field image_capture_mode string | 'bounds' | 'window'
+    ---@field capture_window_info_mode string | 'frontmost' | 'frontmost_on_startup' | 'manual'
+    ---@field filetype string | 'png' | 'jpg' | 'pdf' | 'psd' | 'tga' | 'bmp' | 'gif' | 'tiff' | 'mov'
+    ---@field delay integer? Take the capture after a delay seconds
+    ---@field show_clicks boolean If true, show clicks in video recording mode
+    ---@field video_limit integer Limits video capture to the specific seconds
+    ---@field dry_run boolean If true, do not take screencapture. This is useful for troubleshooting
+    ---@field offsets ModeOptionsOffsets Offsets to rectangle in bounds image capture mode
+    ---@field window_shadow boolean If true, create a shadow around the screencapture when image_capture_mode is window
+    default = {
+      mode = render_constants.screencapture.mode.save,
+      image_capture_mode = render_constants.screencapture.capturemode.window,
+      capture_window_info_mode = render_constants.screencapture.window_info_mode.frontmost_on_startup,
+      filetype = render_constants.png,
+      delay = nil,
+      show_clicks = false,
+      video_limit = 60,
+      dry_run = false,
+      ---Positive and negative integers are valid
+      ---@class ModeOptionsOffsets
+      ---@field left integer Number of units to adjust left bounds
+      ---@field top integer Number of units to adjust top bounds
+      ---@field right integer Number of units to adjust right bounds
+      ---@field bottom integer Number of units to adjust bottom bounds
+      offsets = {
+        left = 0,
+        top = 0, -- 27, tested with iterm,
+        right = 0, -- 13,
+        bottom = 0,
+      },
+      window_shadow = false,
     },
-  },
+  }, require('render.example-profiles')),
   ---@class UserInterface
   ---Function returning a color name or "#RRGGBB" that will be
   ---displayed during screen flash
@@ -150,7 +150,7 @@ local standard_opts = {
 }
 
 M.default_opts = function()
-  return standard_opts
+  return vim.tbl_deep_extend('force', {}, standard_opts)
 end
 
 M.opts = {}

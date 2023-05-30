@@ -55,6 +55,7 @@ TODO
 ## 🟰 Screencapture equivalent
 | render.nvim option                        | argument       | description                                                     |
 |-------------------------------------------|----------------|-----------------------------------------------------------------|
+TODO: update doc
 | `mode_opts.mode = 'clipboard'`            | `-c`           | Force screen capture to go to the clipboard                     |
 | `features.window_shadow = false`          | `-o`           | In window capture mode, do not capture the shadow of the window |
 | `mode_opts.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png                          |

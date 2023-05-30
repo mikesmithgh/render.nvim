@@ -4,6 +4,7 @@ local render_constants = require('render.constants')
 local render_fs = require('render.fs')
 local render_fn = require('render.fn')
 local render_windowinfo = require('render.windowinfo')
+local render_api = require('render.api')
 local M = {}
 
 local opts = {}
@@ -11,49 +12,43 @@ local opts = {}
 ---@param render_opts RenderOptions
 M.setup = function(render_opts)
   opts = render_opts
+
   vim.api.nvim_create_user_command('Render', function(o)
-    local filetype = o.args
-    local mode_opts = opts.mode_opts
-    if filetype ~= nil and filetype ~= '' then
-      if not vim.tbl_contains(render_constants.all_types, filetype) then
-        opts.notify.msg('unrecognized filetype', vim.log.levels.ERROR, {
-          filetype = filetype,
-        })
-        return
-      end
-      mode_opts = vim.tbl_extend('force', opts.mode_opts, {
-        type = render_constants.screencapture.type.image,
-        filetype = filetype,
-      })
-      if vim.tbl_contains(render_constants.video_types, filetype) then
-        mode_opts = vim.tbl_extend('force', opts.mode_opts, {
-          type = render_constants.screencapture.type.video,
-          filetype = filetype,
-        })
-      end
+    local profile_name = o.args
+    if profile_name == nil or profile_name == '' then
+      profile_name = 'default'
     end
+    local profile = opts.profiles[profile_name]
+
+    if profile == nil then
+      opts.notify.msg('profile not found', vim.log.levels.ERROR, {
+        profile_name = profile_name,
+      })
+      return
+    end
+
     -- small delay to avoid capturing :Render command and flash
-    vim.defer_fn(render_fn.partial(render_core.render, mode_opts), 200)
+    vim.defer_fn(render_fn.partial(render_api.render, profile), 200)
   end, {
     nargs = '?',
     complete = function()
-      return render_constants.all_types
+      return vim.tbl_keys(opts.profiles)
     end,
   })
 
-  vim.api.nvim_create_user_command('RenderDryRun', render_core.render_dryrun, {})
+  vim.api.nvim_create_user_command('RenderDryRun', render_api.render_dryrun, {})
 
   vim.api.nvim_create_user_command('RenderInterrupt', function()
     render_screencapture.interrupt()
   end, {})
 
-  vim.api.nvim_create_user_command('RenderClean', function()
-    render_fs.remove_dirs(opts.dirs)
-    render_fs.setup_files_and_dirs()
-    if render_windowinfo.remove_pdubs() then
-      render_windowinfo.install_pdubs()
-    end
-  end, {})
+  vim.api.nvim_create_user_command('RenderClean', function(o)
+    render_api.render_clean({
+      force = o.bang,
+    })
+  end, {
+    bang = true,
+  })
 
   vim.api.nvim_create_user_command(
     'RenderQuickfix',
