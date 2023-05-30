@@ -1,7 +1,9 @@
+local luv = vim.loop
 local M = {}
 local render_fs = require('render.fs')
 local render_fn = require('render.fn')
 local render_windowinfo = require('render.windowinfo')
+local render_cache = require('render.cache')
 
 ---@type RenderOptions
 local opts = {}
@@ -37,8 +39,12 @@ M.render = function(profile)
   )
 end
 
----@param profile ProfileOptions
-M.render_dryrun = function(profile)
+---@param profile ProfileOptions|string
+M.dryrun = function(profile)
+  if type(profile) == 'string' then
+    local profile_name = profile
+    profile = opts.profiles[profile_name]
+  end
   M.render(
     vim.tbl_extend('force', profile, { dry_run = true, })
   )
@@ -49,7 +55,7 @@ end
 
 ---Clean output directory and reinstall dependencies
 ---@param clean_opts CleanOptions
-M.render_clean = function(clean_opts)
+M.clean = function(clean_opts)
   if clean_opts == nil then
     clean_opts = {}
   end
@@ -66,5 +72,49 @@ M.render_clean = function(clean_opts)
     opts.notify.msg('successfully cleaned', vim.log.levels.INFO, {})
   end
 end
+
+M.explore = function()
+  vim.cmd.edit(opts.dirs.output)
+end
+
+M.interrupt = function()
+  for job_id, job_info in pairs(render_cache.job_ids) do
+    local timer = job_info.timer
+    if job_info ~= nil and timer ~= nil then
+      timer:stop()
+      timer:close()
+    end
+    local pid = vim.fn.jobpid(job_id)
+    luv.kill(pid, 'sigint')
+  end
+  render_cache.job_ids = {}
+  for buffer_id, timer in pairs(render_cache.timers) do
+    vim.api.nvim_buf_delete(buffer_id, { force = true })
+    vim.fn.timer_stop(timer.timer_id)
+  end
+  render_cache.timers = {}
+end
+
+M.quickfix = function()
+  render_fn.render_quickfix({ cb = vim.cmd.copen, toggle = true })
+end
+
+M.quicklook = function()
+  vim.fn.jobstart('stat -n -f "%N " * | xargs qlmanage -p', {
+    cwd = opts.dirs.output,
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stderr = function(_, result)
+      if result[1] ~= nil and result[1] ~= '' then
+        opts.notify.msg('error opening quicklook', vim.log.levels.ERROR, result)
+      end
+    end,
+  })
+end
+
+M.set_window_info = function(...)
+  render_windowinfo.set_window_info(...)
+end
+
 
 return M

@@ -47,7 +47,7 @@ jobs:
           -- },
           })
           -- vim.defer_fn(function()
-          --   require('render.core').render()
+          --   require('render.api').render()
           -- end, 2000)
 
           EOF

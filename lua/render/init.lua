@@ -1,7 +1,6 @@
 local render_commands = require('render.commands')
 local render_constants = require('render.constants')
 local render_config = require('render.config')
-local render_core = require('render.core')
 local render_fn = require('render.fn')
 local render_fs = require('render.fs')
 local render_keymaps = require('render.keymaps')
@@ -54,7 +53,6 @@ M.setup = function(override_opts)
   render_screencapture.setup(M.opts)
   render_fs.setup(M.opts)
   render_keymaps.setup(M.opts)
-  render_core.setup(M.opts)
   render_commands.setup(M.opts)
 end
 

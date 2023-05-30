@@ -1,9 +1,6 @@
 local render_fn = require('render.fn')
-local luv = vim.loop
-local M = {
-  job_ids = {},
-  timers = {},
-}
+local render_cache = require('render.cache')
+local M = {}
 
 local render_constants = require('render.constants')
 
@@ -31,15 +28,15 @@ local function open_countdown_timer(delay)
   )
 
   if delay - 1 <= 0 then
-    M.timers[buffer_id] = nil
+    render_cache.timers[buffer_id] = nil
   else
-    M.timers[buffer_id] = {
+    render_cache.timers[buffer_id] = {
       count = delay - 1,
     }
   end
 
   local timer_id = vim.fn.timer_start(1000, function(tid)
-    if M.timers[buffer_id] == nil then
+    if render_cache.timers[buffer_id] == nil then
       vim.api.nvim_buf_delete(buffer_id, { force = true })
       vim.fn.timer_stop(tid)
     else
@@ -49,19 +46,19 @@ local function open_countdown_timer(delay)
         0,
         0,
         false,
-        { '', '   render.nvim', '', '        ' .. tostring(M.timers[buffer_id].count) }
+        { '', '   render.nvim', '', '        ' .. tostring(render_cache.timers[buffer_id].count) }
       )
-      M.timers[buffer_id].count = M.timers[buffer_id].count - 1
-      if M.timers[buffer_id].count < 1 then
-        M.timers[buffer_id] = nil
+      render_cache.timers[buffer_id].count = render_cache.timers[buffer_id].count - 1
+      if render_cache.timers[buffer_id].count < 1 then
+        render_cache.timers[buffer_id] = nil
       end
     end
   end, {
     ['repeat'] = delay,
   })
 
-  if M.timers[buffer_id] ~= nil then
-    M.timers[buffer_id].timer_id = timer_id
+  if render_cache.timers[buffer_id] ~= nil then
+    render_cache.timers[buffer_id].timer_id = timer_id
   end
 end
 
@@ -268,14 +265,14 @@ M.cmd_opts = function(out_files, profile, screencapture_cmd)
         local msg = nil
         if profile.mode == nil or profile.mode == mode.save then
           local out_file = out_files[profile.filetype]
-          if opts.features.auto_open then
+          if opts.features.auto_open and not profile.dry_run then
             local open_cmd = opts.fn.open_cmd()
             if open_cmd ~= nil then
               table.insert(open_cmd, out_file)
               vim.fn.jobstart(open_cmd)
             end
           end
-          if opts.features.auto_preview then
+          if opts.features.auto_preview and not profile.dry_run then
             vim.fn.jobstart('qlmanage -p ' .. out_file, {
               cwd = opts.dirs.output,
             })
@@ -318,14 +315,14 @@ M.cmd_opts = function(out_files, profile, screencapture_cmd)
           end
         end
 
-        M.job_ids[job_id] = nil
+        render_cache.job_ids[job_id] = nil
       end
     end,
     on_stderr = function(job_id, result)
       if result[1] ~= nil and result[1] ~= '' then
         opts.notify.msg('error taking screencapture', vim.log.levels.ERROR, result)
       end
-      M.job_ids[job_id] = nil
+      render_cache.job_ids[job_id] = nil
     end,
   }
 end
@@ -380,24 +377,6 @@ M.location_cmd_opts = function(msg)
       end
     end,
   }
-end
-
-M.interrupt = function()
-  for job_id, job_info in pairs(M.job_ids) do
-    local timer = job_info.timer
-    if job_info ~= nil and timer ~= nil then
-      timer:stop()
-      timer:close()
-    end
-    local pid = vim.fn.jobpid(job_id)
-    luv.kill(pid, 'sigint')
-  end
-  M.job_ids = {}
-  for buffer_id, timer in pairs(M.timers) do
-    vim.api.nvim_buf_delete(buffer_id, { force = true })
-    vim.fn.timer_stop(timer.timer_id)
-  end
-  M.timers = {}
 end
 
 return M

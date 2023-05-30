@@ -1,7 +1,7 @@
 local uv = vim.loop
 local render_fn = require('render.fn')
 local render_constants = require('render.constants')
-local render_screencapture = require('render.screencapture')
+local render_cache = require('render.cache')
 
 local M = {}
 ---type RenderOptions
@@ -62,8 +62,7 @@ M.pdubs_fpath = function()
   return vim.api.nvim_get_runtime_file(render_constants.pdubs_file, false)[1]
 end
 
--- TODO: can remove profile
-M.set_window_info = function(pid, profile)
+M.set_window_info = function(pid)
   local window_info_cmd = opts.fn.window_info.cmd()
   if pid ~= nil and pid ~= '' then
     window_info_cmd = window_info_cmd .. ' ' .. pid
@@ -86,11 +85,11 @@ M.set_window_info = function(pid, profile)
       if window_info == nil then
         return
       end
-      render_fn.cache.window.x = window_info.x
-      render_fn.cache.window.y = window_info.y
-      render_fn.cache.window.width = window_info.width
-      render_fn.cache.window.height = window_info.height
-      render_fn.cache.window.id = window_info.id
+      render_cache.window.x = window_info.x
+      render_cache.window.y = window_info.y
+      render_cache.window.width = window_info.width
+      render_cache.window.height = window_info.height
+      render_cache.window.id = window_info.id
     end,
     on_stderr = function(_, result)
       if result[1] ~= nil and result[1] ~= '' then
@@ -216,7 +215,7 @@ M.setup = function(render_opts, profile)
     M.install_pdubs()
     and profile.capture_window_info_mode == window_info_mode.frontmost_on_startup
   then
-    M.set_window_info(nil, profile)
+    M.set_window_info()
   end
 end
 
@@ -241,11 +240,11 @@ M.cmd_opts = function(out_files, profile)
       if window_info == nil then
         return
       end
-      local wid = render_fn.cache.window.id
-      local x = render_fn.cache.window.x
-      local y = render_fn.cache.window.y
-      local width = render_fn.cache.window.width
-      local height = render_fn.cache.window.height
+      local wid = render_cache.window.id
+      local x = render_cache.window.x
+      local y = render_cache.window.y
+      local width = render_cache.window.width
+      local height = render_cache.window.height
       if profile.capture_window_info_mode == screencapture.window_info_mode.frontmost then
         wid = window_info.id
         x = window_info.x
@@ -268,7 +267,7 @@ M.cmd_opts = function(out_files, profile)
           width = width,
           height = height,
         },
-        profile.offsets
+        profile.offsets or {}
       )
       if window_with_offsets == nil then
         return
@@ -277,6 +276,7 @@ M.cmd_opts = function(out_files, profile)
       y = window_with_offsets.y
       width = window_with_offsets.width
       height = window_with_offsets.height
+
       local screencapture_cmd =
         opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, profile)
       if screencapture_cmd ~= nil then
@@ -308,7 +308,7 @@ M.cmd_opts = function(out_files, profile)
                 video_timeout
               )
             end
-            render_screencapture.job_ids[job_id] = {
+            render_cache.job_ids[job_id] = {
               window_info = window_info_result,
               out_files = out_files,
               timer = video_timer,

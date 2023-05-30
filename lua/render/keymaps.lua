@@ -1,4 +1,4 @@
-local render_core = require('render.core')
+local render_api = require('render.api')
 local render_screencapture = require('render.screencapture')
 local render_fn = require('render.fn')
 local M = {}
@@ -19,18 +19,18 @@ M.setup_default_keymaps = function()
   vim.keymap.set(
     { 'n', 'i', 'c', 'v', 'x', 's', 'o', 't', 'l' },
     '<f13>',
-    render_core.render,
+    render_api.render,
     { silent = true, remap = true }
   )
 
   vim.keymap.set(
     { 'n' },
     '<leader><f13>',
-    render_screencapture.interrupt,
+    render_api.interrupt,
     { silent = true, remap = true }
   )
 
-  vim.keymap.set({ 'n' }, '<C-f13>', ':RenderQuickfix<cr>', { silent = true, remap = true })
+  vim.keymap.set({ 'n' }, '<C-f13>', render_api.quickfix, { silent = true, remap = true })
 
   vim.keymap.set({ 'n' }, '<cr>', render_fn.partial(render_fn.open_qfitem, '<cr>'), {
     silent = true,
