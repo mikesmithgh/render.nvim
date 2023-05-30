@@ -20,5 +20,5 @@ return {
     capture_window_info_mode = render_constants.screencapture.window_info_mode.frontmost,
     filetype = render_constants.mov,
     video_limit = 5,
-  }
+  },
 }

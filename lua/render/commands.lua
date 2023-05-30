@@ -36,7 +36,6 @@ M.setup = function(render_opts)
     end,
   })
 
-
   vim.api.nvim_create_user_command('RenderInterrupt', render_api.interrupt, {})
 
   vim.api.nvim_create_user_command('RenderClean', function(o)

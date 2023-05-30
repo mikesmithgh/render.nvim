@@ -33,10 +33,7 @@ M.render = function(profile)
 
   local out_files = render_fn.new_output_files()
 
-  vim.fn.jobstart(
-    opts.fn.window_info.cmd(),
-    opts.fn.window_info.opts(out_files, profile)
-  )
+  vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, profile))
 end
 
 ---@param profile ProfileOptions|string
@@ -45,9 +42,7 @@ M.dryrun = function(profile)
     local profile_name = profile
     profile = opts.profiles[profile_name]
   end
-  M.render(
-    vim.tbl_extend('force', profile, { dry_run = true, })
-  )
+  M.render(vim.tbl_extend('force', profile, { dry_run = true }))
 end
 
 ---@class CleanOptions
@@ -61,7 +56,11 @@ M.clean = function(clean_opts)
   end
   local choice = 1
   if not clean_opts.force then
-    choice = vim.fn.confirm('Remove all files in ' .. opts.dirs.output .. '? (This cannot be undone)', '&Remove\n&Cancel', 0)
+    choice = vim.fn.confirm(
+      'Remove all files in ' .. opts.dirs.output .. '? (This cannot be undone)',
+      '&Remove\n&Cancel',
+      0
+    )
   end
   if choice == 1 then
     render_fs.remove_dirs(opts.dirs)
@@ -115,6 +114,5 @@ end
 M.set_window_info = function(...)
   render_windowinfo.set_window_info(...)
 end
-
 
 return M

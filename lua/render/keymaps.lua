@@ -23,12 +23,7 @@ M.setup_default_keymaps = function()
     { silent = true, remap = true }
   )
 
-  vim.keymap.set(
-    { 'n' },
-    '<leader><f13>',
-    render_api.interrupt,
-    { silent = true, remap = true }
-  )
+  vim.keymap.set({ 'n' }, '<leader><f13>', render_api.interrupt, { silent = true, remap = true })
 
   vim.keymap.set({ 'n' }, '<C-f13>', render_api.quickfix, { silent = true, remap = true })
 

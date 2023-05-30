@@ -19,13 +19,11 @@ M.with_offsets = function(window_info, window_offsets)
   end
   local info = vim.tbl_extend('force', {}, window_info)
   local offsets = vim.tbl_extend('force', {
-      left = 0,
-      right = 0,
-      up = 0,
-      down = 0,
-    },
-    window_offsets
-  )
+    left = 0,
+    right = 0,
+    up = 0,
+    down = 0,
+  }, window_offsets)
   info.x = math.floor(window_info.x) + (offsets.left or 0)
   info.y = math.floor(window_info.y) + (offsets.top or 0)
   info.width = math.floor(window_info.width) - (offsets.left or 0) - (offsets.right or 0)
@@ -253,22 +251,16 @@ M.cmd_opts = function(out_files, profile)
         height = window_info.height
       end
       if wid == nil or x == nil or y == nil or width == nil or height == nil then
-        opts.notify.msg(
-          'error window information is nil',
-          vim.log.levels.ERROR,
-          window_info_result
-        )
+        opts.notify.msg('error window information is nil', vim.log.levels.ERROR, window_info_result)
         return
       end
       -- TODO: clean this up
       local window_with_offsets = M.with_offsets({
-          x = x,
-          y = y,
-          width = width,
-          height = height,
-        },
-        profile.offsets or {}
-      )
+        x = x,
+        y = y,
+        width = width,
+        height = height,
+      }, profile.offsets or {})
       if window_with_offsets == nil then
         return
       end
@@ -281,7 +273,6 @@ M.cmd_opts = function(out_files, profile)
         opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, profile)
       if screencapture_cmd ~= nil then
         local capture_delay = 0
-
 
         if is_video and opts.features.flash then
           opts.fn.flash()

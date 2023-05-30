@@ -64,9 +64,9 @@ M.new_output_files = function()
   local temp = vim.fn.tempname()
   local temp_prefix = vim.fn.fnamemodify(temp, ':h:t')
   local temp_name = vim.fn.fnamemodify(temp, ':t')
-  local out_file = opts.dirs.output .. '/' .. string.lower(
-    normalized_name .. '-' .. temp_prefix .. '-' .. temp_name
-  )
+  local out_file = opts.dirs.output
+    .. '/'
+    .. string.lower(normalized_name .. '-' .. temp_prefix .. '-' .. temp_name)
   return {
     file = out_file,
     png = out_file .. '.' .. render_constants.png,
@@ -111,8 +111,10 @@ M.render_quickfix = function(qfopts)
 
   if populateqf then
     vim.fn.jobstart(
-      '(printf "' .. vim.fn.fnamemodify(opts.dirs.output, ':p') .. ' | render.nvim |\n"; ' ..
-      '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
+      '(printf "'
+        .. vim.fn.fnamemodify(opts.dirs.output, ':p')
+        .. ' | render.nvim |\n"; '
+        .. '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
       {
         cwd = opts.dirs.output,
         stdout_buffered = true,
@@ -256,7 +258,6 @@ M.extract_targz = function(fpath, out_dir)
   })
   return 0 == vim.fn.jobwait({ jid }, 5000)[1]
 end
-
 
 M.profile_or_default = function(profile, profiles)
   if profile == nil or next(profile) == nil then
