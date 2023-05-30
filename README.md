@@ -38,14 +38,14 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 ## 🫡 Commands
 | Command             | API `require('render.api')`       | Description                                                                |
 |---------------------|-----------------------------------|----------------------------------------------------------------------------|
-| Render              | `render(nil|string|table)`        | Capture image or video recording                                           |                                                                                               
-| RenderDryRun        | `dryrun(nil|string|table)`        | Execute render logic without capturing result                              |                                                                                               
-| RenderClean         | `clean(nil|table)`                | Delete existing captures in output directory and reinstall dependencies    |
+| Render              | `render(string\|table\|nil)`      | Capture image or video recording                                           |                                                                                               
+| RenderDryRun        | `dryrun(string\|table\|nil)`      | Execute render logic without capturing result                              |                                                                                               
+| RenderClean         | `clean(table\|nil)`               | Delete existing captures in output directory and reinstall dependencies    |
 | RenderExplore       | `explore()`                       | Open render output directory in Neovim                                     |
 | RenderQuickfix      | `quickfix()`                      | Open output directory in quickfix window                                   |
 | RenderInterrupt     | `interrupt()`                     | Send interrupt to stop video recoring                                      |
 | RenderQuicklook     | `quicklook()`                     | Open all files in output directory with quick look                         |
-| RenderSetWindowInfo | `set_window_info(nil|integer)`    | Set the window information to the active Neovim session or by process ID   |
+| RenderSetWindowInfo | `set_window_info(integer\|nil)`   | Set the window information to the active Neovim session or by process ID   |
 
 ## ⌨️ Keymapping
 TODO
