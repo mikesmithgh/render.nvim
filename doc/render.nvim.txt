@@ -1,4 +1,4 @@
-*render.nvim.txt*            For NVIM v0.9+           Last change: 2023 May 28
+*render.nvim.txt*            For NVIM v0.9+           Last change: 2023 May 30
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
@@ -47,25 +47,29 @@ FEATURES                                    *render.nvim-render.nvim-features*
 
 🫡 COMMANDS                          *render.nvim-render.nvim-🫡-commands*
 
-  -----------------------------------------------------------------------------
-  Command               Description
-  --------------------- -------------------------------------------------------
-  Render                Capture image or video recording
+  ---------------------------------------------------------------------------------------------
+  Command               API require('render.api')      Description
+  --------------------- ------------------------------ ----------------------------------------
+  Render                render(nil|string|table)       Capture image or video recording
 
-  RenderClean           Delete existing captures in output directory and
-                        reinstall dependencies
+  RenderDryRun          dryrun(nil|string|table)       Execute render logic without capturing
+                                                       result
 
-  RenderExplore         Open render output directory in Neovim
+  RenderClean           clean(nil|table)               Delete existing captures in output
+                                                       directory and reinstall dependencies
 
-  RenderQuickfix        Open output directory in quickfix window
+  RenderExplore         explore()                      Open render output directory in Neovim
 
-  RenderInterrupt       Send interrupt to stop video recoring
+  RenderQuickfix        quickfix()                     Open output directory in quickfix window
 
-  RenderQuicklook       Open all files in output directory with quick look
+  RenderInterrupt       interrupt()                    Send interrupt to stop video recoring
 
-  RenderSetWindowInfo   Set the window information to the active Neovim session
-                        or by process ID
-  -----------------------------------------------------------------------------
+  RenderQuicklook       quicklook()                    Open all files in output directory with
+                                                       quick look
+
+  RenderSetWindowInfo   set_window_info(nil|integer)   Set the window information to the active
+                                                       Neovim session or by process ID
+  ---------------------------------------------------------------------------------------------
 
 KEYMAPPING                                *render.nvim-render.nvim-keymapping*
 
@@ -79,33 +83,33 @@ TODO
 
 🟰 SCREENCAPTURE EQUIVALENT*render.nvim-render.nvim-🟰-screencapture-equivalent*
 
-  ---------------------------------------------------------------------------------------------
-  render.nvim option                        argument      description
-  ----------------------------------------- ------------- -------------------------------------
-  mode_opts.mode = 'clipboard'              -c            Force screen capture to go to the
-                                                          clipboard
+  -------------------------------------------------------------------------------------------
+  render.nvim option                      argument      description
+  --------------------------------------- ------------- -------------------------------------
+  features.sound_effect = false           -x            Do not play sounds
 
-  features.window_shadow = false            -o            In window capture mode, do not
-                                                          capture the shadow of the window
+  profile.delay = <seconds>               -T<seconds>   Take the capture after a delay of
 
-  mode_opts.filetype = '<format>'           -t<format>    Image format to create, default is
-                                                          png
+  profile.filetype = '<format>'           -t<format>    Image format to create, default is
+                                                        png
 
-  mode_opts.delay = <seconds>               -T<seconds>   Take the capture after a delay of
+  profile.image_capture_mode = 'bounds'   -R<x,y,w,h>   Capture screen rect
 
-  features.sound_effect = false             -x            Do not play sounds
+  profile.image_capture_mode = 'window'   -l<id>        Capture window with
 
-  mode_opts.image_capture_mode = 'window'   -l<id>        Capture window with
+  profile.mode = 'clipboard'              -c            Force screen capture to go to the
+                                                        clipboard
 
-  mode_opts.image_capture_mode = 'bounds'   -R<x,y,w,h>   Capture screen rect
+  profile.mode = 'preview'                -u            Present UI after screencapture is
+                                                        complete
 
-  mode_opts.type = 'video'                  -v            Capture video recording of the screen
+  profile.show_clicks = true              -k            Show clicks in video recording mode
 
-  mode_opts.show_clicks = true              -k            Show clicks in video recording mode
+  profile.type = 'video'                  -v            Capture video recording of the screen
 
-  mode_opts.mode = 'preview'                -u            Present UI after screencapture is
-                                                          complete
-  ---------------------------------------------------------------------------------------------
+  profile.window_shadow = false           -o            In window capture mode, do not
+                                                        capture the shadow of the window
+  -------------------------------------------------------------------------------------------
 
 INSTALLATION                            *render.nvim-render.nvim-installation*
 
