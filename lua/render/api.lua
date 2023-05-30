@@ -11,8 +11,19 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
----@param profile ProfileOptions
+---@param profile ProfileOptions|string
 M.render = function(profile)
+  if type(profile) == 'string' then
+    local profile_name = profile
+    profile = opts.profiles[profile_name]
+    if profile == nil then
+      opts.notify.msg('profile not found', vim.log.levels.ERROR, {
+        profile_name = profile_name,
+      })
+      return
+    end
+  end
+
   profile = render_fn.profile_or_default(profile, opts.profiles)
   if profile == nil then
     return

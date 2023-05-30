@@ -12,28 +12,41 @@ local valid_sha256s = {
 }
 local pdubs_download_url = 'https://github.com/mikesmithgh/pdubs/releases/download/v1.0.0/'
 
-M.as_window_info = function(json, offsets)
+M.with_offsets = function(window_info, window_offsets)
+  if window_info == nil or next(window_info) == nil then
+    opts.notify.msg('error getting window info', vim.log.levels.ERROR, {})
+    return nil
+  end
+  local info = vim.tbl_extend('force', {}, window_info)
+  local offsets = vim.tbl_extend('force', {
+      left = 0,
+      right = 0,
+      up = 0,
+      down = 0,
+    },
+    window_offsets
+  )
+  info.x = math.floor(window_info.x) + (offsets.left or 0)
+  info.y = math.floor(window_info.y) + (offsets.top or 0)
+  info.width = math.floor(window_info.width) - (offsets.left or 0) - (offsets.right or 0)
+  info.height = math.floor(window_info.height) - (offsets.top or 0) - (offsets.bottom or 0)
+  return info
+end
+
+M.as_window_info = function(json)
   if json == nil or next(json) == nil or json == '' or json[1] == '' then
     opts.notify.msg('error getting window info', vim.log.levels.ERROR, {})
     return nil
   end
   local window_info = nil
-  if offsets == nil then
-    offsets = {
-      left = 0,
-      right = 0,
-      up = 0,
-      down = 0,
-    }
-  end
   local result = vim.json.decode(table.concat(json))
   if result ~= nil and result[1] ~= nil then
     window_info = {}
     local bounds = result[1].kCGWindowBounds
-    window_info.x = math.floor(bounds.X) + (offsets.left or 0)
-    window_info.y = math.floor(bounds.Y) + (offsets.top or 0)
-    window_info.width = math.floor(bounds.Width) - (offsets.left or 0) - (offsets.right or 0)
-    window_info.height = math.floor(bounds.Height) - (offsets.top or 0) - (offsets.bottom or 0)
+    window_info.x = math.floor(bounds.X)
+    window_info.y = math.floor(bounds.Y)
+    window_info.width = math.floor(bounds.Width)
+    window_info.height = math.floor(bounds.Height)
     window_info.id = result[1].kCGWindowNumber
   end
   return window_info
@@ -49,6 +62,7 @@ M.pdubs_fpath = function()
   return vim.api.nvim_get_runtime_file(render_constants.pdubs_file, false)[1]
 end
 
+-- TODO: can remove profile
 M.set_window_info = function(pid, profile)
   local window_info_cmd = opts.fn.window_info.cmd()
   if pid ~= nil and pid ~= '' then
@@ -68,7 +82,7 @@ M.set_window_info = function(pid, profile)
     stderr_buffered = true,
     cwd = dir,
     on_stdout = function(_, window_info_result)
-      local window_info = M.as_window_info(window_info_result, profile.offsets)
+      local window_info = M.as_window_info(window_info_result)
       if window_info == nil then
         return
       end
@@ -212,10 +226,9 @@ end
 
 ---comment
 ---@param out_files table
----@param profile ProfilesOptions
+---@param profile ProfileOptions
 ---@return table
 M.cmd_opts = function(out_files, profile)
-  local offsets = profile.offsets or {}
   local screencapture = render_constants.screencapture
   local filetype = profile.filetype
   local is_video = vim.tbl_contains(render_constants.video_types, filetype)
@@ -224,7 +237,7 @@ M.cmd_opts = function(out_files, profile)
     stderr_buffered = true,
     cwd = M.pdubs_dir(),
     on_stdout = function(_, window_info_result)
-      local window_info = M.as_window_info(window_info_result, offsets)
+      local window_info = M.as_window_info(window_info_result)
       if window_info == nil then
         return
       end
@@ -248,6 +261,22 @@ M.cmd_opts = function(out_files, profile)
         )
         return
       end
+      -- TODO: clean this up
+      local window_with_offsets = M.with_offsets({
+          x = x,
+          y = y,
+          width = width,
+          height = height,
+        },
+        profile.offsets
+      )
+      if window_with_offsets == nil then
+        return
+      end
+      x = window_with_offsets.x
+      y = window_with_offsets.y
+      width = window_with_offsets.width
+      height = window_with_offsets.height
       local screencapture_cmd =
         opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, profile)
       if screencapture_cmd ~= nil then
