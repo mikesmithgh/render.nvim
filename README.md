@@ -45,7 +45,7 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 | RenderQuickfix      | `quickfix()`                      | Open output directory in quickfix window                                   |
 | RenderInterrupt     | `interrupt()`                     | Send interrupt to stop video recoring                                      |
 | RenderQuicklook     | `quicklook()`                     | Open all files in output directory with quick look                         |
-| RenderSetWindowInfo | `set_window_info()`               | Set the window information to the active Neovim session or by process ID   |
+| RenderSetWindowInfo | `set_window_info(nil|integer)`    | Set the window information to the active Neovim session or by process ID   |
 
 ## ⌨️ Keymapping
 TODO
@@ -54,19 +54,18 @@ TODO
 TODO
 
 ## 🟰 Screencapture equivalent
-| render.nvim option                        | argument       | description                                                     |
-|-------------------------------------------|----------------|-----------------------------------------------------------------|
-TODO: update doc
-| `mode_opts.mode = 'clipboard'`            | `-c`           | Force screen capture to go to the clipboard                     |
-| `features.window_shadow = false`          | `-o`           | In window capture mode, do not capture the shadow of the window |
-| `mode_opts.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png                          |
-| `mode_opts.delay = <seconds>`             | `-T<seconds>`  | Take the capture after a delay of <seconds>                     |
-| `features.sound_effect = false`           | `-x`           | Do not play sounds                                              |
-| `mode_opts.image_capture_mode = 'window'` | `-l<id>`       | Capture window with <id>                                        |
-| `mode_opts.image_capture_mode = 'bounds'` | `-R<x,y,w,h>`  | Capture screen rect                                             |
-| `mode_opts.type = 'video'`                | `-v`           | Capture video recording of the screen                           |
-| `mode_opts.show_clicks = true`            | `-k`           | Show clicks in video recording mode                             |
-| `mode_opts.mode = 'preview'`              | `-u`           | Present UI after screencapture is complete                      |
+| render.nvim option                      | argument       | description                                                     |
+|-----------------------------------------|----------------|-----------------------------------------------------------------|
+| `features.sound_effect = false`         | `-x`           | Do not play sounds                                              |
+| `profile.delay = <seconds>`             | `-T<seconds>`  | Take the capture after a delay of <seconds>                     |
+| `profile.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png                          |
+| `profile.image_capture_mode = 'bounds'` | `-R<x,y,w,h>`  | Capture screen rect                                             |
+| `profile.image_capture_mode = 'window'` | `-l<id>`       | Capture window with <id>                                        |
+| `profile.mode = 'clipboard'`            | `-c`           | Force screen capture to go to the clipboard                     |
+| `profile.mode = 'preview'`              | `-u`           | Present UI after screencapture is complete                      |
+| `profile.show_clicks = true`            | `-k`           | Show clicks in video recording mode                             |
+| `profile.type = 'video'`                | `-v`           | Capture video recording of the screen                           |
+| `profile.window_shadow = false`         | `-o`           | In window capture mode, do not capture the shadow of the window |
 
 ## 📦 Installation
 
