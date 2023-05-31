@@ -1,3 +1,5 @@
+---@mod render.api Render API
+
 local luv = vim.loop
 local M = {}
 local render_fs = require('render.fs')
@@ -7,13 +9,18 @@ local render_cache = require('render.cache')
 
 ---@type RenderOptions
 local opts = {}
-
----@param render_opts RenderOptions
+---@tag render.api.setup
+---@param render_opts RenderOptions|nil
 M.setup = function(render_opts)
   opts = render_opts
 end
 
----@param profile? ProfileOptions|string
+---@tag render.api.render
+---Take a screencapture with the given profile. The profile may
+---be |ProfileOptions| or the name of a profile that exists in
+---|RenderOptions|. If no profile is given, then the `default`
+---profile will be used.
+---@param profile ProfileOptions|string|nil
 M.render = function(profile)
   if type(profile) == 'string' then
     local profile_name = profile
@@ -36,7 +43,13 @@ M.render = function(profile)
   vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, profile))
 end
 
----@param profile? ProfileOptions|string
+
+---@tag render.api.dryrun
+---Perform a dryrun with the given profile. All operations will
+---be performed excluding the actual screencapture. This is useful
+---for troublehsooting and debugging.
+---@param profile ProfileOptions|string|nil
+---@see render.api.render
 M.dryrun = function(profile)
   if type(profile) == 'string' then
     local profile_name = profile
@@ -45,11 +58,12 @@ M.dryrun = function(profile)
   M.render(vim.tbl_extend('force', profile, { dry_run = true }))
 end
 
----@class CleanOptions
+---@class RenderCleanOptions
 ---@field force boolean If true, do not prompt for confirmation
 
+---@tag render.api.clean
 ---Clean output directory and reinstall dependencies
----@param clean_opts? CleanOptions
+---@param clean_opts RenderCleanOptions|nil
 M.clean = function(clean_opts)
   if clean_opts == nil then
     clean_opts = {}
@@ -72,10 +86,15 @@ M.clean = function(clean_opts)
   end
 end
 
+---@tag render.api.explore
+---Open the output directory in Neovim
 M.explore = function()
   vim.cmd.edit(opts.dirs.output)
 end
 
+---@tag render.api.interrupt
+---Send an interrupt signal to stop all video recordings.
+---If no video is found, this is a noop.
 M.interrupt = function()
   for job_id, job_info in pairs(render_cache.job_ids) do
     local timer = job_info.timer
@@ -94,10 +113,26 @@ M.interrupt = function()
   render_cache.timers = {}
 end
 
-M.quickfix = function()
-  render_fn.render_quickfix({ cb = vim.cmd.copen, toggle = true })
+---@class RenderQuickfixOptions
+---@field toggle boolean If true, toggle the |quickfix| window open or closed
+
+---@tag render.api.quickfix
+---Open the output directory in the |quickfix| window
+---@param qf_opts RenderQuickfixOptions|nil
+M.quickfix = function(qf_opts)
+  if qf_opts == nil then
+    qf_opts = {
+      toggle = true
+    }
+  end
+  render_fn.render_quickfix(vim.tbl_extend('keep', { cb = vim.cmd.copen }, qf_opts))
 end
 
+---@tag render.api.quicklook
+---Open all output files in quick look
+---The command `qlmanage` is used to open the quick look preview.
+---See https://ss64.com/osx/qlmanage.html for additional information on the
+---`qlmanage` command.
 M.quicklook = function()
   vim.fn.jobstart('stat -n -f "%N " * | xargs qlmanage -p', {
     cwd = opts.dirs.output,
@@ -111,8 +146,23 @@ M.quicklook = function()
   })
 end
 
----comment
----@param pid integer
+---@tag render.api.set_window_info
+---Set the window information used by render.nvim to perform screencaptures.
+---If `pid` is `nil` then the `pid` of the neovim session will be used.
+---This allows you to manually determine window information after neovim has started.
+---
+---Example usecases: ~
+---  • If the neovim instance starts behind other neovim instances, then the
+---    wrong window may be selected. Once the neovim instance is focused, you can
+---    use `set_window_info()` to point to the correct neovim instance.
+---  • You may wish to take screencaptures of other applications. This can be done
+---    by determining the pid (.e.g, `ps -ef`) and running `set_window_info({pid})`.
+---    Now, screencaptures perform by neovim will capture the window owning pid rather
+---    than the current neovim session.
+---  • If you moved the window for a profile with `image_capture_mode` set to `bounds`,
+---    then screencaptures may no longer have the desired bounds. Running `set_window_info()`
+---    will recalculate the bounds of the new window position.
+---@param pid integer|nil The process ID of the desired application to screencapture
 M.set_window_info = function(pid)
   render_windowinfo.set_window_info(pid)
 end

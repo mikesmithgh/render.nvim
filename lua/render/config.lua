@@ -82,8 +82,8 @@ local standard_opts = {
   },
   profiles = vim.tbl_deep_extend('force', {
     ---@class ProfileOptions
-    ---@field mode string | 'save' | 'clipboard' | 'preview' | 'open'
-    ---@field image_capture_mode string | 'bounds' | 'window'
+    ---@field mode 'save' | 'clipboard' | 'preview' | 'open'
+    ---@field image_capture_mode 'bounds' | 'window'
     ---@field capture_window_info_mode string | 'frontmost' | 'frontmost_on_startup' | 'manual'
     ---@field filetype string | 'png' | 'jpg' | 'pdf' | 'psd' | 'tga' | 'bmp' | 'gif' | 'tiff' | 'mov'
     ---@field delay integer? Take the capture after a delay seconds
