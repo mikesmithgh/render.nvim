@@ -43,7 +43,6 @@ M.render = function(profile)
   vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, profile))
 end
 
-
 ---@tag render.api.dryrun
 ---Perform a dryrun with the given profile. All operations will
 ---be performed excluding the actual screencapture. This is useful
@@ -122,7 +121,7 @@ end
 M.quickfix = function(qf_opts)
   if qf_opts == nil then
     qf_opts = {
-      toggle = true
+      toggle = true,
     }
   end
   render_fn.render_quickfix(vim.tbl_extend('keep', { cb = vim.cmd.copen }, qf_opts))
