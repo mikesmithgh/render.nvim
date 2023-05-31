@@ -9,7 +9,7 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 [![macos: 11+](https://img.shields.io/static/v1?style=for-the-badge&label=macos&message=11%2b&logo=apple&labelColor=282828&logoColor=968c81&color=968c81)](https://www.apple.com/macos)
 [![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
 
-See [wiki](https://github.com/mikesmithgh/render.nvim/wiki#demos) for all demos
+See [wiki](https://github.com/mikesmithgh/render.nvim/wiki) for detailed information, configuration recipes, and demos.
 
 https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-adc6-a021f3aab661
 
