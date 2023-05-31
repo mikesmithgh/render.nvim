@@ -3,6 +3,7 @@ local render_screencapture = require('render.screencapture')
 local render_fn = require('render.fn')
 local M = {}
 
+---@type RenderOptions
 local opts = {}
 
 ---@param render_opts RenderOptions

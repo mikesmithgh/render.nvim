@@ -13,7 +13,7 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
----@param profile ProfileOptions|string
+---@param profile? ProfileOptions|string
 M.render = function(profile)
   if type(profile) == 'string' then
     local profile_name = profile
@@ -36,7 +36,7 @@ M.render = function(profile)
   vim.fn.jobstart(opts.fn.window_info.cmd(), opts.fn.window_info.opts(out_files, profile))
 end
 
----@param profile ProfileOptions|string
+---@param profile? ProfileOptions|string
 M.dryrun = function(profile)
   if type(profile) == 'string' then
     local profile_name = profile
@@ -49,7 +49,7 @@ end
 ---@field force boolean If true, do not prompt for confirmation
 
 ---Clean output directory and reinstall dependencies
----@param clean_opts CleanOptions
+---@param clean_opts? CleanOptions
 M.clean = function(clean_opts)
   if clean_opts == nil then
     clean_opts = {}
@@ -111,8 +111,10 @@ M.quicklook = function()
   })
 end
 
-M.set_window_info = function(...)
-  render_windowinfo.set_window_info(...)
+---comment
+---@param pid integer
+M.set_window_info = function(pid)
+  render_windowinfo.set_window_info(pid)
 end
 
 return M

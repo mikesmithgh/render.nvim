@@ -2,6 +2,7 @@ local render_fn = require('render.fn')
 local render_api = require('render.api')
 local M = {}
 
+---@type RenderOptions
 local opts = {}
 
 ---@param render_opts RenderOptions

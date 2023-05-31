@@ -1,6 +1,8 @@
 local render_msg = require('render.msg')
 local uv = vim.loop
 local M = {}
+
+---@type RenderOptions
 local opts = {}
 
 ---@param render_opts RenderOptions

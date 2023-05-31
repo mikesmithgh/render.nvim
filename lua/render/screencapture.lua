@@ -4,6 +4,7 @@ local M = {}
 
 local render_constants = require('render.constants')
 
+---@type RenderOptions
 local opts = {}
 
 local function open_countdown_timer(delay)

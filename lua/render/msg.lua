@@ -2,6 +2,7 @@ local render_constants = require('render.constants')
 local render_fn = require('render.fn')
 local M = {}
 
+---@type RenderOptions
 local opts = {}
 
 ---@param render_opts RenderOptions
@@ -9,6 +10,11 @@ M.setup = function(render_opts)
   opts = render_opts
 end
 
+---Display a notification to the user
+---@param msg string Content of the notification to show to the user
+---@param level integer|nil One of the values from |vim.log.levels|
+---@param extra table|nil Optional parameters
+---@ref vim.notify
 M.notify = function(msg, level, extra)
   if
     opts.features.notify

@@ -4,7 +4,8 @@ local render_constants = require('render.constants')
 local render_cache = require('render.cache')
 
 local M = {}
----type RenderOptions
+
+---@type RenderOptions
 local opts = {}
 
 local valid_sha256s = {
@@ -60,6 +61,8 @@ M.pdubs_fpath = function()
   return vim.api.nvim_get_runtime_file(render_constants.pdubs_file, false)[1]
 end
 
+---comment
+---@param pid? integer
 M.set_window_info = function(pid)
   local window_info_cmd = opts.fn.window_info.cmd()
   if pid ~= nil and pid ~= '' then
