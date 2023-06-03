@@ -36,16 +36,16 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 - 🎬 Video format `mov`
 
 ## 🫡 Commands
-| Command             | API `require('render.api')`       | Description                                                                |
-|---------------------|-----------------------------------|----------------------------------------------------------------------------|
-| Render              | `render(string\|table\|nil)`      | Capture image or video recording                                           |                                                                                               
-| RenderDryRun        | `dryrun(string\|table\|nil)`      | Execute render logic without capturing result                              |                                                                                               
-| RenderClean         | `clean(table\|nil)`               | Delete existing captures in output directory and reinstall dependencies    |
-| RenderExplore       | `explore()`                       | Open render output directory in Neovim                                     |
-| RenderQuickfix      | `quickfix()`                      | Open output directory in quickfix window                                   |
-| RenderInterrupt     | `interrupt()`                     | Send interrupt to stop video recoring                                      |
-| RenderQuicklook     | `quicklook()`                     | Open all files in output directory with quick look                         |
-| RenderSetWindowInfo | `set_window_info(integer\|nil)`   | Set the window information to the active Neovim session or by process ID   |
+| Command                         | API                                                   | Description                                                              |
+|---------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
+| `:Render [{profilename}]`       | `require('render.api').render(string\|table\|nil)`    | Capture image or video recording                                         |                                                                                               
+| `:RenderDryRun [{profilename}]` | `require('render.api').dryrun(string\|table\|nil)`    | Execute render logic without capturing result                            |                                                                                               
+| `:RenderClean[!]`               | `require('render.api').clean(table\|nil)`             | Delete existing captures in output directory and reinstall dependencies  |
+| `:RenderExplore`                | `require('render.api').explore()`                     | Open render output directory in Neovim                                   |
+| `:RenderQuickfix[!]`            | `require('render.api').quickfix(table\|nil)`           | Open output directory in quickfix window                                 |
+| `:RenderInterrupt`              | `require('render.api').interrupt()`                   | Send interrupt to stop video recoring                                    |
+| `:RenderQuicklook`              | `require('render.api').quicklook()`                   | Open all files in output directory with quick look                       |
+| `:RenderSetWindowInfo [{pid}]`  | `require('render.api').set_window_info(integer\|nil)` | Set the window information to the active Neovim session or by process ID |
 
 ## ⌨️ Keymapping
 TODO
