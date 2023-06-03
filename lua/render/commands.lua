@@ -47,7 +47,13 @@ M.setup = function(render_opts)
     bang = true,
   })
 
-  vim.api.nvim_create_user_command('RenderQuickfix', render_api.quickfix, {})
+  vim.api.nvim_create_user_command('RenderQuickfix', function(o)
+    render_api.quickfix({
+      toggle = not o.bang,
+    })
+  end, {
+    bang = true,
+  })
 
   vim.api.nvim_create_user_command('RenderQuicklook', render_api.quicklook, {})
 
