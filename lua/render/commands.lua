@@ -11,7 +11,6 @@ local opts = {}
 M.setup = function(render_opts)
   opts = render_opts
 
-
   ---@brief [[
   ---:Render {profilename}  Capture image or video recording.  If {profilename}
   ---                       is empty, it will use the value 'default'.

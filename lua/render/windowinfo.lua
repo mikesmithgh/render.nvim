@@ -32,7 +32,6 @@ M.with_offsets = function(window_info, window_offsets)
   return info
 end
 
-
 ---@class RenderWindowInfo
 ---@field x integer window x position
 ---@field y integer window y position

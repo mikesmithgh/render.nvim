@@ -126,9 +126,9 @@ M.render_quickfix = function(qfopts)
   if populateqf then
     vim.fn.jobstart(
       '(printf "'
-      .. vim.fn.fnamemodify(opts.dirs.output, ':p')
-      .. ' | render.nvim |\n"; '
-      .. '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
+        .. vim.fn.fnamemodify(opts.dirs.output, ':p')
+        .. ' | render.nvim |\n"; '
+        .. '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
       {
         cwd = opts.dirs.output,
         stdout_buffered = true,
