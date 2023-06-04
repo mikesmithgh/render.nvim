@@ -1,3 +1,5 @@
+---@mod render.config Render Configuration
+
 local render_constants = require('render.constants')
 local render_fn = require('render.fn')
 local render_windowinfo = require('render.windowinfo')

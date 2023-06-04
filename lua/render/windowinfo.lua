@@ -32,6 +32,17 @@ M.with_offsets = function(window_info, window_offsets)
   return info
 end
 
+
+---@class RenderWindowInfo
+---@field x integer window x position
+---@field y integer window y position
+---@field width integer window width
+---@field height integer window height
+---@field id integer window number
+
+---comment
+---@param json string
+---@return RenderWindowInfo
 M.as_window_info = function(json)
   if json == nil or next(json) == nil or json == '' or json[1] == '' then
     opts.notify.msg('error getting window info', vim.log.levels.ERROR, {})
@@ -303,7 +314,7 @@ M.cmd_opts = function(out_files, profile)
               )
             end
             render_cache.job_ids[job_id] = {
-              window_info = window_info_result,
+              window_info = window_info,
               out_files = out_files,
               timer = video_timer,
             }

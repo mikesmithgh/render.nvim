@@ -55,6 +55,20 @@ M.open_cmd = function()
   return cmd[M.os()]
 end
 
+---@class RenderOutputFiles
+---@field file string base output filepath
+---@field png string output png filepath
+---@field psd string output psd filepath
+---@field bmp string output bmp filepath
+---@field tga string output tga filepath
+---@field jpg string output jpg filepath
+---@field gif string output gif filepath
+---@field pdf string output pdf filepath
+---@field tiff string output tifffilepath
+---@field mov string output movfilepath
+
+---comment
+---@return RenderOutputFiles
 M.new_output_files = function()
   local cur_name = vim.fn.expand('%:t')
   if cur_name == nil or cur_name == '' then
@@ -112,9 +126,9 @@ M.render_quickfix = function(qfopts)
   if populateqf then
     vim.fn.jobstart(
       '(printf "'
-        .. vim.fn.fnamemodify(opts.dirs.output, ':p')
-        .. ' | render.nvim |\n"; '
-        .. '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
+      .. vim.fn.fnamemodify(opts.dirs.output, ':p')
+      .. ' | render.nvim |\n"; '
+      .. '( [ $(ls -A | wc -l) -eq 0 ] || stat -f "%m %-N | %Sm" -t "%Y-%m-%dT%H:%M:%S |" * | sort --reverse --numeric-sort | cut -d" " -f2-)) | column -t',
       {
         cwd = opts.dirs.output,
         stdout_buffered = true,
