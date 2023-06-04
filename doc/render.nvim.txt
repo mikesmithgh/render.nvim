@@ -62,13 +62,13 @@ FEATURES                                    *render.nvim-render.nvim-features*
   :RenderExplore                require('render.api').explore()                       Open render output directory in
                                                                                       Neovim
 
-  :RenderQuickfix[!]            require('render.api').quickfix(table\|nil)            Open output directory in
+  :RenderQuickfix[!]            require('render.api').quickfix(table\|nil)            Toggle open output directory in
                                                                                       quickfix window
 
   :RenderInterrupt              require('render.api').interrupt()                     Send interrupt to stop video
                                                                                       recoring
 
-  :RenderQuicklook              require('render.api').quicklook()                     Toggle open all files in output
+  :RenderQuicklook              require('render.api').quicklook()                     Open all files in output
                                                                                       directory with quick look
 
   :RenderSetWindowInfo {pid}    require('render.api').set_window_info(integer\|nil)   Set the window information to
