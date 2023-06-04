@@ -68,7 +68,7 @@ FEATURES                                    *render.nvim-render.nvim-features*
   :RenderInterrupt              require('render.api').interrupt()                     Send interrupt to stop video
                                                                                       recoring
 
-  :RenderQuicklook              require('render.api').quicklook()                     Open all files in output
+  :RenderQuicklook              require('render.api').quicklook()                     Toggle open all files in output
                                                                                       directory with quick look
 
   :RenderSetWindowInfo {pid}    require('render.api').set_window_info(integer\|nil)   Set the window information to
