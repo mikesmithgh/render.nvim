@@ -5,7 +5,7 @@ Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
   - Features                                |render.nvim-render.nvim-features|
-  - 🫡 Commands                      |render.nvim-render.nvim-🫡-commands|
+  - 🫡 Commands and Lua API|render.nvim-render.nvim-🫡-commands-and-lua-api|
   - Keymappings                          |render.nvim-render.nvim-keymappings|
   - Configuration                      |render.nvim-render.nvim-configuration|
   - 🟰 Screencapture equivalent|render.nvim-render.nvim-🟰-screencapture-equivalent|
@@ -45,7 +45,7 @@ FEATURES                                    *render.nvim-render.nvim-features*
 - Video format `mov`
 
 
-🫡 COMMANDS                          *render.nvim-render.nvim-🫡-commands*
+🫡 COMMANDS AND LUA API  *render.nvim-render.nvim-🫡-commands-and-lua-api*
 
   --------------------------------------------------------------------------------------------------------------------
   Command                       API                                                   Description
@@ -78,27 +78,40 @@ FEATURES                                    *render.nvim-render.nvim-features*
 
 KEYMAPPINGS                              *render.nvim-render.nvim-keymappings*
 
-  --------------------------------------------------------------------------------------------------
-  Keymap          API                                               Description
-  --------------- ------------------------------------------------- --------------------------------
-  <f13>           require('render.api').render('default')           Capture image or video recording
-                                                                    with default profile
+Keymappings are enabled by default. If you would like to disable all
+keymappings, set the configuration `features.keymaps` to `false`.
 
-  <leader><f13>   require('render.api').interrupt()                 Send interrupt to stop video
-                                                                    recoring
+>lua
+    {
+      features = {
+        keymaps = false,
+      },
+    }
+<
 
-  <c-f13>         require('render.api').quickfix({toggle = true})   Toggle open output directory in
-                                                                    quickfix window
+If you would like to override the keymappings defined on setup, then set the
+configuration
 
-  <cr>            require('render.api').explore()                   Open render output directory in
-                                                                    Neovim
+>lua
+    fn.keymapsetup = function() 
+      -- custom keymaps
+    end
+<
 
-  <c-w><cr>       require('render.api').quickfix(table\|nil)        Toggle open output directory in
-                                                                    quickfix window
+The following table lists the default keymappings. `<f13>` is typically the
+print screen key, but this may vary depending on your keyboard. `<f13` is
+equivalent to `<shift-f1>`. | Keymaps | Mode | | Description
+|———————————|——————————————————-|————————————————————————–|
+| `<f13>` | All | Capture image or video recording with default profile.
+Equivalent to `require('render.api').render('default')` | | `<leader><f13>` |
+Normal | Send interrupt to stop video recoring. Equivalent to
+`require('render.api').interrupt()` | | `<c-f13>` | Normal | Toggle open output
+directory in quickfix window. Equivalent to
+`require('render.api').quickfix({toggle = true})` | | `<cr>`, `<c-w><cr>` |
+Normal (Quickfix window) | Open the quickfix item using the command defined in
+configuration `fn.open_cmd` | | `<tab>` | Normal (Quickfix window) | Open the
+quickfix item using quick look command `qlmanage` |
 
-  <tab>           require('render.api').interrupt()                 Send interrupt to stop video
-                                                                    recoring
-  --------------------------------------------------------------------------------------------------
 
 CONFIGURATION                          *render.nvim-render.nvim-configuration*
 
