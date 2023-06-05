@@ -1,5 +1,5 @@
+---@mod render.keymaps Render Keymaps
 local render_api = require('render.api')
-local render_screencapture = require('render.screencapture')
 local render_fn = require('render.fn')
 local M = {}
 

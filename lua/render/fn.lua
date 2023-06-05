@@ -231,7 +231,7 @@ M.quicklook_qfitem = function(keymap)
     local items = vim.fn.getqflist({ items = true }).items
     local text = items[line_index].text
     local fname = text:gmatch('%S+')()
-    if line_index == 1 then -- first like is the output directory
+    if line_index == 1 then -- first line is the output directory
       local open_cmd = opts.fn.open_cmd()
       if open_cmd ~= nil then
         table.insert(open_cmd, fname)

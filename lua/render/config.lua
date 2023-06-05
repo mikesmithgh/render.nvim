@@ -36,7 +36,7 @@ local standard_opts = {
   notify = {
     level = vim.log.levels.INFO,
     msg = render_msg.notify,
-    verbose = true,
+    verbose = false,
   },
   ---@class Functions
   ---@field window_info FunctionsWindowInfo
