@@ -36,15 +36,15 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 - 🎬 Video format `mov`
 
 ## 🫡 Commands and Lua API
-| Command                         | API                                                   | Description                                                              |
-|---------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
+| Command                       | API                                                   | Description                                                              |
+| ----------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------ |
 | `:Render {profilename}`       | `require('render.api').render(string\|table\|nil)`    | Capture image or video recording                                         |                                                                                               
 | `:RenderDryRun {profilename}` | `require('render.api').dryrun(string\|table\|nil)`    | Execute render logic without capturing result                            |                                                                                               
-| `:RenderClean[!]`               | `require('render.api').clean(table\|nil)`             | Delete existing captures in output directory and reinstall dependencies  |
-| `:RenderExplore`                | `require('render.api').explore()`                     | Open render output directory in Neovim                                   |
-| `:RenderQuickfix[!]`            | `require('render.api').quickfix(table\|nil)`           | Toggle open output directory in quickfix window                                 |
-| `:RenderInterrupt`              | `require('render.api').interrupt()`                   | Send interrupt to stop video recoring                                    |
-| `:RenderQuicklook`              | `require('render.api').quicklook()`                   | Open all files in output directory with quick look                       |
+| `:RenderClean[!]`             | `require('render.api').clean(table\|nil)`             | Delete existing captures in output directory and reinstall dependencies  |
+| `:RenderExplore`              | `require('render.api').explore()`                     | Open render output directory in Neovim                                   |
+| `:RenderQuickfix[!]`          | `require('render.api').quickfix(table\|nil)`          | Toggle open output directory in quickfix window                          |
+| `:RenderInterrupt`            | `require('render.api').interrupt()`                   | Send interrupt to stop video recoring                                    |
+| `:RenderQuicklook`            | `require('render.api').quicklook()`                   | Open all files in output directory with quick look                       |
 | `:RenderSetWindowInfo {pid}`  | `require('render.api').set_window_info(integer\|nil)` | Set the window information to the active Neovim session or by process ID |
 
 ## ⌨️ Keymappings
@@ -58,26 +58,31 @@ Keymappings are enabled by default. If you would like to disable all keymappings
 ```
 If you would like to override the keymappings defined on setup, then set the configuration 
 ```lua
-fn.keymapsetup = function() 
-  -- custom keymaps
-end
+{
+  fn = {
+    keymap_setup = function() 
+      -- custom keymaps
+    end,
+  },
+}
 ```
 The following table lists the default keymappings. 
-`<f13>` is typically the print screen key, but this may vary depending on your keyboard.  `<f13` is equivalent to `<shift-f1>`.
-| Keymaps   | Mode |                      | Description
-|---------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
-| `<f13>`  | All     | Capture image or video recording with default profile. Equivalent to `require('render.api').render('default')` |
-| `<leader><f13>` | Normal |  Send interrupt to stop video recoring. Equivalent to `require('render.api').interrupt()`                   |
-| `<c-f13>`       | Normal | Toggle open output directory in quickfix window. Equivalent to `require('render.api').quickfix({toggle = true})`  |
-| `<cr>`, `<c-w><cr>`         | Normal (Quickfix window)  | Open the quickfix item using the command defined in configuration `fn.open_cmd` |
-| `<tab>`         | Normal (Quickfix window)  | Open the quickfix item using quick look command `qlmanage` | 
+`<f13>` is typically the print screen key, but this may vary depending on your keyboard.  `<f13>` is equivalent to `<shift-f1>`.
+
+| Keymaps             | Mode                     | Description                                                                                                      |
+| ------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `<f13>`             | All                      | Capture image or video recording with default profile. Equivalent to `require('render.api').render('default')`   |
+| `<leader><f13>`     | Normal                   | Send interrupt to stop video recoring. Equivalent to `require('render.api').interrupt()`                         |
+| `<c-f13>`           | Normal                   | Toggle open output directory in quickfix window. Equivalent to `require('render.api').quickfix({toggle = true})` |
+| `<cr>`, `<c-w><cr>` | Normal (Quickfix window) | Open the quickfix item using the command defined in configuration `fn.open_cmd`                                  |
+| `<tab>`             | Normal (Quickfix window) | Open the quickfix item using quick look command `qlmanage`                                                       |
 
 ## ✍️ Configuration
 TODO
 
 ## 🟰 Screencapture equivalent
-| render.nvim option                      | argument       | description                                                     |
-|-----------------------------------------|----------------|-----------------------------------------------------------------|
+| Option                                  | Argument       | Description                                                     |
+| --------------------------------------- | -------------- | --------------------------------------------------------------- |
 | `features.sound_effect = false`         | `-x`           | Do not play sounds                                              |
 | `profile.delay = <seconds>`             | `-T<seconds>`  | Take the capture after a delay of <seconds>                     |
 | `profile.filetype = '<format>'`         | `-t<format>`   | Image format to create, default is png                          |
@@ -93,7 +98,7 @@ TODO
 
 ### Prerequisites and Dependencies
 | Name                                                      | Description                                                  | Installation Method       |
-|-----------------------------------------------------------|--------------------------------------------------------------|---------------------------|
+| --------------------------------------------------------- | ------------------------------------------------------------ | ------------------------- |
 | [Neovim v0.9+](https://github.com/neovim/neovim/releases) | Neovim version 0.9 or greater                                | User installed            |
 | [screencapture](https://ss64.com/osx/screencapture.html)  | Captures image and video of the whole, or part of the screen | Included on Mac           |
 | [qlmanage](https://ss64.com/osx/qlmanage.html)            | Displays quick look previews                                 | Included on Mac           |
