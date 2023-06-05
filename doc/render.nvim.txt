@@ -47,9 +47,9 @@ FEATURES                                    *render.nvim-render.nvim-features*
 
 🫡 COMMANDS AND LUA API  *render.nvim-render.nvim-🫡-commands-and-lua-api*
 
-  --------------------------------------------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------------
   Command                       API                                                   Description
-  ----------------------------- ----------------------------------------------------- --------------------------------
+  ----------------------------- ----------------------------------------------------- ---------------------------------
   :Render {profilename}         require('render.api').render(string\|table\|nil)      Capture image or video recording
 
   :RenderDryRun {profilename}   require('render.api').dryrun(string\|table\|nil)      Execute render logic without
@@ -71,10 +71,10 @@ FEATURES                                    *render.nvim-render.nvim-features*
   :RenderQuicklook              require('render.api').quicklook()                     Open all files in output
                                                                                       directory with quick look
 
-  :RenderSetWindowInfo {pid}    require('render.api').set_window_info(integer\|nil)   Set the window information to
-                                                                                      the active Neovim session or by
+  :RenderSetWindowInfo {pid}    require('render.api').set_window_info(integer\|nil)   Set the window information to the
+                                                                                      active Neovim session or by
                                                                                       process ID
-  --------------------------------------------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------------
 
 KEYMAPPINGS                              *render.nvim-render.nvim-keymappings*
 
@@ -93,25 +93,41 @@ If you would like to override the keymappings defined on setup, then set the
 configuration
 
 >lua
-    fn.keymapsetup = function() 
-      -- custom keymaps
-    end
+    {
+      fn = {
+        keymap_setup = function() 
+          -- custom keymaps
+        end,
+      },
+    }
 <
 
 The following table lists the default keymappings. `<f13>` is typically the
-print screen key, but this may vary depending on your keyboard. `<f13` is
-equivalent to `<shift-f1>`. | Keymaps | Mode | | Description
-|———————————|——————————————————-|————————————————————————–|
-| `<f13>` | All | Capture image or video recording with default profile.
-Equivalent to `require('render.api').render('default')` | | `<leader><f13>` |
-Normal | Send interrupt to stop video recoring. Equivalent to
-`require('render.api').interrupt()` | | `<c-f13>` | Normal | Toggle open output
-directory in quickfix window. Equivalent to
-`require('render.api').quickfix({toggle = true})` | | `<cr>`, `<c-w><cr>` |
-Normal (Quickfix window) | Open the quickfix item using the command defined in
-configuration `fn.open_cmd` | | `<tab>` | Normal (Quickfix window) | Open the
-quickfix item using quick look command `qlmanage` |
+print screen key, but this may vary depending on your keyboard. `<f13>` is
+equivalent to `<shift-f1>`.
 
+  -------------------------------------------------------------------------------
+  Keymaps         Mode        Description
+  --------------- ----------- ---------------------------------------------------
+  <f13>           All         Capture image or video recording with default
+                              profile. Equivalent to
+                              require('render.api').render('default')
+
+  <leader><f13>   Normal      Send interrupt to stop video recoring. Equivalent
+                              to require('render.api').interrupt()
+
+  <c-f13>         Normal      Toggle open output directory in quickfix window.
+                              Equivalent to
+                              require('render.api').quickfix({toggle = true})
+
+  <cr>, <c-w><cr> Normal      Open the quickfix item using the command defined in
+                  (Quickfix   configuration fn.open_cmd
+                  window)     
+
+  <tab>           Normal      Open the quickfix item using quick look command
+                  (Quickfix   qlmanage
+                  window)     
+  -------------------------------------------------------------------------------
 
 CONFIGURATION                          *render.nvim-render.nvim-configuration*
 
@@ -120,15 +136,14 @@ TODO
 
 🟰 SCREENCAPTURE EQUIVALENT*render.nvim-render.nvim-🟰-screencapture-equivalent*
 
-  -------------------------------------------------------------------------------------------
-  render.nvim option                      argument      description
-  --------------------------------------- ------------- -------------------------------------
+  --------------------------------------------------------------------------------------------
+  Option                                  Argument      Description
+  --------------------------------------- ------------- --------------------------------------
   features.sound_effect = false           -x            Do not play sounds
 
   profile.delay = <seconds>               -T<seconds>   Take the capture after a delay of
 
-  profile.filetype = '<format>'           -t<format>    Image format to create, default is
-                                                        png
+  profile.filetype = '<format>'           -t<format>    Image format to create, default is png
 
   profile.image_capture_mode = 'bounds'   -R<x,y,w,h>   Capture screen rect
 
@@ -144,35 +159,34 @@ TODO
 
   profile.type = 'video'                  -v            Capture video recording of the screen
 
-  profile.window_shadow = false           -o            In window capture mode, do not
-                                                        capture the shadow of the window
-  -------------------------------------------------------------------------------------------
+  profile.window_shadow = false           -o            In window capture mode, do not capture
+                                                        the shadow of the window
+  --------------------------------------------------------------------------------------------
 
 INSTALLATION                            *render.nvim-render.nvim-installation*
 
 
 PREREQUISITES AND DEPENDENCIES ~
 
-  -------------------------------------------------------------------------
-  Name                         Description                   Installation
-                                                             Method
-  ---------------------------- ----------------------------- --------------
-  Neovim v0.9+                 Neovim version 0.9 or greater User installed
+  --------------------------------------------------------------------------
+  Name                         Description                    Installation
+                                                              Method
+  ---------------------------- ------------------------------ --------------
+  Neovim v0.9+                 Neovim version 0.9 or greater  User installed
 
-  screencapture                Captures image and video of   Included on
-                               the whole, or part of the     Mac
-                               screen                        
+  screencapture                Captures image and video of    Included on
+                               the whole, or part of the      Mac
+                               screen                         
 
-  qlmanage                     Displays quick look previews  Included on
-                                                             Mac
+  qlmanage                     Displays quick look previews   Included on
+                                                              Mac
 
-  pdubs                        Retreives window information  Downloaded by
-                               for the Neovim session        render.nvim
+  pdubs                        Retreives window information   Downloaded by
+                               for the Neovim session         render.nvim
 
-  curl, shasum, tar            Required to download,         Included on
-                               extract, and verify pdubs     Mac
-                               binary                        
-  -------------------------------------------------------------------------
+  curl, shasum, tar            Required to download, extract, Included on
+                               and verify pdubs binary        Mac
+  --------------------------------------------------------------------------
 
 USING LAZY.NVIM ~
 
