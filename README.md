@@ -47,8 +47,15 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 | `:RenderQuicklook`              | `require('render.api').quicklook()`                   | Open all files in output directory with quick look                       |
 | `:RenderSetWindowInfo {pid}`  | `require('render.api').set_window_info(integer\|nil)` | Set the window information to the active Neovim session or by process ID |
 
-## ⌨️ Keymapping
-TODO
+## ⌨️ Keymappings
+| Keymap                         | API                                                   | Description                                                              |
+|---------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------|
+| `<f13>`       | `require('render.api').render('default')`    | Capture image or video recording with default profile                                        |
+| `<leader><f13>` | `require('render.api').interrupt()`                   | Send interrupt to stop video recoring                                    |
+| `<c-f13>`               | `require('render.api').quickfix({toggle = true})`           | Toggle open output directory in quickfix window                                 |
+| `<cr>`                | `require('render.api').explore()`                     | Open render output directory in Neovim                                   |
+| `<c-w><cr>`            | `require('render.api').quickfix(table\|nil)`           | Toggle open output directory in quickfix window                                 |
+| `<tab>`              | `require('render.api').interrupt()`                   | Send interrupt to stop video recoring                                    |
 
 ## ✍️ Configuration
 TODO
