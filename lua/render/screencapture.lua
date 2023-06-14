@@ -97,7 +97,17 @@ M.cmd = function(window_info, out_files, profile)
 
   -- video does not support capture by window ID
   if is_video or profile.image_capture_mode == capturemode.bounds then
-    table.insert(screencapture_cmd, '-R' .. window_info.x .. ',' .. window_info.y .. ',' .. window_info.width .. ',' .. window_info.height)
+    table.insert(
+      screencapture_cmd,
+      '-R'
+        .. window_info.x
+        .. ','
+        .. window_info.y
+        .. ','
+        .. window_info.width
+        .. ','
+        .. window_info.height
+    )
   elseif profile.image_capture_mode == capturemode.window then
     table.insert(screencapture_cmd, '-l' .. window_info.id)
   else
