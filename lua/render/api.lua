@@ -20,7 +20,7 @@ end
 ---be |ProfileOptions| or the name of a profile that exists in
 ---|RenderOptions|. If no profile is given, then the `default`
 ---profile will be used.
----@param profile ProfileOptions|string|nil
+---@param profile RenderProfileOptions|string|nil
 M.render = function(profile)
   if type(profile) == 'string' then
     local profile_name = profile
@@ -47,7 +47,7 @@ end
 ---Perform a dryrun with the given profile. All operations will
 ---be performed excluding the actual screencapture. This is useful
 ---for troublehsooting and debugging.
----@param profile ProfileOptions|string|nil
+---@param profile RenderProfileOptions|string|nil
 ---@see render.api.render
 M.dryrun = function(profile)
   if type(profile) == 'string' then

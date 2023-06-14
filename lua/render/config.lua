@@ -83,7 +83,7 @@ local standard_opts = {
     output = vim.fn.stdpath('data') .. '/' .. render_constants.shortname .. '/output',
   },
   profiles = vim.tbl_deep_extend('force', {
-    ---@class ProfileOptions
+    ---@class RenderProfileOptions
     ---@field mode 'save' | 'clipboard' | 'preview' | 'open'
     ---@field image_capture_mode 'bounds' | 'window'
     ---@field capture_window_info_mode string | 'frontmost' | 'frontmost_on_startup' | 'manual'

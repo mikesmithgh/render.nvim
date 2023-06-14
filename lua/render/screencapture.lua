@@ -69,19 +69,14 @@ M.setup = function(render_opts)
 end
 
 ---comment
----@param wid integer
----@param x integer
----@param y integer
----@param width integer
----@param height integer
----@param out_files table
----@param profile ProfileOptions
----@return nil
-M.cmd = function(wid, x, y, width, height, out_files, profile)
+---@param window_info RenderWindowInfo
+---@param out_files RenderOutputFiles
+---@param profile RenderProfileOptions
+---@return table|nil
+M.cmd = function(window_info, out_files, profile)
   local screencapture_cmd = { 'screencapture' }
   local mode = render_constants.screencapture.mode
   local capturemode = render_constants.screencapture.capturemode
-  local type = render_constants.screencapture.type
   local filetype = profile.filetype
   local is_video = vim.tbl_contains(render_constants.video_types, filetype)
 
@@ -102,9 +97,9 @@ M.cmd = function(wid, x, y, width, height, out_files, profile)
 
   -- video does not support capture by window ID
   if is_video or profile.image_capture_mode == capturemode.bounds then
-    table.insert(screencapture_cmd, '-R' .. x .. ',' .. y .. ',' .. width .. ',' .. height)
+    table.insert(screencapture_cmd, '-R' .. window_info.x .. ',' .. window_info.y .. ',' .. window_info.width .. ',' .. window_info.height)
   elseif profile.image_capture_mode == capturemode.window then
-    table.insert(screencapture_cmd, '-l' .. wid)
+    table.insert(screencapture_cmd, '-l' .. window_info.id)
   else
     opts.notify.msg('unrecognized capturemode options', vim.log.levels.ERROR, profile)
     return nil
@@ -147,7 +142,17 @@ M.cmd = function(wid, x, y, width, height, out_files, profile)
     end, out_files)
   end
 
-  if profile.type == nil or profile.type == type.image then
+  if is_video then
+    if profile.show_clicks then
+      -- show clicks in video recording mode
+      table.insert(screencapture_cmd, '-k')
+    end
+
+    return vim.list_extend(screencapture_cmd, {
+      '-v',
+      out_files.mov,
+    })
+  else
     if filetype == nil or filetype == render_constants.png then
       return vim.list_extend(screencapture_cmd, {
         '-tpng',
@@ -205,24 +210,12 @@ M.cmd = function(wid, x, y, width, height, out_files, profile)
     end
   end
 
-  if is_video then
-    if profile.show_clicks then
-      -- show clicks in video recording mode
-      table.insert(screencapture_cmd, '-k')
-    end
-
-    return vim.list_extend(screencapture_cmd, {
-      '-v',
-      out_files.mov,
-    })
-  end
-
   opts.notify.msg('unrecognized mode options', vim.log.levels.ERROR, profile)
   return nil
 end
 
 ---comment
----@param profile ProfileOptions
+---@param profile RenderProfileOptions
 ---@param screencapture_cmd table
 ---@return string
 local function screencapture_cmd_tostring(profile, screencapture_cmd)
@@ -248,9 +241,9 @@ local function screencapture_cmd_tostring(profile, screencapture_cmd)
 end
 
 ---comment
----@param out_files table
----@param profile ProfileOptions
----@param screencapture_cmd string
+---@param out_files RenderOutputFiles
+---@param profile RenderProfileOptions
+---@param screencapture_cmd table
 ---@return table
 M.cmd_opts = function(out_files, profile, screencapture_cmd)
   local mode = render_constants.screencapture.mode

@@ -1,8 +1,11 @@
 ---@mod render.cache Render Cache
 
+---@class RenderCacheCountdownTimer
+---@field count integer The value of the countdown timer
+
 ---@class RenderCache
 ---@field job_ids table<integer, RenderCacheJob> key is screencapture job id, value is job information
----@field timers table<integer, integer> key is buffer handle, value is value of countdown timer
+---@field timers table<integer, RenderCacheCountdownTimer> key is buffer handle, value is value of countdown timer
 ---@field window RenderWindowInfo window information for current neovim instance
 local M = {
   ---@class RenderCacheJob

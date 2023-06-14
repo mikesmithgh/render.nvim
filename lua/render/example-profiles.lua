@@ -13,7 +13,7 @@ return {
       bottom = 0,
     },
   },
-  ---@type ProfileOptions
+  ---@type RenderProfileOptions
   video = {
     mode = render_constants.screencapture.mode.save,
     image_capture_mode = render_constants.screencapture.capturemode.bounds,

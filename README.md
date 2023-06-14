@@ -47,7 +47,7 @@ https://github.com/mikesmithgh/render.nvim/assets/10135646/b0398ba7-ae7d-4551-ad
 | `:RenderQuicklook`            | `require('render.api').quicklook()`                   | Open all files in output directory with quick look                       |
 | `:RenderSetWindowInfo {pid}`  | `require('render.api').set_window_info(integer\|nil)` | Set the window information to the active Neovim session or by process ID |
 
-## ⌨️ Keymappings
+## ⌨️  Keymappings
 Keymappings are enabled by default. If you would like to disable all keymappings, set the configuration `features.keymaps` to `false`.
 ```lua
 {
@@ -78,9 +78,27 @@ The following table lists the default keymappings.
 | `<tab>`             | Normal (Quickfix window) | Open the quickfix item using quick look command `qlmanage`                                                       |
 
 ## ✍️ Configuration
-TODO
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| features.notify | boolean | |
+| features.keymaps | boolean | |
+| features.flash | boolean | |
+| features.auto_open | boolean | |
+| features.auto_preview | boolean | |
+| features.sound_effect | boolean | |
+| notify.level | string | |
+| notify.msg | fun(msg, level, extra) | |
+| notify.verbose | boolean | |
+| fn.window_info.cmd | fun(): string | |
+| fn.window_info.opts | fun(RenderOutputFiles, RenderProfileOptions): table | |
+| fn.screencapture.cmd | fun(RenderWindowInfo, RenderOutputFiles, ProfileOptions): table\|nil | |
+| fn.screencapture.opts | fun(RenderOutputFiles, RenderProfileOptions, table): table | |
+TODO: left off here
+| fn.screencapture_location.cmd | | |
+| fn.screencapture_location.opts | | |
 
 ## 🟰 Screencapture equivalent
+The following table lists equivalent render.nvim options to the underlying `screencapture` command.
 | Option                                  | Argument       | Description                                                     |
 | --------------------------------------- | -------------- | --------------------------------------------------------------- |
 | `features.sound_effect = false`         | `-x`           | Do not play sounds                                              |

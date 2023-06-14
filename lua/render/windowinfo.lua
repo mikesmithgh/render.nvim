@@ -213,7 +213,7 @@ end
 
 ---comment
 ---@param render_opts RenderOptions
----@param profile? ProfileOptions
+---@param profile? RenderProfileOptions
 M.setup = function(render_opts, profile)
   opts = render_opts
 
@@ -230,13 +230,13 @@ M.setup = function(render_opts, profile)
   end
 end
 
-M.cmd = function()
-  return render_constants.pdubs
-end
+---comment
+---@return string
+M.cmd = M.pdubs_fpath
 
 ---comment
----@param out_files table
----@param profile ProfileOptions
+---@param out_files RenderOutputFiles
+---@param profile RenderProfileOptions
 ---@return table
 M.cmd_opts = function(out_files, profile)
   local screencapture = render_constants.screencapture
@@ -246,9 +246,9 @@ M.cmd_opts = function(out_files, profile)
     stdout_buffered = true,
     stderr_buffered = true,
     cwd = M.pdubs_dir(),
-    on_stdout = function(_, window_info_result)
-      local window_info = M.as_window_info(window_info_result)
-      if window_info == nil then
+    on_stdout = function(_, result)
+      local window_info_result = M.as_window_info(result)
+      if window_info_result == nil then
         return
       end
       local wid = render_cache.window.id
@@ -257,14 +257,14 @@ M.cmd_opts = function(out_files, profile)
       local width = render_cache.window.width
       local height = render_cache.window.height
       if profile.capture_window_info_mode == screencapture.window_info_mode.frontmost then
-        wid = window_info.id
-        x = window_info.x
-        y = window_info.y
-        width = window_info.width
-        height = window_info.height
+        wid = window_info_result.id
+        x = window_info_result.x
+        y = window_info_result.y
+        width = window_info_result.width
+        height = window_info_result.height
       end
       if wid == nil or x == nil or y == nil or width == nil or height == nil then
-        opts.notify.msg('error window information is nil', vim.log.levels.ERROR, window_info_result)
+        opts.notify.msg('error window information is nil', vim.log.levels.ERROR, result)
         return
       end
       -- TODO: clean this up
@@ -277,13 +277,15 @@ M.cmd_opts = function(out_files, profile)
       if window_with_offsets == nil then
         return
       end
-      x = window_with_offsets.x
-      y = window_with_offsets.y
-      width = window_with_offsets.width
-      height = window_with_offsets.height
-
-      local screencapture_cmd =
-        opts.fn.screencapture.cmd(wid, x, y, width, height, out_files, profile)
+      -- TODO: could probably improve this code
+      local window_info = {
+        id = wid,
+        x = window_with_offsets.x,
+        y = window_with_offsets.y,
+        width = window_with_offsets.width,
+        height = window_with_offsets.height,
+      }
+      local screencapture_cmd = opts.fn.screencapture.cmd(window_info, out_files, profile)
       if screencapture_cmd ~= nil then
         local capture_delay = 0
 
@@ -313,7 +315,7 @@ M.cmd_opts = function(out_files, profile)
               )
             end
             render_cache.job_ids[job_id] = {
-              window_info = window_info,
+              window_info = window_info_result,
               out_files = out_files,
               timer = video_timer,
             }
