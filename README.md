@@ -12,9 +12,8 @@ Neovim plugin to take screenshots of your Neovim session.
 
 <!-- panvimdoc-ignore-end -->
 
->:camera::warning::camera: This project is still a work in progress and may have breaking changes :camera::warning::camera:
-
-This plugin is under early development. If you have any ideas, feedback, or bugs please open an issue!
+> [!WARNING]  
+> This project is still a work in progress and not considered stable
 
 <!-- panvimdoc-ignore-start -->
 
