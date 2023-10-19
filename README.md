@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/10135646/225309637-0c194a45-2e37-44fc-9045-610044cdbd90.png" alt="rendersquirrel" style="width: 25%" align="right" />
+<img src="./assets/squirrel.png" alt="render of a squirrel with a camera" style="width: 25%" align="right" />
 
 # 📸 render.nvim
 Neovim plugin to take screenshots of your Neovim session.
