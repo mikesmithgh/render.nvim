@@ -1,21 +1,20 @@
-*render.nvim.txt*           For NVIM v0.9+           Last change: 2023 June 05
+*render.nvim.txt*           For NVIM v0.9+          Last change: 2024 April 22
 
 ==============================================================================
 Table of Contents                              *render.nvim-table-of-contents*
 
 1. render.nvim                                       |render.nvim-render.nvim|
   - Features                                |render.nvim-render.nvim-features|
-  - 🫡 Commands and Lua API|render.nvim-render.nvim-🫡-commands-and-lua-api|
+  - Commands and Lua API        |render.nvim-render.nvim-commands-and-lua-api|
   - Keymappings                          |render.nvim-render.nvim-keymappings|
   - Configuration                      |render.nvim-render.nvim-configuration|
-  - 🟰 Screencapture equivalent|render.nvim-render.nvim-🟰-screencapture-equivalent|
+  - Screencapture equivalent|render.nvim-render.nvim-screencapture-equivalent|
   - Installation                        |render.nvim-render.nvim-installation|
   - How does it work?              |render.nvim-render.nvim-how-does-it-work?|
   - Supported OS versions      |render.nvim-render.nvim-supported-os-versions|
   - Privacy & Security            |render.nvim-render.nvim-privacy-&-security|
   - Ackowledgements                  |render.nvim-render.nvim-ackowledgements|
-
-
+2. Links                                                   |render.nvim-links|
 
 ==============================================================================
 1. render.nvim                                       *render.nvim-render.nvim*
@@ -45,7 +44,7 @@ FEATURES                                    *render.nvim-render.nvim-features*
 - Video format `mov`
 
 
-🫡 COMMANDS AND LUA API  *render.nvim-render.nvim-🫡-commands-and-lua-api*
+COMMANDS AND LUA API            *render.nvim-render.nvim-commands-and-lua-api*
 
   ---------------------------------------------------------------------------------------------------------------------
   Command                       API                                                   Description
@@ -131,37 +130,64 @@ equivalent to `<shift-f1>`.
 
 CONFIGURATION                          *render.nvim-render.nvim-configuration*
 
-TODO
+  -----------------------------------------------------------------------------------
+  Property                 Type                     Description
+  ------------------------ ------------------------ ---------------------------------
+  features.notify          boolean                  
+
+  features.keymaps         boolean                  
+
+  features.flash           boolean                  
+
+  features.auto_open       boolean                  
+
+  features.auto_preview    boolean                  
+
+  features.sound_effect    boolean                  
+
+  notify.level             string                   
+
+  notify.msg               fun(msg, level, extra)   
+
+  notify.verbose           boolean                  
+
+  fn.window_info.cmd       fun(): string            
+
+  fn.window_info.opts      fun(RenderOutputFiles,   
+                           RenderProfileOptions):   
+                           table                    
+
+  fn.screencapture.cmd     fun(RenderWindowInfo,    
+                           RenderOutputFiles,       
+                           ProfileOptions):         
+                           table|nil                
+
+  fn.screencapture.opts    fun(RenderOutputFiles,   
+                           RenderProfileOptions,    
+                           table): table            
+  -----------------------------------------------------------------------------------
+TODO: left off here | fn.screencapture_location.cmd | | | |
+fn.screencapture_location.opts | | |
 
 
-🟰 SCREENCAPTURE EQUIVALENT*render.nvim-render.nvim-🟰-screencapture-equivalent*
+SCREENCAPTURE EQUIVALENT    *render.nvim-render.nvim-screencapture-equivalent*
 
-  --------------------------------------------------------------------------------------------
-  Option                                  Argument      Description
-  --------------------------------------- ------------- --------------------------------------
-  features.sound_effect = false           -x            Do not play sounds
+The following table lists equivalent render.nvim options to the underlying
+`screencapture` command. | Option | Argument | Description | |
+————————————— | ————– |
+————————————————————— | |
+`features.sound_effect = false` | `-x` | Do not play sounds | | `profile.delay
+= <seconds>` | `-T<seconds>` | Take the capture after a delay of | |
+`profile.filetype = '<format>'` | `-t<format>` | Image format to create,
+default is png | | `profile.image_capture_mode = 'bounds'` | `-R<x,y,w,h>` |
+Capture screen rect | | `profile.image_capture_mode = 'window'` | `-l<id>` |
+Capture window with | | `profile.mode = 'clipboard'` | `-c` | Force screen
+capture to go to the clipboard | | `profile.mode = 'preview'` | `-u` | Present
+UI after screencapture is complete | | `profile.show_clicks = true` | `-k` |
+Show clicks in video recording mode | | `profile.type = 'video'` | `-v` |
+Capture video recording of the screen | | `profile.window_shadow = false` |
+`-o` | In window capture mode, do not capture the shadow of the window |
 
-  profile.delay = <seconds>               -T<seconds>   Take the capture after a delay of
-
-  profile.filetype = '<format>'           -t<format>    Image format to create, default is png
-
-  profile.image_capture_mode = 'bounds'   -R<x,y,w,h>   Capture screen rect
-
-  profile.image_capture_mode = 'window'   -l<id>        Capture window with
-
-  profile.mode = 'clipboard'              -c            Force screen capture to go to the
-                                                        clipboard
-
-  profile.mode = 'preview'                -u            Present UI after screencapture is
-                                                        complete
-
-  profile.show_clicks = true              -k            Show clicks in video recording mode
-
-  profile.type = 'video'                  -v            Capture video recording of the screen
-
-  profile.window_shadow = false           -o            In window capture mode, do not capture
-                                                        the shadow of the window
-  --------------------------------------------------------------------------------------------
 
 INSTALLATION                            *render.nvim-render.nvim-installation*
 
@@ -241,7 +267,7 @@ Open System Settings and enable screen recording for your application.
 ACKOWLEDGEMENTS                      *render.nvim-render.nvim-ackowledgements*
 
 - gruvsquirrel.nvim <https://github.com/mikesmithgh/gruvsquirrel.nvim> Neovim colorscheme written in Lua inspired by gruvbox
-- 🦬 pdubs <https://github.com/mikesmithgh/pdubs> A simple command-line utility to return macos window information for a given pid.
+- pdubs <https://github.com/mikesmithgh/pdubs> A simple command-line utility to return macos window information for a given pid.
 
 ==============================================================================
 2. Links                                                   *render.nvim-links*
