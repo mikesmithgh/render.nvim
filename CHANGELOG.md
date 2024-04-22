@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/mikesmithgh/render.nvim/compare/v1.3.1...v2.0.0) (2024-04-22)
+
+
+* feat!: rewrite to only use screencapture on MacOS ([a3382cc](https://github.com/mikesmithgh/render.nvim/commit/a3382cc16681e4efd7e97d8490f1af82f31e4a8f))
+
+
+### BREAKING CHANGES
+
+* rewrite to no longer support playwright approach. render.nvim now uses screencapture and only supports MacOS
+
 ## [1.3.1](https://github.com/mikesmithgh/render.nvim/compare/v1.3.0...v1.3.1) (2023-04-10)
 
 
