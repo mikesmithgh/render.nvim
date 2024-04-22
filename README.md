@@ -1,4 +1,8 @@
+<!-- panvimdoc-ignore-start -->
+
 <img src="https://user-images.githubusercontent.com/10135646/225309637-0c194a45-2e37-44fc-9045-610044cdbd90.png" alt="rendersquirrel" style="width: 25%" align="right" />
+
+<!-- panvimdoc-ignore-end -->
 
 # 📸 render.nvim
 Neovim plugin to take screenshots of your Neovim session on MacOS.

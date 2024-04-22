@@ -19,6 +19,6 @@ return {
     image_capture_mode = render_constants.screencapture.capturemode.bounds,
     capture_window_info_mode = render_constants.screencapture.window_info_mode.frontmost,
     filetype = render_constants.mov,
-    video_limit = 5,
+    video_limit = nil,
   },
 }

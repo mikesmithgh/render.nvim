@@ -2,3 +2,4 @@
 .worktrees/
 .DS_Store
 .render.deps/*/
+tags
