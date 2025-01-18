@@ -1,6 +1,11 @@
 <!-- panvimdoc-ignore-start -->
 
-<img src="https://github.com/mikesmithgh/render.nvim/assets/10135646/6ab8ee2e-8350-48d9-865b-22c3e0d88fc4" alt="rendersquirrel" style="width: 25%" align="right" />
+# :warning: **render.nvim is inactive and no longer maintained.** :warning:
+> render.nvim was initially created with the plan of capturing Neovim sessions by exporting the content to HTML and then using playwright to convert the HTML to an image. The goal was to have a tool
+> that plugin developers could use in CI to see visual changes during development. This had quirks, so I opted to use the `screencapture` tool on MacOS insead. This worked to create screenshots but did not
+> meet the original goal of this project and I suggest you just use dedicated screen captures tools instead of this plugin. With that said, feel free to fork and make it your own.
+
+<img src="https://github.com/mikesmithgh/render.nvim/assets/10135646/6ab8ee2e-8350-48d9-865b-22c3e0d88fc4" alt="rendersquirrel" width="50px" align="right" />
 
 <!-- panvimdoc-ignore-end -->
 
@@ -12,9 +17,6 @@ Neovim plugin to take screenshots of your Neovim session on MacOS.
 [![neovim: v0.9+](https://img.shields.io/static/v1?style=for-the-badge&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
 [![macos: 11+](https://img.shields.io/static/v1?style=for-the-badge&label=macos&message=11%2b&logo=apple&labelColor=282828&logoColor=968c81&color=968c81)](https://www.apple.com/macos)
 [![semantic-release: angular](https://img.shields.io/static/v1?style=for-the-badge&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
-
-> [!WARNING]  
-> This project is still a work in progress and not considered stable
 
 See [wiki](https://github.com/mikesmithgh/render.nvim/wiki) for detailed information, configuration recipes, and demos.
 
